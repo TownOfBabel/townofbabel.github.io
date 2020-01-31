@@ -1,11 +1,11 @@
 function Enemy(game) {
-    this.walk = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 0, 200, 200, 0.12, 8, true, false);
-    this.idle = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 0, 200, 200, 0.12, 1, true, false);
-    this.hurting = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 700, 200, 200, 0.1, 1, false, false);
-    this.knifeAttack = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 400, 600, 200, 200, 0.1, 4, false, false);
-    this.swordIdle = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 200, 200, 200, 0.12, 1, true, false);
-    this.swordWalk = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 200, 200, 200, 0.12, 8, true, false);
-    this.swordAttack = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 400, 200, 300, 0.15, 5, false, false);
+    this.walk = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 0, 200, 200, 0.12, 8, true, false);
+    this.idle = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 0, 200, 200, 0.12, 1, true, false);
+    this.hurting = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 700, 200, 200, 0.1, 1, false, false);
+    this.knifeAttack = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 600, 200, 200, 0.1, 4, false, false);
+    this.swordIdle = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 200, 200, 200, 0.12, 1, true, false);
+    this.swordWalk = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 200, 200, 200, 0.12, 8, true, false);
+    this.swordAttack = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 400, 200, 300, 0.15, 5, false, false);
 
     this.sides = 38;
     this.faces = 20;
@@ -75,7 +75,7 @@ Enemy.prototype.update = function () {
 
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
-        if (ent.player) {
+        if (ent.player && ent.alive) {
             if (distance(this, ent.x, ent.y) < 250) {
                 this.rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
                 var difX = Math.cos(this.rotation);
@@ -96,16 +96,16 @@ Enemy.prototype.update = function () {
                 }
                 if (this.weapon == 'knife' && distance(this, ent.x, ent.y) < 85 && this.attackTimer == 0) {
                     this.attacking = true;
-                    this.attackTiemr = 112;
+                    this.attackTimer = 112;
                 }
                 else if (this.weapon == 'sword' && distance(this, ent.x, ent.y) < 125 && this.attackTimer == 0) {
                     this.attacking = true;
                     this.attackTimer = 118;
                 }
                 if (this.attacking && this.hurt(ent) && this.attackTimer <= 100 && this.attackTimer >= 88 && ent.hitTimer == 0) {
-                    ent.health--;
+                    ent.health.current--;
                     ent.hit = true;
-                    ent.hitTimer = this.attackTimer;
+                    ent.hitTimer = 15;
                 }
             }
         }

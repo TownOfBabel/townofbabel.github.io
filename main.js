@@ -55,22 +55,6 @@ Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
 }
 
-function Street(game, image) {
-    this.image = image;
-    Entity.call(this, game, 0, 0);
-}
-
-Street.prototype = new Entity();
-Street.prototype.constructor = Street;
-
-Street.prototype.update = function () {
-}
-
-Street.prototype.draw = function (ctx) {
-    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), 0, 0);
-    Entity.prototype.draw.call(this);
-}
-
 function Wall(game, x, y, w, h) {
     this.x = x;
     this.y = y;
@@ -89,25 +73,28 @@ Wall.prototype.update = function () {
 Wall.prototype.draw = function (ctx) {
 }
 
-// the "main" code begins here
+// the 'main' code begins here
 var friction = 8;
 
 var ASSET_MANAGER = new AssetManager();
 
-ASSET_MANAGER.queueDownload("./img/background.png");
-ASSET_MANAGER.queueDownload("./img/street1.png");
-ASSET_MANAGER.queueDownload("./img/LilFrump.png");
-ASSET_MANAGER.queueDownload("./img/LilFrumpSheet.png");
-ASSET_MANAGER.queueDownload("./img/EnemyBig.png");
+ASSET_MANAGER.queueDownload('./img/street1.png');
+ASSET_MANAGER.queueDownload('./img/Start.png');
+ASSET_MANAGER.queueDownload('./img/Victory.png');
+ASSET_MANAGER.queueDownload('./img/GameOver.png');
+ASSET_MANAGER.queueDownload('./img/LilFrump.png');
+ASSET_MANAGER.queueDownload('./img/LilFrumpSheet.png');
+ASSET_MANAGER.queueDownload('./img/EnemyBig.png');
+ASSET_MANAGER.queueDownload('./img/Health.png');
 
 ASSET_MANAGER.downloadAll(function () {
-    console.log("loading game...");
+    console.log('loading game...');
     var canvas = document.getElementById('gameWorld');
     var ctx = canvas.getContext('2d');
 
     var gameEngine = new GameEngine();
     //var bg = new Background(gameEngine);
-    var street = new Street(gameEngine, "./img/street1.png");
+    var street = new Background(gameEngine, './img/street1.png');
     var fence1 = new Wall(gameEngine, 0, 0, 240, 180);
     var fence2 = new Wall(gameEngine, 226, 180, 14, 310);
     var fence3 = new Wall(gameEngine, 226, 607, 14, 113);

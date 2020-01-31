@@ -1,4 +1,4 @@
-// This game shell was happily copied from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
+// This game shell was happily copied from Googler Seth Ladd's 'Bad Aliens' game and his Google IO talk in 2011
 
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
@@ -49,7 +49,7 @@ GameEngine.prototype.init = function (ctx) {
 }
 
 GameEngine.prototype.start = function () {
-    console.log("starting game");
+    console.log('starting game');
     var that = this;
     (function gameLoop() {
         that.loop();
@@ -69,7 +69,7 @@ GameEngine.prototype.startInput = function () {
         return { x: x, y: y };
     }
 
-    this.ctx.canvas.addEventListener("keydown", function (e) {
+    this.ctx.canvas.addEventListener('keydown', function (e) {
         if (String.fromCharCode(e.which) === ' ') that.space = !that.space;
         if (event.shiftKey) that.shift = !that.shift;
         if (e.keyCode == '38' || e.keyCode == '87') that.up = true;
@@ -79,7 +79,7 @@ GameEngine.prototype.startInput = function () {
         e.preventDefault();
     }, false);
 
-    this.ctx.canvas.addEventListener("keyup", function (e) {
+    this.ctx.canvas.addEventListener('keyup', function (e) {
         if (e.keyCode == '38' || e.keyCode == '87') that.up = false;
         if (e.keyCode == '40' || e.keyCode == '83') that.down = false;
         if (e.keyCode == '37' || e.keyCode == '65') that.left = false;
@@ -87,11 +87,11 @@ GameEngine.prototype.startInput = function () {
         e.preventDefault();
     }, false);
 
-    this.ctx.canvas.addEventListener("mousemove", function (e) {
+    this.ctx.canvas.addEventListener('mousemove', function (e) {
         that.mouse = getXandY(e);
     }, false);
 
-    this.ctx.canvas.addEventListener("click", function (e) {
+    this.ctx.canvas.addEventListener('click', function (e) {
         that.clickmouse = true;
     }, false);
 
@@ -236,7 +236,7 @@ Entity.prototype.update = function () {
 Entity.prototype.draw = function (ctx) {
     if (this.game.showOutlines && this.radius) {
         this.game.ctx.beginPath();
-        this.game.ctx.strokeStyle = "green";
+        this.game.ctx.strokeStyle = 'green';
         this.game.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         this.game.ctx.stroke();
         this.game.ctx.closePath();
@@ -256,7 +256,7 @@ Entity.prototype.rotateAndCache = function (image, angle) {
     offscreenCtx.translate(0, 0);
     offscreenCtx.drawImage(image, -(image.width / 2), -(image.height / 2));
     offscreenCtx.restore();
-    //offscreenCtx.strokeStyle = "red";
+    //offscreenCtx.strokeStyle = 'red';
     //offscreenCtx.strokeRect(0,0,size,size);
     return offscreenCanvas;
 }
