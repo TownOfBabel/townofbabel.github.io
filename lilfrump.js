@@ -1,16 +1,16 @@
 function Frump(game) {
-    this.idle = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 0, 200, 200, 200, 0.4, 2, true, false);
-    this.walk = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 0, 0, 200, 200, 0.1, 8, true, false);
-    this.hurting = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 0, 1300, 200, 200, 0.1, 1, false, false);
-    this.attack = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 400, 200, 200, 200, 0.1, 4, false, false);
-    this.deathAnim = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 200, 1300, 200, 300, 0.1, 5, false, false);
-    // this.dead = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 400, 1200, 200, 200, 1, 1, false, false);
-    this.knifeWalk = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 0, 400, 200, 200, 0.1, 8, true, false);
-    this.knifeIdle = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 0, 600, 200, 200, 0.4, 2, true, false);
-    this.knifeAttack = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 400, 600, 200, 200, 0.05, 4, false, false);
-    this.swordWalk = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 0, 800, 200, 200, 0.1, 8, true, false);
-    this.swordIdle = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 0, 1000, 200, 200, 0.4, 2, true, false);
-    this.swordAttack = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 400, 1000, 200, 300, 0.1, 5, false, false);
+    this.idle = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 200, 200, 200, 0.4, 2, true, false);
+    this.walk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 0, 200, 200, 0.1, 8, true, false);
+    this.hurting = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 1300, 200, 200, 0.1, 1, false, false);
+    this.attack = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 200, 200, 200, 0.1, 4, false, false);
+    this.deathAnim = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 200, 1300, 200, 300, 0.1, 5, false, false);
+    // this.dead = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 1200, 200, 200, 1, 1, false, false);
+    this.knifeWalk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 400, 200, 200, 0.1, 8, true, false);
+    this.knifeIdle = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 600, 200, 200, 0.4, 2, true, false);
+    this.knifeAttack = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 600, 200, 200, 0.05, 4, false, false);
+    this.swordWalk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 800, 200, 200, 0.1, 8, true, false);
+    this.swordIdle = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 1000, 200, 200, 0.4, 2, true, false);
+    this.swordAttack = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 1000, 200, 300, 0.1, 5, false, false);
 
     //this.rotation = 0;
     this.sides = 38;
@@ -28,7 +28,7 @@ function Frump(game) {
     //new stuff
     this.alive = true;
     this.health = 10;
-    this.weapon = "unarmed";
+    this.weapon = 'unarmed';
 
     Entity.call(this, game, 65, 430);
 }
@@ -49,9 +49,9 @@ Frump.prototype.update = function () {
         this.game.shift = false;
         this.game.space = false;
     }
-    if (this.game.shift) this.weapon = "knife";
-    if (this.game.space) this.weapon = "sword";
-    if (!this.game.shift & !this.game.space) this.weapon = "unarmed";
+    if (this.game.shift) this.weapon = 'knife';
+    if (this.game.space) this.weapon = 'sword';
+    if (!this.game.shift & !this.game.space) this.weapon = 'unarmed';
     if (this.game.clickmouse && this.attackTimer == 0) {
         this.attacking = true;
         if (this.weapon == 'unarmed') this.attackTimer = 109;
@@ -71,7 +71,7 @@ Frump.prototype.update = function () {
         }
     }
     if (this.attacking) {
-        if(this.weapon == "unarmed") {
+        if(this.weapon == 'unarmed') {
             this.range = 50;
             if (this.attack.isDone()) {
                 this.attack.elapsedTime = 0;
@@ -79,7 +79,7 @@ Frump.prototype.update = function () {
                 this.attackTimer = 30;
             }
         }
-        if(this.weapon == "knife") {
+        if(this.weapon == 'knife') {
             this.range = 70;
             if (this.knifeAttack.isDone()) {
                 this.knifeAttack.elapsedTime = 0;
@@ -87,7 +87,7 @@ Frump.prototype.update = function () {
                 this.attackTimer = 9;
             }
         }
-        if(this.weapon == "sword") {
+        if(this.weapon == 'sword') {
             this.range = 110;
             if (this.swordAttack.isDone()) {
                 this.swordAttack.elapsedTime = 0;
@@ -179,20 +179,20 @@ Frump.prototype.draw = function (ctx) {
     if (this.dying) this.deathAnim.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
     else if (this.hit) this.hurting.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
     else if (this.attacking) {
-        if (this.weapon == "unarmed") this.attack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        if (this.weapon == "knife") this.knifeAttack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        if (this.weapon == "sword") this.swordAttack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        if (this.weapon == 'unarmed') this.attack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        else if (this.weapon == 'knife') this.knifeAttack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        else if (this.weapon == 'sword') this.swordAttack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
     }
     else {
         if (this.game.up || this.game.left || this.game.down || this.game.right) {
-            if (this.weapon == "unarmed") this.walk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            if (this.weapon == "knife") this.knifeWalk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            if (this.weapon == "sword") this.swordWalk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            if (this.weapon == 'unarmed') this.walk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon == 'knife') this.knifeWalk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon == 'sword') this.swordWalk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
         }
         else {
-            if (this.weapon == "unarmed") this.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            if (this.weapon == "sword") this.swordIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            if (this.weapon == "knife") this.knifeIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            if (this.weapon == 'unarmed') this.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon == 'sword') this.swordIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon == 'knife') this.knifeIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
         }
     }
     Entity.prototype.draw.call(this);

@@ -1,8 +1,12 @@
 function Enemy(game) {
     this.walk = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 0, 200, 200, 0.12, 8, true, false);
     this.idle = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 0, 200, 200, 0.12, 1, true, false);
-    this.hurting = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 200, 200, 200, 0.1, 1, false, false);
+    this.hurting = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 700, 200, 200, 0.1, 1, false, false);
     this.knifeAttack = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 400, 600, 200, 200, 0.1, 4, false, false);
+    this.swordIdle = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 200, 200, 200, 0.12, 1, true, false);
+    this.swordWalk = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 200, 200, 200, 0.12, 8, true, false);
+    this.swordAttack = new Animation(ASSET_MANAGER.getAsset("./img/EnemyBig.png"), 0, 400, 200, 300, 0.15, 5, false, false);
+
     this.sides = 38;
     this.faces = 20;
     this.radius = 24;
@@ -16,6 +20,9 @@ function Enemy(game) {
     this.acceleration = 100;
     this.maxSpeed = 125;
     this.health = 5;
+
+    var weapon = ['knife', 'sword'];
+    this.weapon = weapon[Math.floor(Math.random()*weapon.length)];
     Entity.call(this, game, Math.random()*(830-410)+410, Math.random()*(670-50)+50);
 }
 
@@ -25,9 +32,7 @@ Enemy.prototype.constructor = Enemy;
 Enemy.prototype.update = function () {
     // console.log('E: ' + this.health);
     if (this.health <= 0) {
-        this.health = 5;
-        this.x = Math.random()*(830-410)+410;
-        this.y = Math.random()*(670-50)+50;
+        this.removeFromWorld = true;
     }
     if (this.attackTimer > 0) this.attackTimer--;
     if (this.hitTimer > 0) this.hitTimer--;
@@ -39,9 +44,21 @@ Enemy.prototype.update = function () {
         }
     }
     if (this.attacking) {
-        if (this.knifeAttack.isDone()) {
-            this.knifeAttack.elapsedTime = 0;
-            this.attacking = false;
+        if (this.weapon == 'knife') {
+            this.range = 70;
+            if (this.knifeAttack.isDone()) {
+                this.knifeAttack.elapsedTime = 0;
+                this.attacking = false;
+                this.attackTimer = 60;
+            }
+        }
+        else if (this.weapon == 'sword') {
+            this.range = 110;
+            if (this.swordAttack.isDone()) {
+                this.swordAttack.elapsedTime = 0;
+                this.attacking = false;
+                this.attackTimer = 90;
+            }
         }
     }
 
@@ -77,11 +94,15 @@ Enemy.prototype.update = function () {
                     this.velocity.x += difX * this.acceleration;
                     this.velocity.y += difY * this.acceleration;
                 }
-                if (distance(this, ent.x, ent.y) < 90 && this.attackTimer == 0) {
+                if (this.weapon == 'knife' && distance(this, ent.x, ent.y) < 85 && this.attackTimer == 0) {
                     this.attacking = true;
-                    this.attackTimer = 90;
+                    this.attackTiemr = 112;
                 }
-                if (this.attacking && this.hurt(ent) && this.attackTimer <= 78 && this.attackTimer >= 66 && ent.hitTimer == 0) {
+                else if (this.weapon == 'sword' && distance(this, ent.x, ent.y) < 125 && this.attackTimer == 0) {
+                    this.attacking = true;
+                    this.attackTimer = 118;
+                }
+                if (this.attacking && this.hurt(ent) && this.attackTimer <= 100 && this.attackTimer >= 88 && ent.hitTimer == 0) {
                     ent.health--;
                     ent.hit = true;
                     ent.hitTimer = this.attackTimer;
@@ -121,9 +142,19 @@ Enemy.prototype.update = function () {
 
 Enemy.prototype.draw = function (ctx) {
     if (this.hit) this.hurting.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-    else if (this.attacking) this.knifeAttack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-    else if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5)
-        this.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-    else this.walk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+    else if (this.attacking) {
+        if (this.weapon == 'knife') this.knifeAttack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        else if (this.weapon == 'sword') this.swordAttack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+    }
+    else {
+        if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5) {
+            if (this.weapon == 'knife') this.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon == 'sword') this.swordIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        }
+        else {
+            if (this.weapon == 'knife') this.walk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon == 'sword') this.swordWalk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        }
+    }
     Entity.prototype.draw.call(this);
 }
