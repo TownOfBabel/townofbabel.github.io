@@ -12,9 +12,10 @@ function Frump(game) {
     this.swordIdle = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 0, 1000, 200, 200, 0.4, 2, true, false);
     this.swordAttack = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 400, 1000, 200, 300, 0.1, 5, false, false);
 
+    //this.rotation = 0;
     this.sides = 38;
     this.faces = 20;
-    this.radius = 20;
+    this.radius = 24;
     this.range = 58;
     this.player = true;
     this.velocity = { x: 0, y: 0 };
@@ -29,7 +30,7 @@ function Frump(game) {
     this.health = 10;
     this.weapon = "unarmed";
 
-    Entity.call(this, game, 640, 360);
+    Entity.call(this, game, 65, 430);
 }
 
 Frump.prototype = new Entity();
@@ -87,7 +88,7 @@ Frump.prototype.update = function () {
             }
         }
         if(this.weapon == "sword") {
-            this.range = 100;
+            this.range = 110;
             if (this.swordAttack.isDone()) {
                 this.swordAttack.elapsedTime = 0;
                 this.attacking = false;
@@ -114,13 +115,12 @@ Frump.prototype.update = function () {
     if (this.collideLeft() || this.collideRight()) {
         this.velocity.x = -this.velocity.x * (1/friction);
         if (this.collideLeft()) this.x = this.radius;
-        if (this.collideRight()) this.x = 1280 - this.radius;
+        else this.x = 1280 - this.radius;
     }
-    if (this.collideTop() || this.collideBottom()) {
-        this.currentHealth -= 1;
+    else if (this.collideTop() || this.collideBottom()) {
         this.velocity.y = -this.velocity.y * (1/friction);
         if (this.collideTop()) this.y = this.radius;
-        if (this.collideBottom()) this.y = 720 - this.radius;
+        else this.y = 720 - this.radius;
     }
 
     for (var i = 0; i < this.game.entities.length; i++) {
@@ -132,6 +132,20 @@ Frump.prototype.update = function () {
                 if (this.weapon == 'knife') ent.hitTimer = 12;
                 else if (this.weapon == 'unarmed') ent.hitTimer = 30;
                 else ent.hitTimer = 32;
+            }
+        }
+        if (ent.wall) {
+            if (this.collide(ent)) {
+                if (this.side == 'left' || this.side == 'right') {
+                    this.velocity.x = -this.velocity.x * (1/friction);
+                    if (this.side == 'left') this.x = ent.x - this.radius;
+                    else this.x = ent.x+ent.w + this.radius;
+                }
+                else if (this.side == 'top' || this.side == 'bottom') {
+                    this.velocity.y = -this.velocity.y * (1/friction);
+                    if (this.side == 'top') this.y = ent.y - this.radius;
+                    else this.y = ent.y+ent.h + this.radius;
+                }
             }
         }
     }
