@@ -6,4 +6,4 @@ TCSS 491 - Computational Worlds
 - James McHugh
 
 
-##### Developing Town of Babel since Jan 2020
+##### Developing {title} since Jan 2020
