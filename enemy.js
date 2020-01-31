@@ -5,7 +5,8 @@ function Enemy(game) {
     this.knifeAttack = new Animation(ASSET_MANAGER.getAsset("./img/LilFrump.png"), 400, 600, 200, 200, 0.1, 4, false, false);
     this.sides = 38;
     this.faces = 20;
-    this.radius = 20;
+    this.radius = 24;
+    this.rotation = Math.random()*(2*Math.PI)-Math.PI;
     this.range = 70;
     this.hit = false;
     this.attackTimer = 0;
@@ -14,8 +15,8 @@ function Enemy(game) {
     this.velocity = { x: 0, y: 0 };
     this.acceleration = 100;
     this.maxSpeed = 125;
-    this.health = 10;
-    Entity.call(this, game, Math.random()*(1180 - 100)+100, Math.random()*(620 - 100)+100);
+    this.health = 5;
+    Entity.call(this, game, Math.random()*(830-410)+410, Math.random()*(670-50)+50);
 }
 
 Enemy.prototype = new Entity();
@@ -24,9 +25,9 @@ Enemy.prototype.constructor = Enemy;
 Enemy.prototype.update = function () {
     // console.log('E: ' + this.health);
     if (this.health <= 0) {
-        this.health = 10;
-        this.x = Math.random()*(700-100)+100;
-        this.y = Math.random()*(700-100)+100;
+        this.health = 5;
+        this.x = Math.random()*(830-410)+410;
+        this.y = Math.random()*(670-50)+50;
     }
     if (this.attackTimer > 0) this.attackTimer--;
     if (this.hitTimer > 0) this.hitTimer--;
@@ -58,11 +59,11 @@ Enemy.prototype.update = function () {
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
         if (ent.player) {
-            if (distance(this, ent) < 250) {
+            if (distance(this, ent.x, ent.y) < 250) {
                 this.rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
                 var difX = Math.cos(this.rotation);
                 var difY = Math.sin(this.rotation);
-                var delta = this.radius + ent.radius - distance(this, ent);
+                var delta = this.radius + ent.radius - distance(this, ent.x, ent.y);
                 if (this.collide(ent)) {
                     this.velocity.x = -this.velocity.x * (1/friction);
                     this.velocity.y = -this.velocity.y * (1/friction);
@@ -76,7 +77,7 @@ Enemy.prototype.update = function () {
                     this.velocity.x += difX * this.acceleration;
                     this.velocity.y += difY * this.acceleration;
                 }
-                if (distance(this, ent) < 90 && this.attackTimer == 0) {
+                if (distance(this, ent.x, ent.y) < 90 && this.attackTimer == 0) {
                     this.attacking = true;
                     this.attackTimer = 90;
                 }
@@ -84,6 +85,20 @@ Enemy.prototype.update = function () {
                     ent.health--;
                     ent.hit = true;
                     ent.hitTimer = this.attackTimer;
+                }
+            }
+        }
+        if (ent.wall) {
+            if (this.collide(ent)) {
+                if (this.side == 'left' || this.side == 'right') {
+                    this.velocity.x = -this.velocity.x * (1/friction);
+                    if (this.side == 'left') this.x = ent.x - this.radius;
+                    else this.x = ent.x+ent.w + this.radius;
+                }
+                else if (this.side == 'top' || this.side == 'bottom') {
+                    this.velocity.y = -this.velocity.y * (1/friction);
+                    if (this.side == 'top') this.y = ent.y - this.radius;
+                    else this.y = ent.y+ent.h + this.radius;
                 }
             }
         }
