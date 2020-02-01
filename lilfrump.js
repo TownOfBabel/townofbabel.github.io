@@ -15,7 +15,7 @@ Background.prototype.draw = function (ctx) {
 }
 
 function Health(game, hp) {
-    this.heart = ASSET_MANAGER.getAsset('./img/Health.png');
+    this.health = ASSET_MANAGER.getAsset('./img/Health.png');
     this.max = hp;
     this.current = hp;
     Entity.call(this, game, 0, 0);
@@ -25,12 +25,15 @@ Health.prototype = new Entity();
 Health.prototype.constructor = Health;
 
 Health.prototype.update = function () {
-
-    Entity.prototype.update.call(this);
 }
 
 Health.prototype.draw = function (ctx) {
-
+    if (this.current == 5) ctx.drawImage(this.health, 0, 0, 100, 20, 5, 5, 100, 20);
+    else if (this.current == 4) ctx.drawImage(this.health, 0, 20, 100, 20, 5, 5, 100, 20);
+    else if (this.current == 3) ctx.drawImage(this.health, 0, 40, 100, 20, 5, 5, 100, 20);
+    else if (this.current == 2) ctx.drawImage(this.health, 0, 60, 100, 20, 5, 5, 100, 20);
+    else if (this.current == 1) ctx.drawImage(this.health, 0, 80, 100, 20, 5, 5, 100, 20);
+    else ctx.drawImage(this.health, 0, 100, 100, 20, 5, 5, 100, 20);
     Entity.prototype.draw.call(this);
 }
 
@@ -61,9 +64,8 @@ function Frump(game) {
 
     //new stuff
     this.alive = false;
-    this.health = new Health(game, 5);
-    game.addEntity(this.health);
     this.weapon = 'unarmed';
+    this.health = new Health(game, 5);
     this.start = new Background(game, './img/Start.png');
     this.victory = new Background(game, './img/Victory.png');
     this.gameover = new Background(game, './img/GameOver.png');
@@ -76,21 +78,20 @@ Frump.prototype.constructor = Frump;
 
 Frump.prototype.update = function () {
     if (!this.alive && this.start.show) {
+        this.game.addEntity(this.health);
         this.game.addEntity(this.start);
         this.start.show = false;
     }
     if (!this.alive && this.game.clickmouse) {
+        this.health.current = 5;
         this.alive = true;
         this.start.removeFromWorld = true;
         this.victory.removeFromWorld = true;
         this.gameover.removeFromWorld = true;
     }
-    // console.log('P: ' + this.health);
     if (this.alive) {
-        console.log(this.health.current);
         if (this.health.current <= 0) {
             this.dying = true;
-            this.health.current = 5;
         }
         if (this.winTimer > 0) this.winTimer--;
         if (this.attackTimer > 0) this.attackTimer--;

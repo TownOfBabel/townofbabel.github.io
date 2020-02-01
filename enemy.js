@@ -1,11 +1,11 @@
 function Enemy(game) {
-    this.walk = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 0, 200, 200, 0.12, 8, true, false);
-    this.idle = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 0, 200, 200, 0.12, 1, true, false);
-    this.hurting = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 700, 200, 200, 0.1, 1, false, false);
+    this.walk = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 8, true, false);
+    this.idle = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 1, true, false);
+    this.hurting = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 700, 200, 200, 0.1, 1, false, false);
     this.knifeAttack = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 600, 200, 200, 0.1, 4, false, false);
-    this.swordIdle = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 200, 200, 200, 0.12, 1, true, false);
-    this.swordWalk = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 200, 200, 200, 0.12, 8, true, false);
-    this.swordAttack = new Animation(ASSET_MANAGER.getAsset('./img/EnemyBig.png'), 0, 400, 200, 300, 0.15, 5, false, false);
+    this.swordIdle = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 200, 200, 200, 0.12, 1, true, false);
+    this.swordWalk = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 200, 200, 200, 0.12, 8, true, false);
+    this.swordAttack = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 400, 200, 300, 0.15, 5, false, false);
 
     this.sides = 38;
     this.faces = 20;
@@ -94,11 +94,11 @@ Enemy.prototype.update = function () {
                     this.velocity.x += difX * this.acceleration;
                     this.velocity.y += difY * this.acceleration;
                 }
-                if (this.weapon == 'knife' && distance(this, ent.x, ent.y) < 85 && this.attackTimer == 0) {
+                if (this.weapon == 'knife' && distance(this, ent.x, ent.y) < 80 && this.attackTimer == 0) {
                     this.attacking = true;
                     this.attackTimer = 112;
                 }
-                else if (this.weapon == 'sword' && distance(this, ent.x, ent.y) < 125 && this.attackTimer == 0) {
+                else if (this.weapon == 'sword' && distance(this, ent.x, ent.y) < 120 && this.attackTimer == 0) {
                     this.attacking = true;
                     this.attackTimer = 118;
                 }
