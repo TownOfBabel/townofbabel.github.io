@@ -7,8 +7,11 @@ function Enemy(game) {
     this.swordWalk = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 200, 200, 200, 0.12, 8, true, false);
     this.swordAttack = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 400, 200, 300, 0.15, 5, false, false);
 
+    var weapon = ['knife', 'sword'];
+    this.weapon = weapon[Math.floor(Math.random()*weapon.length)];
+    if (this.weapon == 'knife') this.faces = 20;
+    else if (this.weapon == 'sword') this.faces = 28;
     this.sides = 38;
-    this.faces = 20;
     this.radius = 24;
     this.rotation = Math.random()*(2*Math.PI)-Math.PI;
     this.range = 70;
@@ -21,8 +24,7 @@ function Enemy(game) {
     this.maxSpeed = 125;
     this.health = 5;
 
-    var weapon = ['knife', 'sword'];
-    this.weapon = weapon[Math.floor(Math.random()*weapon.length)];
+    
     Entity.call(this, game, Math.random()*(830-410)+410, Math.random()*(670-50)+50);
 }
 
