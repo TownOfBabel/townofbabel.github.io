@@ -1,5 +1,5 @@
 function Background(game, image) {
-    this.image = ASSET_MANAGER.getAsset(image);
+    this.image = image;
     Entity.call(this, game, 0, 0);
 }
 
@@ -10,7 +10,7 @@ Background.prototype.update = function () {
 }
 
 Background.prototype.draw = function (ctx) {
-    ctx.drawImage(this.image, 0, 0);
+    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), 0, 0);
     Entity.prototype.draw.call(this);
 }
 
