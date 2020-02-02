@@ -28,7 +28,7 @@ Health.prototype.update = function () {
 }
 
 Health.prototype.draw = function (ctx) {
-    if (this.current == 5) ctx.drawImage(this.health, 0, 0, 100, 20, 5, 5, 100, 20);
+    if (this.current >= 5) ctx.drawImage(this.health, 0, 0, 100, 20, 5, 5, 100, 20);
     else if (this.current == 4) ctx.drawImage(this.health, 0, 20, 100, 20, 5, 5, 100, 20);
     else if (this.current == 3) ctx.drawImage(this.health, 0, 40, 100, 20, 5, 5, 100, 20);
     else if (this.current == 2) ctx.drawImage(this.health, 0, 60, 100, 20, 5, 5, 100, 20);
@@ -65,7 +65,7 @@ function Frump(game) {
     //new stuff
     this.alive = false;
     this.weapon = 'unarmed';
-    this.health = new Health(game, 5);
+    this.health = new Health(game, 50);
     this.start = new Background(game, './img/Start.png');
     this.victory = new Background(game, './img/Victory.png');
     this.gameover = new Background(game, './img/GameOver.png');

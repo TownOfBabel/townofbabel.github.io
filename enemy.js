@@ -23,7 +23,7 @@ function Enemy(game) {
     this.velocity = { x: 0, y: 0 };
     this.acceleration = 100;
     this.maxSpeed = 125;
-    this.health = 5;
+    this.health = 50;
 
     
     Entity.call(this, game, Math.random()*(830-410)+410, Math.random()*(670-50)+50);
@@ -97,10 +97,10 @@ Enemy.prototype.update = function () {
                     ent.y += difY * delta/2;
 
                 }
-                else {
-                    this.velocity.x += difX * this.acceleration;
-                    this.velocity.y += difY * this.acceleration;
-                }
+                // else {
+                //     this.velocity.x += difX * this.acceleration;
+                //     this.velocity.y += difY * this.acceleration;
+                // }
                 if (this.weapon == 'knife' && distance(this, ent.x, ent.y) < 80 && this.attackTimer == 0) {
                     this.attacking = true;
                     this.attackTimer = 112;
