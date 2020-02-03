@@ -78,7 +78,7 @@ var friction = 8;
 
 var ASSET_MANAGER = new AssetManager();
 
-ASSET_MANAGER.queueDownload('./img/Backgrounds/street1.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/street1.png');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/street2.jpg');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/street3.jpg');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/street4.jpg');
@@ -89,7 +89,6 @@ ASSET_MANAGER.queueDownload('./img/Backgrounds/house3.jpg');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/house4.jpg');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/house5.jpg');
 
-ASSET_MANAGER.queueDownload('./img/Street1.png');
 ASSET_MANAGER.queueDownload('./img/Start.png');
 ASSET_MANAGER.queueDownload('./img/Victory.png');
 ASSET_MANAGER.queueDownload('./img/GameOver.png');
@@ -104,7 +103,6 @@ ASSET_MANAGER.downloadAll(function () {
 
     var gameEngine = new GameEngine();
     //var bg = new Background(gameEngine);
-    var street = new Background(gameEngine, './img/Street1.png');
     var fence1 = new Wall(gameEngine, 0, 0, 240, 180);
     var fence2 = new Wall(gameEngine, 226, 180, 14, 310);
     var fence3 = new Wall(gameEngine, 226, 607, 14, 113);
