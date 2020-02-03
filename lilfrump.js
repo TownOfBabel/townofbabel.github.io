@@ -1,19 +1,3 @@
-function Background(game, image) {
-    this.image = image;
-    Entity.call(this, game, 0, 0);
-}
-
-Background.prototype = new Entity();
-Background.prototype.constructor = Background;
-
-Background.prototype.update = function () {
-}
-
-Background.prototype.draw = function (ctx) {
-    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), 0, 0);
-    Entity.prototype.draw.call(this);
-}
-
 function Health(game, hp) {
     this.health = ASSET_MANAGER.getAsset('./img/Health.png');
     this.max = hp;
@@ -57,7 +41,7 @@ function Frump(game) {
     this.player = true;
     this.velocity = { x: 0, y: 0 };
     this.acceleration = 100;
-    this.maxSpeed = 250;
+    this.maxSpeed = 750;
     this.attackTimer = 0;
     this.hitTimer = 0;
     this.hit = false;
@@ -77,18 +61,18 @@ Frump.prototype = new Entity();
 Frump.prototype.constructor = Frump;
 
 Frump.prototype.update = function () {
-    if (!this.alive && this.start.show) {
-        this.game.addEntity(this.health);
-        this.game.addEntity(this.start);
-        this.start.show = false;
-    }
-    if (!this.alive && this.game.clickmouse) {
-        this.health.current = 5;
-        this.alive = true;
-        this.start.removeFromWorld = true;
-        this.victory.removeFromWorld = true;
-        this.gameover.removeFromWorld = true;
-    }
+    // if (!this.alive && this.start.show) {
+    //     this.game.addEntity(this.health);
+    //     this.game.addEntity(this.start);
+    //     this.start.show = false;
+    // }
+    // if (!this.alive && this.game.clickmouse) {
+    //     this.health.current = 5;
+    //     this.alive = true;
+    //     this.start.removeFromWorld = true;
+    //     this.victory.removeFromWorld = true;
+    //     this.gameover.removeFromWorld = true;
+    // }
     if (this.alive) {
         if (this.health.current <= 0) {
             this.dying = true;
@@ -110,17 +94,17 @@ Frump.prototype.update = function () {
             else if (this.weapon = 'knife') this.attackTimer = 106;
             else this.attackTimer = 112;
         }
-        if (this.winTimer == 0 && this.win) {
-            this.alive = false;
-            this.weapon = 'unarmed';
-            this.x = 65;
-            this.y = 430;
-            var enemies = Math.floor(Math.random()*2+1);
-            for (var j = 0; j < enemies; j++) this.game.addEntity(new Enemy(this.game));
-            this.victory.removeFromWorld = false;
-            this.game.addEntity(this.victory);
-            this.win = false;
-        }
+        // if (this.winTimer == 0 && this.win) {
+        //     this.alive = false;
+        //     this.weapon = 'unarmed';
+        //     this.x = 65;
+        //     this.y = 430;
+        //     var enemies = Math.floor(Math.random()*2+1);
+        //     for (var j = 0; j < enemies; j++) this.game.addEntity(new Enemy(this.game));
+        //     this.victory.removeFromWorld = false;
+        //     this.game.addEntity(this.victory);
+        //     this.win = false;
+        // }
         if (this.dying) {
             if (this.deathAnim.isDone()) {
                 this.deathAnim.elapsedTime = 0;

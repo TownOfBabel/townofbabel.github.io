@@ -78,6 +78,17 @@ var friction = 8;
 
 var ASSET_MANAGER = new AssetManager();
 
+ASSET_MANAGER.queueDownload('./img/Backgrounds/street1.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/street2.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/street3.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/street4.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/street5.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/house1.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/house2.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/house3.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/house4.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/house5.jpg');
+
 ASSET_MANAGER.queueDownload('./img/Street1.png');
 ASSET_MANAGER.queueDownload('./img/Start.png');
 ASSET_MANAGER.queueDownload('./img/Victory.png');
@@ -101,15 +112,18 @@ ASSET_MANAGER.downloadAll(function () {
     var frump = new Frump(gameEngine);
     //var enemy = new Enemy(gameEngine);
 
-    gameEngine.addEntity(street);
-    gameEngine.addEntity(fence1);
-    gameEngine.addEntity(fence2);
-    gameEngine.addEntity(fence3);
-    gameEngine.addEntity(fence4);
-    var enemies = Math.floor(Math.random()*2+1);
-    for (var j = 0; j < enemies; j++) gameEngine.addEntity(new Enemy(gameEngine));
-    gameEngine.addEntity(frump);
+    // gameEngine.addEntity(street);
+    // gameEngine.addEntity(fence1);
+    // gameEngine.addEntity(fence2);
+    // gameEngine.addEntity(fence3);
+    // gameEngine.addEntity(fence4);
+    // var enemies = Math.floor(Math.random()*2+1);
+    // for (var j = 0; j < enemies; j++) gameEngine.addEntity(new Enemy(gameEngine));
+    // gameEngine.addEntity(frump);
  
+    var manager = new SceneManager(gameEngine);
+    gameEngine.addEntity(manager);
+
     gameEngine.init(ctx);
     gameEngine.start();
 });
