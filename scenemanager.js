@@ -2,7 +2,9 @@ function Background(game, image, lvl) {
     this.game = game;
     this.image = image;
     this.level = lvl;
+    this.walls = [];
     this.neighbors = [];
+    this.numEnemies = 0;
     this.radius = 0;
     Entity.call(this, game, 0, 0);
 }
@@ -16,6 +18,24 @@ Background.prototype.update = function () {
 Background.prototype.draw = function (ctx) {
     ctx.drawImage(ASSET_MANAGER.getAsset(this.image), 0, 0);
     Entity.prototype.draw.call(this);
+}
+
+function Wall(game, x, y, w, h) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.wall = true;
+    Entity.call(this, game, x, y);
+}
+
+Wall.prototype = new Entity();
+Wall.prototype.constructor = Wall;
+
+Wall.prototype.update = function () {
+}
+
+Wall.prototype.draw = function (ctx) {
 }
 
 function Level(game) {
@@ -39,14 +59,20 @@ function SceneManager(game) {
     this.levels = [];
     this.player = new Frump(game);
 
-    for (var i = 0; i < 5; i++) this.buildLevel(i);
-    for (var i = 0; i < 5; i++) {
-        this.levels[i].streets[4].neighbors[1] = this.levels[(((i+1)%5)+5)%5].streets[0];
-        this.levels[i].streets[0].neighbors[2] = this.levels[(((i-1)%5)+5)%5].streets[4];
+    for (var i = 0; i < 4; i++) this.buildLevel(i);
+    for (var i = 0; i < 4; i++) {
+        this.levels[i].streets[4].neighbors[1] = this.levels[(((i+1)%4)+4)%4].streets[0];
+        this.levels[i].streets[0].neighbors[2] = this.levels[(((i-1)%4)+4)%4].streets[4];
     }
+    addObject(this.levels[0].streets[0].walls, new Wall(game, 0, 0, 240, 180));
+    addObject(this.levels[0].streets[0].walls, new Wall(game, 226, 180, 14, 310));
+    addObject(this.levels[0].streets[0].walls, new Wall(game, 226, 607, 14, 113));
+    addObject(this.levels[0].streets[0].walls, new Wall(game, 145, 607, 81, 10));
+    addObject(this.levels[0].streets[0].walls, new Mailbox(game, 25));
 
     this.activeBG = this.levels[0].streets[0];
     this.start = true;
+
     Entity.call(this, game, 0, 0);
 }
 
@@ -66,6 +92,8 @@ SceneManager.prototype.update = function () {
     }
     if (this.start) {
         this.game.addEntity(this.activeBG);
+        for (var i = 0; i < this.levels[0].streets[0].walls.length; i++)
+            this.game.addEntity(this.levels[0].streets[0].walls[i]);
         this.game.addEntity(this.player);
         this.player.alive = true;
         this.start = false;
@@ -76,18 +104,20 @@ SceneManager.prototype.update = function () {
 
 SceneManager.prototype.checkBounds = function () {
     if (this.player.collideLeft() || this.player.collideRight()) {
-        if (this.player.collideRight() && this.activeBG.image == './img/Backgrounds/street5.jpg') {
-            this.changeBackground(this.activeBG.neighbors[1]);
-            this.player.x = this.player.y * (16/9);
-            this.player.y = 720 - this.player.radius*3;
-        }
-        else if (this.player.collideLeft() && this.activeBG.neighbors[3]) {
-            this.changeBackground(this.activeBG.neighbors[3]);
-            this.player.x = 1280 - this.player.radius;
-        }
-        else if (this.player.collideRight() && this.activeBG.neighbors[1]) {
-            this.changeBackground(this.activeBG.neighbors[1]);
-            this.player.x = this.player.radius;
+        if (this.activeBG.numEnemies == 0) {
+            if (this.player.collideRight() && this.activeBG.image == './img/Backgrounds/street'+this.activeBG.level+'5.jpg') {
+                this.changeBackground(this.activeBG.neighbors[1]);
+                this.player.x = this.player.y * (16/9);
+                this.player.y = 720 - this.player.radius*3;
+            }
+            else if (this.player.collideLeft() && this.activeBG.neighbors[3]) {
+                this.changeBackground(this.activeBG.neighbors[3]);
+                this.player.x = 1280 - this.player.radius;
+            }
+            else if (this.player.collideRight() && this.activeBG.neighbors[1]) {
+                this.changeBackground(this.activeBG.neighbors[1]);
+                this.player.x = this.player.radius;
+            }
         }
         else {
             this.player.velocity.x = -this.player.velocity.x * (1/friction);
@@ -96,18 +126,20 @@ SceneManager.prototype.checkBounds = function () {
         }
     }
     else if (this.player.collideTop() || this.player.collideBottom()) {
-        if (this.player.collideBottom() && this.activeBG.image == './img/Backgrounds/street1.png') {
-            this.changeBackground(this.activeBG.neighbors[2]);
-            this.player.y = this.player.x * (9/16);
-            this.player.x = 1280 - this.player.radius*3;
-        }
-        else if (this.player.collideTop() && this.activeBG.neighbors[0]) {
-            this.changeBackground(this.activeBG.neighbors[0]);
-            this.player.y = 720 - this.player.radius;
-        }
-        else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
-            this.changeBackground(this.activeBG.neighbors[2]);
-            this.player.y = this.player.radius;
+        if (this.activeBG.numEnemies == 0) {
+            if (this.player.collideBottom() && this.activeBG.image == './img/Backgrounds/street1.png') {
+                this.changeBackground(this.activeBG.neighbors[2]);
+                this.player.y = this.player.x * (9/16);
+                this.player.x = 1280 - this.player.radius*3;
+            }
+            else if (this.player.collideTop() && this.activeBG.neighbors[0]) {
+                this.changeBackground(this.activeBG.neighbors[0]);
+                this.player.y = 720 - this.player.radius;
+            }
+            else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                this.changeBackground(this.activeBG.neighbors[2]);
+                this.player.y = this.player.radius;
+            }
         }
         else {
             this.player.velocity.y = -this.player.velocity.y * (1/friction);
@@ -130,7 +162,7 @@ SceneManager.prototype.buildLevel = function (lvl) {
     this.levels[lvl].streets[1] = new Background(this.game, './img/Backgrounds/street2.jpg', lvl);
     this.levels[lvl].streets[2] = new Background(this.game, './img/Backgrounds/street3.jpg', lvl);
     this.levels[lvl].streets[3] = new Background(this.game, './img/Backgrounds/street4.jpg', lvl);
-    this.levels[lvl].streets[4] = new Background(this.game, './img/Backgrounds/street5.jpg', lvl);
+    this.levels[lvl].streets[4] = new Background(this.game, ('./img/Backgrounds/street' + lvl + '5.jpg'), lvl);
 
     this.levels[lvl].houses[0] = new Background(this.game, './img/Backgrounds/house1.jpg', lvl);
     this.levels[lvl].houses[1] = new Background(this.game, './img/Backgrounds/house2.jpg', lvl);
@@ -159,4 +191,8 @@ SceneManager.prototype.buildLevel = function (lvl) {
 }
 
 SceneManager.prototype.draw = function(ctx) {
+}
+
+function addObject(arr, obj) {
+    arr[arr.length] = obj;
 }

@@ -152,46 +152,42 @@ function Entity(game, x, y) {
 }
 
 Entity.prototype.collide = function (other) {
-    var that = this;
     if (other.wall) {
         if (this.x < other.x) {
-            //console.log('x < x');
             if (this.y < other.y) {
-                that.side = 'topleft';
+                this.side = 'topleft';
                 return distance(this, other.x, other.y) < this.radius;
             }
             else if (this.y > other.y+other.h) {
-                that.side = 'bottomleft';
+                this.side = 'bottomleft';
                 return distance(this, other.x, other.y+other.h) < this.radius;
             }
             else {
-                that.side = 'left';
+                this.side = 'left';
                 return distance(this, other.x, this.y) < this.radius;
             }
         }
         else if (this.x > other.x+other.w) {
-            //console.log('x > x');
             if (this.y < other.y) {
-                that.side = 'topright';
+                this.side = 'topright';
                 return distance(this, other.x+other.w, other.y) < this.radius;
             }
             else if (this.y > other.y+other.h) {
-                that.side = 'bottomright';
+                this.side = 'bottomright';
                 return distance(this, other.x+other.w, other.y+other.h) < this.radius;
             }
             else {
-                that.side = 'right';
+                this.side = 'right';
                 return distance(this, other.x+other.w, this.y) < this.radius;
             }
         }
         else {
-            //console.log('else');
             if (this.y < other.y) {
-                that.side = 'top';
+                this.side = 'top';
                 return distance(this, this.x, other.y) < this.radius;
             }
             else if (this.y > other.y+other.h) {
-                that.side = 'bottom';
+                this.side = 'bottom';
                 return distance(this, this.x, other.y+other.h) < this.radius;
             }
             else return true;

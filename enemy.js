@@ -1,3 +1,55 @@
+function Mailbox(game, timer) {
+    this.image = './img/Mailbox.png';
+    this.timer = timer;
+    this.radius = 15;
+    this.acceleration = 100;
+    this.velocity = { x: 0, y: 0 };
+    this.maxSpeed = 875 / (timer * 60);
+    Entity.call(this, game, 940, 430);
+}
+
+Mailbox.prototype = new Entity();
+Mailbox.prototype.constructor = Mailbox;
+
+Mailbox.prototype.update = function () {
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (ent.player && ent.alive) {
+            var rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
+            var difX = Math.cos(rotation);
+            var difY = Math.sin(rotation);
+            // var delta = this.radius + ent.radius - distance(this, ent.x, ent.y);
+            // if (this.collide(ent)) {
+            //     this.velocity.x = -this.velocity.x * (1/friction);
+            //     this.velocity.y = -this.velocity.y * (1/friction);
+            //     this.x -= difX * delta/2;
+            //     this.y -= difY * delta/2;
+            //     ent.x += difX * delta/2;
+            //     ent.y += difY * delta/2;
+
+            // }
+            // else {
+                this.velocity.x += difX * this.acceleration;
+                this.velocity.y += difY * this.acceleration;
+            // }
+        }
+    }
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+    Entity.prototype.update.call(this);
+}
+
+Mailbox.prototype.draw = function (ctx) {
+    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+
 function Enemy(game) {
     this.walk = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 8, true, false);
     this.idle = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 1, true, false);
@@ -97,10 +149,10 @@ Enemy.prototype.update = function () {
                     ent.y += difY * delta/2;
 
                 }
-                // else {
-                //     this.velocity.x += difX * this.acceleration;
-                //     this.velocity.y += difY * this.acceleration;
-                // }
+                else {
+                    this.velocity.x += difX * this.acceleration;
+                    this.velocity.y += difY * this.acceleration;
+                }
                 if (this.weapon == 'knife' && distance(this, ent.x, ent.y) < 80 && this.attackTimer == 0) {
                     this.attacking = true;
                     this.attackTimer = 112;

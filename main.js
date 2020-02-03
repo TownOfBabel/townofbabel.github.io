@@ -55,24 +55,6 @@ Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
 }
 
-function Wall(game, x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    this.wall = true;
-    Entity.call(this, game, x, y);
-}
-
-Wall.prototype = new Entity();
-Wall.prototype.constructor = Wall;
-
-Wall.prototype.update = function () {
-}
-
-Wall.prototype.draw = function (ctx) {
-}
-
 // the 'main' code begins here
 var friction = 8;
 
@@ -82,7 +64,10 @@ ASSET_MANAGER.queueDownload('./img/Backgrounds/street1.png');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/street2.jpg');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/street3.jpg');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/street4.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/street5.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/street05.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/street15.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/street25.jpg');
+ASSET_MANAGER.queueDownload('./img/Backgrounds/street35.jpg');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/house1.jpg');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/house2.jpg');
 ASSET_MANAGER.queueDownload('./img/Backgrounds/house3.jpg');
@@ -95,6 +80,7 @@ ASSET_MANAGER.queueDownload('./img/GameOver.png');
 ASSET_MANAGER.queueDownload('./img/LilFrump.png');
 ASSET_MANAGER.queueDownload('./img/Enemy.png');
 ASSET_MANAGER.queueDownload('./img/Health.png');
+ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 
 ASSET_MANAGER.downloadAll(function () {
     console.log('loading game...');
