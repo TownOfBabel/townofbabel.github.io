@@ -45,7 +45,7 @@ function Frump(game) {
     this.range = 50;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 500;
+    this.maxSpeed = 250;
     this.weapon = 'unarmed';
     this.health = new Health(game, 5);
     this.atkCD = 0;
