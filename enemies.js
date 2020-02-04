@@ -23,7 +23,6 @@ function Thug(game) {
     chooseWeapon(this, 'thug');
     this.health = 5;
     this.atkCD = 0;
-    this.hitTime = 0;
     this.canBeHit = 0;
     console.log('added thug');
     Entity.call(this, game, Math.random()*420+410, Math.random()*620+50);
@@ -34,8 +33,8 @@ Thug.prototype.constructor = Thug;
 
 Thug.prototype.update = function () {
     if (this.atkCD > 0) this.atkCD--;
-    if (this.hitTime > 0) this.hitTime--;
     if (this.canBeHit > 0) this.canBeHit--;
+    if (this.canBeHit <= 0) this.hurt = false;
 
     // Update animations
     if (this.hurt) {
@@ -108,21 +107,20 @@ Thug.prototype.update = function () {
                     this.velocity.x += difX * this.acceleration;
                     this.velocity.y += difY * this.acceleration;
                 }
-                if (distance(this, ent) < this.range && this.atkCD <= 0 && this.hitTime <= 0) {
+                if (distance(this, ent) < this.range && this.atkCD <= 0) {
                     if (this.weapon == 'knife') {
                         this.attacking = true;
-                        this.hitTime = 24;
+                        this.atkCD = 112;
                     }
                     else if(this.weapon == 'sword') {
                         this.attacking = true;
-                        this.hitTime = 28;
+                        this.atkCD = 116;
                     }
                 }
-                console.log('attacking: ' + this.attacking + "\ncanBeHit: " + ent.canBeHit + '\nhit: ' + this.hit(ent) + '\nhit time: ' + this.hitTime);
-                if (this.attacking && ent.canBeHit <= 0 && this.hit(ent) && this.hitTime > 0 && this.hitTime <= 12) {
+                if (this.attacking && ent.canBeHit <= 0 && this.hit(ent) && this.atkCD > 88 && this.atkCD <= 100) {
                     ent.hurt = true;
-                    ent.health--;
-                    ent.canBeHit = 22;
+                    ent.health.current--;
+                    ent.canBeHit = 12;
                 }
             }
         }
@@ -183,4 +181,56 @@ function chooseWeapon(that, type) {
     that.weapon = weapons[Math.floor(Math.random()*weapons.length)];
     if (that.weapon == 'knife') that.range = 70;
     else that.range = 110;
+}
+
+function Mailbox(game, timer) {
+    this.image = './img/Mailbox.png';
+    this.timer = timer;
+    this.radius = 15;
+    this.acceleration = 100;
+    this.velocity = { x: 0, y: 0 };
+    this.maxSpeed = 875 / (timer * 60);
+    Entity.call(this, game, 940, 430);
+}
+
+Mailbox.prototype = new Entity();
+Mailbox.prototype.constructor = Mailbox;
+
+Mailbox.prototype.update = function () {
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (ent.player && ent.alive) {
+            var rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
+            var difX = Math.cos(rotation);
+            var difY = Math.sin(rotation);
+            // var delta = this.radius + ent.radius - distance(this, ent.x, ent.y);
+            // if (this.collide(ent)) {
+            //     this.velocity.x = -this.velocity.x * (1/friction);
+            //     this.velocity.y = -this.velocity.y * (1/friction);
+            //     this.x -= difX * delta/2;
+            //     this.y -= difY * delta/2;
+            //     ent.x += difX * delta/2;
+            //     ent.y += difY * delta/2;
+
+            // }
+            // else {
+                this.velocity.x += difX * this.acceleration;
+                this.velocity.y += difY * this.acceleration;
+            // }
+        }
+    }
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+    Entity.prototype.update.call(this);
+}
+
+Mailbox.prototype.draw = function (ctx) {
+    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
+    Entity.prototype.draw.call(this);
 }

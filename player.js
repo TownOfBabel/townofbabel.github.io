@@ -1,3 +1,26 @@
+function Health(game, hp) {
+    this.health = ASSET_MANAGER.getAsset('./img/Health.png');
+    this.max = hp;
+    this.current = hp;
+    Entity.call(this, game, 0, 0);
+}
+
+Health.prototype = new Entity();
+Health.prototype.constructor = Health;
+
+Health.prototype.update = function () {
+}
+
+Health.prototype.draw = function (ctx) {
+    if (this.current >= 5) ctx.drawImage(this.health, 0, 0, 100, 20, 5, 5, 100, 20);
+    else if (this.current == 4) ctx.drawImage(this.health, 0, 20, 100, 20, 5, 5, 100, 20);
+    else if (this.current == 3) ctx.drawImage(this.health, 0, 40, 100, 20, 5, 5, 100, 20);
+    else if (this.current == 2) ctx.drawImage(this.health, 0, 60, 100, 20, 5, 5, 100, 20);
+    else if (this.current == 1) ctx.drawImage(this.health, 0, 80, 100, 20, 5, 5, 100, 20);
+    else ctx.drawImage(this.health, 0, 100, 100, 20, 5, 5, 100, 20);
+    Entity.prototype.draw.call(this);
+}
+
 function Frump(game) {
     // Animations
     this.anim = {};
@@ -24,9 +47,8 @@ function Frump(game) {
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 500;
     this.weapon = 'unarmed';
-    this.health = 10;
+    this.health = new Health(game, 5);
     this.atkCD = 0;
-    this.hitTime = 0;
     this.canBeHit = 0;
 
     Entity.call(this, game, 65, 430);
@@ -40,8 +62,8 @@ Frump.prototype.update = function () {
     this.rotation = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x - this.x);
 
     if (this.atkCD > 0) this.atkCD--;
-    if (this.hitTime > 0) this.hitTime--;
     if (this.canBeHit > 0) this.canBeHit--;
+    if (this.canBeHit <= 0) this.hurt = false;
 
     // Determines current weapon (will be replaced)
     if (this.game.player.shift && this.game.player.space) {
@@ -56,15 +78,15 @@ Frump.prototype.update = function () {
     if (this.game.click && this.atkCD == 0) {
         this.attacking = true;
         if (this.weapon == 'knife') {
-            this.hitTime = 18;
+            this.atkCD = 106;
             this.range = 70;
         }
         else if (this.weapon == 'sword') {
-            this.hitTime = 24;
+            this.atkCD = 112;
             this.range = 110;
         }
         else {
-            this.hitTime = 21;
+            this.atkCD = 109;
             this.range = 50;
         }
     }
@@ -111,7 +133,7 @@ Frump.prototype.update = function () {
             }
         }
         else if (ent.enemy) {
-            if (this.attacking && ent.canBeHit <= 0 && this.hit(ent) && this.hitTime > 0 && this.hitTime <= 12) {
+            if (this.attacking && ent.canBeHit <= 0 && this.hit(ent) && this.atkCD > 88 && this.atkCD <= 100) {
                 ent.hurt = true;
                 ent.health--;
                 ent.canBeHit = 18;

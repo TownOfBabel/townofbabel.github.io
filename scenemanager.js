@@ -71,7 +71,7 @@ function SceneManager(game) {
     this.levels[0].streets[0].walls.push(new Wall(game, 145, 607, 81, 10));
     this.levels[0].streets[0].walls.push(new Mailbox(game, 200));
     this.levels[0].streets[0].enemies.push(new Thug(game));
-    //this.levels[0].streets[0].enemies.push(new Thug(game));
+    this.levels[0].streets[0].enemies.push(new Thug(game));
 
     this.activeBG = this.levels[0].streets[0];
     this.start = true;
@@ -91,6 +91,7 @@ SceneManager.prototype.update = function () {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.activeBG.enemies[i].removeFromWorld = false;
         this.player.removeFromWorld = false;
+        this.player.health.removeFromWorld = false;
         this.activeBG = this.nextBG;
         this.game.addEntity(this.activeBG);
         for (var i = 0; i < this.activeBG.walls.length; i++)
@@ -98,6 +99,7 @@ SceneManager.prototype.update = function () {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.game.addEntity(this.activeBG.enemies[i]);
         this.game.addEntity(this.player);
+        this.game.addEntity(this.player.health);
         this.changedBG = false;
     }
     if (this.start) {
@@ -107,6 +109,7 @@ SceneManager.prototype.update = function () {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.game.addEntity(this.activeBG.enemies[i]);
         this.game.addEntity(this.player);
+        this.game.addEntity(this.player.health);
         this.player.alive = true;
         this.start = false;
     }
@@ -169,6 +172,7 @@ SceneManager.prototype.changeBackground = function (nextBG) {
         this.activeBG.enemies[i].removeFromWorld = true;
     this.activeBG.removeFromWorld = true;
     this.player.removeFromWorld = true;
+    this.player.health.removeFromWorld = true;
     this.changedBG = true;
 }
 
