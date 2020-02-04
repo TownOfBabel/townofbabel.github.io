@@ -155,7 +155,6 @@ function Entity(game, x, y) {
     this.game = game;
     this.x = x;
     this.y = y;
-    //this.rotation = rot;
     this.removeFromWorld = false;
 }
 
@@ -218,28 +217,6 @@ Entity.prototype.collideTop = function () {
 
 Entity.prototype.collideBottom = function () {
     return (this.y + this.radius) > 720;
-}
-
-Entity.prototype.hurt = function (other) {
-    if (this.enemy && other.player) {
-        var rotdif = 0;
-        if (other.rotation < this.rotation) rotdif = this.rotation - other.rotation;
-        else rotdif = other.rotation - this.rotation;
-        if ((rotdif > 3*Math.PI/4 && rotdif < 5*Math.PI/4) || (rotdif > 7*Math.PI/4) || (rotdif < Math.PI/4))
-            return distance(this, other.x, other.y) < this.range + other.faces;
-        return distance(this, other.x, other.y) < this.range + other.sides;
-    }
-    else if (this.player && other.enemy) {
-        var rotdif = 0;
-        if (other.rotation < this.rotation) rotdif = this.rotation - other.rotation;
-        else rotdif = other.rotation - this.rotation;
-        console.log(rotdif/Math.PI);
-        if (this.weapon == 'sword' && rotdif > Math.PI/2 && rotdif < 3*Math.PI/2)
-            return distance(this, other.x, other.y) < this.range + other.faces;
-        else if (rotdif > 3*Math.PI/4 && rotdif < 5*Math.PI/4) return distance(this, other.x, other.y) < this.range + other.faces;
-        else return false;
-    }
-    else return distance(this, other.x, other.y) < this.range + other.radius;
 }
 
 Entity.prototype.update = function () {
