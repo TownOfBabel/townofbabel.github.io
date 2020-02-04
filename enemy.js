@@ -153,7 +153,7 @@ Enemy.prototype.update = function () {
                     this.velocity.x += difX * this.acceleration;
                     this.velocity.y += difY * this.acceleration;
                 }
-                if (this.weapon == 'knife' && distance(this, ent.x, ent.y) < 80 && this.attackTimer == 0) {
+                if (this.weapon == 'knife' && distance(this, ent.x, ent.yas) < 80 && this.attackTimer == 0) {
                     this.attacking = true;
                     this.attackTimer = 112;
                 }

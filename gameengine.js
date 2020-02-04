@@ -33,6 +33,9 @@ function GameEngine() {
     this.showOutlines = false;
     this.ctx = null;
     this.click = null;
+    this.player = {};
+    this.player.shift = false;
+    this.player.space = false;
     this.mouse = { x: 400, y: 400 };
     this.wheel = null;
     this.surfaceWidth = null;
@@ -60,8 +63,6 @@ GameEngine.prototype.start = function () {
 GameEngine.prototype.startInput = function () {
     console.log('starting input');
     var that = this;
-    that.space = false;
-    that.shift = false;
 
     var getXandY = function (e) {
         var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
@@ -70,20 +71,20 @@ GameEngine.prototype.startInput = function () {
     }
 
     this.ctx.canvas.addEventListener('keydown', function (e) {
-        if (String.fromCharCode(e.which) === ' ') that.space = !that.space;
-        if (event.shiftKey) that.shift = !that.shift;
-        if (e.keyCode == '38' || e.keyCode == '87') that.up = true;
-        if (e.keyCode == '40' || e.keyCode == '83') that.down = true;
-        if (e.keyCode == '37' || e.keyCode == '65') that.left = true;
-        if (e.keyCode == '39' || e.keyCode == '68') that.right = true;
+        if (String.fromCharCode(e.which) === ' ') that.player.space = !that.player.space;
+        if (event.shiftKey) that.player.shift = !that.player.shift;
+        if (e.keyCode == '38' || e.keyCode == '87') that.player.up = true;
+        if (e.keyCode == '40' || e.keyCode == '83') that.player.down = true;
+        if (e.keyCode == '37' || e.keyCode == '65') that.player.left = true;
+        if (e.keyCode == '39' || e.keyCode == '68') that.player.right = true;
         e.preventDefault();
     }, false);
 
     this.ctx.canvas.addEventListener('keyup', function (e) {
-        if (e.keyCode == '38' || e.keyCode == '87') that.up = false;
-        if (e.keyCode == '40' || e.keyCode == '83') that.down = false;
-        if (e.keyCode == '37' || e.keyCode == '65') that.left = false;
-        if (e.keyCode == '39' || e.keyCode == '68') that.right = false;
+        if (e.keyCode == '38' || e.keyCode == '87') that.player.up = false;
+        if (e.keyCode == '40' || e.keyCode == '83') that.player.down = false;
+        if (e.keyCode == '37' || e.keyCode == '65') that.player.left = false;
+        if (e.keyCode == '39' || e.keyCode == '68') that.player.right = false;
         e.preventDefault();
     }, false);
 
@@ -92,7 +93,7 @@ GameEngine.prototype.startInput = function () {
     }, false);
 
     this.ctx.canvas.addEventListener('click', function (e) {
-        that.clickmouse = true;
+        that.click = true;
     }, false);
 
     console.log('input started');
@@ -134,13 +135,20 @@ GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
     this.update();
     this.draw();
-    this.clickmouse = false;
+    this.click = null;
 }
 
-function distance(a, bx, by) {
-    var dx = a.x - bx;
-    var dy = a.y - by;
-    return Math.sqrt(dx * dx + dy * dy);
+function distance(a, b, c) {
+    if (c === undefined) {
+        var dx = a.x - b.x;
+        var dy = a.y - b.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+    else {
+        var dx = a.x - b;
+        var dy = a.y - c;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
 }
 
 function Entity(game, x, y) {

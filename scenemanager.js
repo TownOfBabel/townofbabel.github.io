@@ -3,6 +3,7 @@ function Background(game, image, lvl) {
     this.image = image;
     this.level = lvl;
     this.walls = [];
+    this.enemies = [];
     this.neighbors = [];
     this.numEnemies = 0;
     this.radius = 0;
@@ -64,11 +65,13 @@ function SceneManager(game) {
         this.levels[i].streets[4].neighbors[1] = this.levels[(((i+1)%4)+4)%4].streets[0];
         this.levels[i].streets[0].neighbors[2] = this.levels[(((i-1)%4)+4)%4].streets[4];
     }
-    addObject(this.levels[0].streets[0].walls, new Wall(game, 0, 0, 240, 180));
-    addObject(this.levels[0].streets[0].walls, new Wall(game, 226, 180, 14, 310));
-    addObject(this.levels[0].streets[0].walls, new Wall(game, 226, 607, 14, 113));
-    addObject(this.levels[0].streets[0].walls, new Wall(game, 145, 607, 81, 10));
-    addObject(this.levels[0].streets[0].walls, new Mailbox(game, 25));
+    this.levels[0].streets[0].walls.push(new Wall(game, 0, 0, 240, 180));
+    this.levels[0].streets[0].walls.push(new Wall(game, 226, 180, 14, 310));
+    this.levels[0].streets[0].walls.push(new Wall(game, 226, 607, 14, 113));
+    this.levels[0].streets[0].walls.push(new Wall(game, 145, 607, 81, 10));
+    this.levels[0].streets[0].walls.push(new Mailbox(game, 200));
+    this.levels[0].streets[0].enemies.push(new Thug(game));
+    //this.levels[0].streets[0].enemies.push(new Thug(game));
 
     this.activeBG = this.levels[0].streets[0];
     this.start = true;
@@ -80,20 +83,29 @@ SceneManager.prototype = new Entity();
 SceneManager.prototype.constructor = SceneManager;
 
 SceneManager.prototype.update = function () {
-    if (this.activeBG.removeFromWorld) {
+    if (this.changedBG) {
         this.activeBG.removeFromWorld = false;
+        for (var i = 0; i < this.activeBG.walls.length; i++) {
+            this.activeBG.walls[i].removeFromWorld = false;
+        }
+        for (var i = 0; i < this.activeBG.enemies.length; i++)
+            this.activeBG.enemies[i].removeFromWorld = false;
+        this.player.removeFromWorld = false;
         this.activeBG = this.nextBG;
         this.game.addEntity(this.activeBG);
-        console.log('lvl: ' + (this.activeBG.level + 1));
-    }
-    if (this.player.removeFromWorld) {
-        this.player.removeFromWorld = false;
+        for (var i = 0; i < this.activeBG.walls.length; i++)
+            this.game.addEntity(this.activeBG.walls[i]);
+        for (var i = 0; i < this.activeBG.enemies.length; i++)
+            this.game.addEntity(this.activeBG.enemies[i]);
         this.game.addEntity(this.player);
+        this.changedBG = false;
     }
     if (this.start) {
         this.game.addEntity(this.activeBG);
         for (var i = 0; i < this.levels[0].streets[0].walls.length; i++)
             this.game.addEntity(this.levels[0].streets[0].walls[i]);
+        for (var i = 0; i < this.activeBG.enemies.length; i++)
+            this.game.addEntity(this.activeBG.enemies[i]);
         this.game.addEntity(this.player);
         this.player.alive = true;
         this.start = false;
@@ -119,11 +131,11 @@ SceneManager.prototype.checkBounds = function () {
                 this.player.x = this.player.radius;
             }
         }
-        else {
-            this.player.velocity.x = -this.player.velocity.x * (1/friction);
-            if (this.player.collideLeft()) this.player.x = this.player.radius;
-            else this.player.x = 1280 - this.player.radius;
-        }
+        // else {
+        //     this.player.velocity.x = -this.player.velocity.x * (1/friction);
+        //     if (this.player.collideLeft()) this.player.x = this.player.radius;
+        //     else this.player.x = 1280 - this.player.radius;
+        // }
     }
     else if (this.player.collideTop() || this.player.collideBottom()) {
         if (this.activeBG.numEnemies == 0) {
@@ -141,18 +153,23 @@ SceneManager.prototype.checkBounds = function () {
                 this.player.y = this.player.radius;
             }
         }
-        else {
-            this.player.velocity.y = -this.player.velocity.y * (1/friction);
-            if (this.player.collideTop()) this.player.y = this.player.radius;
-            else this.player.y = 720 - this.player.radius;
-        }
+        // else {
+        //     this.player.velocity.y = -this.player.velocity.y * (1/friction);
+        //     if (this.player.collideTop()) this.player.y = this.player.radius;
+        //     else this.player.y = 720 - this.player.radius;
+        // }
     }
 }
 
 SceneManager.prototype.changeBackground = function (nextBG) {
     this.nextBG = nextBG;
+    for (var i = 0; i < this.activeBG.walls.length; i++)
+        this.activeBG.walls[i].removeFromWorld = true;
+    for (var i = 0; i < this.activeBG.enemies.length; i++)
+        this.activeBG.enemies[i].removeFromWorld = true;
     this.activeBG.removeFromWorld = true;
     this.player.removeFromWorld = true;
+    this.changedBG = true;
 }
 
 SceneManager.prototype.buildLevel = function (lvl) {
@@ -191,8 +208,4 @@ SceneManager.prototype.buildLevel = function (lvl) {
 }
 
 SceneManager.prototype.draw = function(ctx) {
-}
-
-function addObject(arr, obj) {
-    arr[arr.length] = obj;
 }
