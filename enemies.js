@@ -1,4 +1,52 @@
-function Thug(game) {
+function Enemy(game) {
+    // Properties
+    this.enemy = true;
+    this.radius = 24;
+    this.faces = 28;
+    this.sides = 38;
+    this.rotation = Math.random()*(Math.PI*2) - Math.PI;
+    this.acceleration = 100;
+    this.velocity = { x: 0, y: 0};
+    this.maxSpeed = 125;
+    this.weapon = 'unarmed';
+    this.health = 5;
+    this.atkCD = 0;
+    this.canBeHit = 0;
+    console.log('added enemy');
+    Entity.call(this, game, 640, 360);
+}
+
+Enemy.prototype = new Entity();
+Enemy.prototype.constructor = Enemy;
+
+Enemy.prototype.update = function () {
+    Entity.prototype.update.call(this);
+}
+
+Enemy.prototype.draw = function (ctx) {
+    Entity.prototype.draw.call(this);
+}
+
+Enemy.prototype.hit = function (other) {
+    var rotdif = 0;
+    if (other.rotation < this.rotation) rotdif = this.rotation - other.rotation;
+    else rotdif = other.rotation - this.rotation;
+    
+    if ((rotdif > Math.PI*3/4 && rotdif < Math.PI*5/4) || (rotdif > Math.PI*7/4) || (rotdif < Math.PI/4))
+        return distance(this, other) < this.range + other.faces;
+    else return distance(this, other) < this.range + other.sides;
+}
+
+function chooseWeapon(that, type) {
+    var weapons = [];
+    if (type == 'thug') weapons = ['knife', 'sword'];
+    else if (type == 'swat') weapons = ['baton', 'gun'];
+    that.weapon = weapons[Math.floor(Math.random()*weapons.length)];
+    if (that.weapon == 'knife') that.range = 70;
+    else that.range = 110;
+}
+
+function Thug(game, weapon) {
     // Animations
     this.anim = {};
     this.anim.knifeIdle = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 1, true, false);
@@ -20,7 +68,10 @@ function Thug(game) {
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0};
     this.maxSpeed = 125;
-    chooseWeapon(this, 'thug');
+    if (weapon == 1) this.weapon = 'sword';
+    else this.weapon = 'knife';
+    if (weapon == 'sword') this.range = 110;
+    else this.range = 70;
     this.health = 5;
     this.atkCD = 0;
     this.canBeHit = 0;
@@ -28,7 +79,7 @@ function Thug(game) {
     Entity.call(this, game, Math.random()*420+410, Math.random()*620+50);
 }
 
-Thug.prototype = new Entity();
+Thug.prototype = new Enemy();
 Thug.prototype.constructor = Thug;
 
 Thug.prototype.update = function () {
@@ -162,25 +213,6 @@ Thug.prototype.draw = function (ctx) {
         }
     }
     Entity.prototype.draw.call(this);
-}
-
-Thug.prototype.hit = function (other) {
-    var rotdif = 0;
-    if (other.rotation < this.rotation) rotdif = this.rotation - other.rotation;
-    else rotdif = other.rotation - this.rotation;
-    
-    if ((rotdif > Math.PI*3/4 && rotdif < Math.PI*5/4) || (rotdif > Math.PI*7/4) || (rotdif < Math.PI/4))
-        return distance(this, other) < this.range + other.faces;
-    else return distance(this, other) < this.range + other.sides;
-}
-
-function chooseWeapon(that, type) {
-    var weapons = [];
-    if (type == 'thug') weapons = ['knife', 'sword'];
-    else if (type == 'swat') weapons = ['baton', 'gun'];
-    that.weapon = weapons[Math.floor(Math.random()*weapons.length)];
-    if (that.weapon == 'knife') that.range = 70;
-    else that.range = 110;
 }
 
 function Mailbox(game, timer) {

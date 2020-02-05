@@ -81,6 +81,7 @@ ASSET_MANAGER.queueDownload('./img/LilFrump.png');
 ASSET_MANAGER.queueDownload('./img/Enemy.png');
 ASSET_MANAGER.queueDownload('./img/Health.png');
 ASSET_MANAGER.queueDownload('./img/Mailbox.png');
+ASSET_MANAGER.queueDownload('./img/Arrow.png');
 
 ASSET_MANAGER.downloadAll(function () {
     console.log('loading game...');
