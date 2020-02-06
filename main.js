@@ -60,19 +60,31 @@ var friction = 8;
 
 var ASSET_MANAGER = new AssetManager();
 
-ASSET_MANAGER.queueDownload('./img/Backgrounds/street1.png');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/street2.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/street3.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/street4.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/street05.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/street15.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/street25.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/street35.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/house1.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/house2.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/house3.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/house4.jpg');
-ASSET_MANAGER.queueDownload('./img/Backgrounds/house5.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street01.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street02.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street03.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street11.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street12.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street13.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street21.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street22.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street23.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street31.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street32.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street33.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house01.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house02.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house03.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house11.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house12.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house13.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house21.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house22.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house23.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house31.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house32.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house33.jpg');
+
 
 ASSET_MANAGER.queueDownload('./img/Start.png');
 ASSET_MANAGER.queueDownload('./img/Victory.png');

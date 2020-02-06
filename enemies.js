@@ -75,6 +75,8 @@ function Thug(game, weapon) {
     this.health = 5;
     this.atkCD = 0;
     this.canBeHit = 0;
+    this.playRots = [];
+    this.rotLag = 0;
     console.log('added thug');
     Entity.call(this, game, Math.random()*420+410, Math.random()*620+50);
 }
@@ -83,6 +85,7 @@ Thug.prototype = new Enemy();
 Thug.prototype.constructor = Thug;
 
 Thug.prototype.update = function () {
+    this.rotLag++;
     if (this.atkCD > 0) this.atkCD--;
     if (this.canBeHit > 0) this.canBeHit--;
     if (this.canBeHit <= 0) this.hurt = false;
@@ -142,7 +145,18 @@ Thug.prototype.update = function () {
         }
         else if (ent.player && ent.alive) {
             if (distance(this, ent) < 250) {
-                this.rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
+                // length 60 with update every 4 frames
+                // length 45 with update every 3 frames
+                // length 30 with update every 2 frames
+                var rot = Math.atan2(ent.y - this.y, ent.x - this.x);
+                if (Math.abs(this.rotation - rot) < Math.PI/32 || this.playRots.length > 30) {
+                    for (var j = this.playRots.length - 1; j >= 0; j -= 2) {
+                        this.playRots.splice(j, 1);
+                    }
+                }
+                this.playRots.push(rot);
+                if (this.rotLag % 2 == 0) this.rotation = this.playRots.shift();
+
                 var difX = Math.cos(this.rotation);
                 var difY = Math.sin(this.rotation);
                 var delta = this.radius + ent.radius - distance(this, ent);
