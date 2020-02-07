@@ -113,12 +113,12 @@ function SceneManager(game) {
     // this.levels[0].streets[0].walls.push(new Wall(game, 226, 607, 14, 113));
     // this.levels[0].streets[0].walls.push(new Wall(game, 145, 607, 81, 10));
     // this.levels[0].streets[0].walls.push(new Mailbox(game, 200));
-    // for (var i = 0; i < this.levels.length; i++) {
-    //     for (var j = 0; j < this.levels[i].streets.length; j++) {
-    //         for (var k = 0; k < Math.floor(Math.random()*2)+1; k++)
-    //             this.levels[i].streets[j].enemies.push(new Thug(this.game, Math.floor(Math.random()*2)));
-    //     }
-    // }
+    for (var i = 0; i < this.levels.length; i++) {
+        for (var j = 0; j < this.levels[i].streets.length; j++) {
+            // for (var k = 0; k < Math.floor(Math.random()*2)+1; k++)
+                this.levels[i].streets[j].enemies.push(new Thug(this.game, Math.floor(Math.random()*2)));
+        }
+    }
 
     this.activeBG = this.menus.start;
     this.start = true;

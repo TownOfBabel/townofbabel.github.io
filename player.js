@@ -28,6 +28,7 @@ function Frump(game) {
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 0, 200, 200, 0.1, 8, true, false);
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 200, 200, 200, 0.1, 4, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 1300, 200, 200, 0.1, 1, false, false);
+    this.anim.dash = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 1600, 200, 200, 0.05, 5, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 200, 1300, 200, 300, 0.1, 5, false, false);
     this.anim.knifeIdle = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 600, 200, 200, 0.4, 2, true, false);
     this.anim.knifeMove = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 400, 200, 200, 0.1, 8, true, false);
@@ -45,9 +46,13 @@ function Frump(game) {
     this.range = 50;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 750;
+    this.maxSpeed = 250;
+    this.weapons = ['unarmed', 'knife', 'sword'];
+    this.weaponCtr = 0;
     this.weapon = 'unarmed';
     this.health = new Health(game, 5);
+    this.dash = false;
+    this.dashTime = 0;
     this.atkCD = 0;
     this.canBeHit = 0;
 
@@ -62,20 +67,31 @@ Frump.prototype.update = function () {
     this.rotation = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x - this.x);
 
     if (this.atkCD > 0) this.atkCD--;
+    if (this.dashTime > 0) this.dashTime--;
     if (this.canBeHit > 0) this.canBeHit--;
     if (this.canBeHit <= 0) this.hurt = false;
 
-    // Determines current weapon (will be replaced)
-    if (this.game.player.shift && this.game.player.space) {
-        this.game.player.shift = false;
-        this.game.player.space = false;
+    if (this.game.player.shift) {
+        this.weapon = this.weapons[this.weaponCtr++];
+        if (this.weaponCtr >= 3) this.weaponCtr = 0;
     }
-    if (this.game.player.shift) this.weapon = 'knife';
-    else if (this.game.player.space) this.weapon = 'sword';
-    else this.weapon = 'unarmed';
+    if (this.game.player.space && this.dashTime <= 0) {
+        if (this.attacking) {
+            this.attacking = false;
+            this.anim.atk.elapsedTime = 0;
+            this.anim.knifeAtk.elapsedTime = 0;
+            this.anim.swordAtk.elapsedTime = 0;
+        }
+        this.dash = true;
+        this.radius = 0;
+        this.dashTime = 100;
+        this.canBeHit = 20;
+        this.acceleration *= 3;
+        this.maxSpeed *= 2;
+    }
 
     // Check for attack + update range
-    if (this.game.click && this.atkCD == 0) {
+    if (!this.dash && this.game.click && this.atkCD == 0) {
         this.attacking = true;
         if (this.weapon == 'knife') {
             this.atkCD = 106;
@@ -96,7 +112,17 @@ Frump.prototype.update = function () {
         this.anim.hit.elapsedTime = 0;
         this.hurt = false;
     }
-    if (this.attacking) {
+    if (this.dash && !this.attacking) {
+        if (this.anim.dash.isDone()) {
+            this.anim.dash.elapsedTime = 0;
+            this.dash = false;
+            this.radius = 24;
+            this.dashTime = 60;
+            this.acceleration /= 3;
+            this.maxSpeed /= 2;
+        }
+    }
+    else if (this.attacking) {
         if (this.weapon == 'unarmed' && this.anim.atk.isDone()) {
             this.anim.atk.elapsedTime = 0;
             this.attacking = false;
@@ -178,6 +204,7 @@ Frump.prototype.update = function () {
 Frump.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+    else if (this.dash) this.anim.dash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
     else if (this.attacking) {
         if (this.weapon == 'knife') this.anim.knifeAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
         else if (this.weapon == 'sword') this.anim.swordAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
@@ -196,17 +223,4 @@ Frump.prototype.draw = function (ctx) {
         }
     }
     Entity.prototype.draw.call(this);
-}
-
-Frump.prototype.hit = function (other) {
-    var rotdif = 0;
-    if (other.rotation < this.rotation) rotdif = this.rotation - other.rotation;
-    else rotdif = other.rotation - this.rotation;
-
-    if (this.weapon == 'sword' && rotdif > Math.PI/2 && rotdif < Math.PI*3/4)
-        return distance(this, other) < this.range + other.faces;
-    else if (rotdif > Math.PI*3/4 && rotdif < Math.PI*5/4)
-        return distance(this, other) < this.range + other.faces;
-    else
-        return false;
 }

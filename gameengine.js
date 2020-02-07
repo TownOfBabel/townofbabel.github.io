@@ -71,8 +71,8 @@ GameEngine.prototype.startInput = function () {
     }
 
     this.ctx.canvas.addEventListener('keydown', function (e) {
-        if (String.fromCharCode(e.which) === ' ') that.player.space = !that.player.space;
-        if (event.shiftKey) that.player.shift = !that.player.shift;
+        if (String.fromCharCode(e.which) === ' ') that.player.space = true;
+        if (event.shiftKey) that.player.shift = true;
         if (e.keyCode == '38' || e.keyCode == '87') that.player.up = true;
         if (e.keyCode == '40' || e.keyCode == '83') that.player.down = true;
         if (e.keyCode == '37' || e.keyCode == '65') that.player.left = true;
@@ -136,6 +136,8 @@ GameEngine.prototype.loop = function () {
     this.update();
     this.draw();
     this.click = null;
+    this.player.shift = null;
+    this.player.space = null;
 }
 
 function distance(a, b, c) {
@@ -217,6 +219,29 @@ Entity.prototype.collideTop = function () {
 
 Entity.prototype.collideBottom = function () {
     return (this.y + this.radius) > 720;
+}
+
+Entity.prototype.hit = function (other) {
+    var atan = Math.atan2(other.y - this.y, other.x - this.x);
+    var dif = Math.abs(this.rotation - atan);
+    if (dif > Math.PI) dif = (Math.PI*2) - dif;
+
+    var lookdif = 0;
+    if ((this.rotation > 0) == (other.rotation > 0)) lookdif = Math.abs(this.rotation - other.rotation);
+    else lookdif = Math.abs(this.rotation + other.rotation);
+
+    if (lookdif < Math.PI/4 || lookdif > Math.PI*2/5) {
+        if ((this.weapon == 'sword' && dif < Math.PI*1/3) || dif < Math.PI/8)
+            return distance(this, other) < this.range + other.faces;
+        else
+            return false;
+    }
+    else {
+        if ((this.weapon == 'sword' && dif < Math.PI*2/5) || dif < Math.PI/8)
+            return distance(this, other) < this.range + other.sides;
+        else
+            return false;
+    }
 }
 
 Entity.prototype.update = function () {

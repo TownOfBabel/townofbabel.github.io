@@ -60,6 +60,7 @@ var friction = 8;
 
 var ASSET_MANAGER = new AssetManager();
 
+// backgrounds
 ASSET_MANAGER.queueDownload('./img/backgrounds/street00.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street01.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street02.jpg');
@@ -96,6 +97,8 @@ ASSET_MANAGER.queueDownload('./img/Enemy.png');
 ASSET_MANAGER.queueDownload('./img/Health.png');
 ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 ASSET_MANAGER.queueDownload('./img/Arrow.png');
+ASSET_MANAGER.queueDownload('./img/bodyguard.png');
+ASSET_MANAGER.queueDownload('./img/dog.png');
 
 ASSET_MANAGER.downloadAll(function () {
     console.log('loading game...');

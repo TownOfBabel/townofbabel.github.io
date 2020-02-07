@@ -27,15 +27,15 @@ Enemy.prototype.draw = function (ctx) {
     Entity.prototype.draw.call(this);
 }
 
-Enemy.prototype.hit = function (other) {
-    var rotdif = 0;
-    if (other.rotation < this.rotation) rotdif = this.rotation - other.rotation;
-    else rotdif = other.rotation - this.rotation;
+// Enemy.prototype.hit = function (other) {
+//     var rotdif = 0;
+//     if (other.rotation < this.rotation) rotdif = this.rotation - other.rotation;
+//     else rotdif = other.rotation - this.rotation;
     
-    if ((rotdif > Math.PI*3/4 && rotdif < Math.PI*5/4) || (rotdif > Math.PI*7/4) || (rotdif < Math.PI/4))
-        return distance(this, other) < this.range + other.faces;
-    else return distance(this, other) < this.range + other.sides;
-}
+//     if ((rotdif > Math.PI*3/4 && rotdif < Math.PI*5/4) || (rotdif > Math.PI*7/4) || (rotdif < Math.PI/4))
+//         return distance(this, other) < this.range + other.faces;
+//     else return distance(this, other) < this.range + other.sides;
+// }
 
 function chooseWeapon(that, type) {
     var weapons = [];
@@ -44,6 +44,82 @@ function chooseWeapon(that, type) {
     that.weapon = weapons[Math.floor(Math.random()*weapons.length)];
     if (that.weapon == 'knife') that.range = 70;
     else that.range = 110;
+}
+
+function Mailbox(game, timer) {
+    this.image = './img/Mailbox.png';
+    this.timer = timer;
+    this.radius = 15;
+    this.acceleration = 100;
+    this.velocity = { x: 0, y: 0 };
+    this.maxSpeed = 875 / (timer * 60);
+    Entity.call(this, game, 940, 430);
+}
+
+Mailbox.prototype = new Entity();
+Mailbox.prototype.constructor = Mailbox;
+
+Mailbox.prototype.update = function () {
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (ent.player && ent.alive) {
+            var rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
+            var difX = Math.cos(rotation);
+            var difY = Math.sin(rotation);
+            // var delta = this.radius + ent.radius - distance(this, ent.x, ent.y);
+            // if (this.collide(ent)) {
+            //     this.velocity.x = -this.velocity.x * (1/friction);
+            //     this.velocity.y = -this.velocity.y * (1/friction);
+            //     this.x -= difX * delta/2;
+            //     this.y -= difY * delta/2;
+            //     ent.x += difX * delta/2;
+            //     ent.y += difY * delta/2;
+
+            // }
+            // else {
+                this.velocity.x += difX * this.acceleration;
+                this.velocity.y += difY * this.acceleration;
+            // }
+        }
+    }
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+    Entity.prototype.update.call(this);
+}
+
+Mailbox.prototype.draw = function (ctx) {
+    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
+
+function Dog(game) {
+    this.image = ASSET_MANAGER.getAsset('./img/dog.png');
+    this.enemy = true;
+    this.radius = 20;
+    this.faces = 42;
+    this.sides = 18;
+    this.rotation = Math.random()*(Math.PI*2) - Math.PI;
+    this.acceleration = 100;
+    this.velocity = { x: 0, y: 0 };
+    this.maxSpeed = 200;
+    this.range = 135;
+}
+
+Dog.prototype = new Enemy();
+Dog.prototype.constructor = Dog;
+
+Dog.prototype.update = function () {
+
+}
+
+Dog.prototype.draw = function (ctx) {
+
 }
 
 function Thug(game, weapon) {
@@ -72,7 +148,7 @@ function Thug(game, weapon) {
     else this.weapon = 'knife';
     if (weapon == 'sword') this.range = 110;
     else this.range = 70;
-    this.health = 5;
+    this.health = 50;
     this.atkCD = 0;
     this.canBeHit = 0;
     this.playRots = [];
@@ -145,11 +221,11 @@ Thug.prototype.update = function () {
         }
         else if (ent.player && ent.alive) {
             if (distance(this, ent) < 250) {
-                // length 60 with update every 4 frames
-                // length 45 with update every 3 frames
-                // length 30 with update every 2 frames
+                // length 40 with update every 4 frames
+                // length 30 with update every 3 frames
+                // length 20 with update every 2 frames
                 var rot = Math.atan2(ent.y - this.y, ent.x - this.x);
-                if (Math.abs(this.rotation - rot) < Math.PI/32 || this.playRots.length > 30) {
+                if (Math.abs(this.rotation - rot) < Math.PI/32 || this.playRots.length > 20) {
                     for (var j = this.playRots.length - 1; j >= 0; j -= 2) {
                         this.playRots.splice(j, 1);
                     }
@@ -172,7 +248,7 @@ Thug.prototype.update = function () {
                     this.velocity.x += difX * this.acceleration;
                     this.velocity.y += difY * this.acceleration;
                 }
-                if (distance(this, ent) < this.range && this.atkCD <= 0) {
+                if (distance(this, ent) < (this.range + 20) && this.atkCD <= 0) {
                     if (this.weapon == 'knife') {
                         this.attacking = true;
                         this.atkCD = 112;
@@ -226,57 +302,5 @@ Thug.prototype.draw = function (ctx) {
             else this.anim.swordMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
         }
     }
-    Entity.prototype.draw.call(this);
-}
-
-function Mailbox(game, timer) {
-    this.image = './img/Mailbox.png';
-    this.timer = timer;
-    this.radius = 15;
-    this.acceleration = 100;
-    this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 875 / (timer * 60);
-    Entity.call(this, game, 940, 430);
-}
-
-Mailbox.prototype = new Entity();
-Mailbox.prototype.constructor = Mailbox;
-
-Mailbox.prototype.update = function () {
-    for (var i = 0; i < this.game.entities.length; i++) {
-        var ent = this.game.entities[i];
-        if (ent.player && ent.alive) {
-            var rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
-            var difX = Math.cos(rotation);
-            var difY = Math.sin(rotation);
-            // var delta = this.radius + ent.radius - distance(this, ent.x, ent.y);
-            // if (this.collide(ent)) {
-            //     this.velocity.x = -this.velocity.x * (1/friction);
-            //     this.velocity.y = -this.velocity.y * (1/friction);
-            //     this.x -= difX * delta/2;
-            //     this.y -= difY * delta/2;
-            //     ent.x += difX * delta/2;
-            //     ent.y += difY * delta/2;
-
-            // }
-            // else {
-                this.velocity.x += difX * this.acceleration;
-                this.velocity.y += difY * this.acceleration;
-            // }
-        }
-    }
-    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
-    if (speed > this.maxSpeed) {
-        var ratio = this.maxSpeed / speed;
-        this.velocity.x *= ratio;
-        this.velocity.y *= ratio;
-    }
-    this.x += this.velocity.x * this.game.clockTick;
-    this.y += this.velocity.y * this.game.clockTick;
-    Entity.prototype.update.call(this);
-}
-
-Mailbox.prototype.draw = function (ctx) {
-    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
     Entity.prototype.draw.call(this);
 }
