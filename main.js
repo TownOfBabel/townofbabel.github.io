@@ -60,6 +60,7 @@ var friction = 8;
 
 var ASSET_MANAGER = new AssetManager();
 
+ASSET_MANAGER.queueDownload('./img/backgrounds/street00.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street01.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street02.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street03.jpg');
@@ -72,6 +73,7 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/street23.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street31.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street32.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street33.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house00.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house01.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house02.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house03.jpg');

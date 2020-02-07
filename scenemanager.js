@@ -51,24 +51,19 @@ Arrow.prototype.constructor = Arrow;
 
 Arrow.prototype.update = function () {
     if (this.manager.level.clear) {
-        // if (this.manager.activeBG.image == './img/backgrounds/street' + this.manager.level.current + '5.jpg'
-        //     || this.manager.activeBG.image == './img/backgrounds/house2.jpg'
-        //     || this.manager.activeBG.image == './img/backgrounds/house4.jpg') {
-        if (this.manager.activeBG === this.manager.levels[this.manager.level.current].streets[4]
-            || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[1]
-            || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[3]) {
-            this.x = 1200;
-            this.y = 360;
-            this.rotation = 0;
-        }
-        // else if (this.manager.activeBG.image == './img/backgrounds/house5.jpg') {
-        else if (this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[4]) {
+        if (this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[4]) {
             this.x = 640;
             this.y = 640;
             this.rotation = Math.PI/2;
         }
-        // else if (this.manager.activeBG.image == './img/backgrounds/house1.jpg'
-        //     || this.manager.activeBG.image == './img/backgrounds/house3.jpg') {
+        else if (this.manager.activeBG === this.manager.levels[this.manager.level.current].streets[4]
+            || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[1]
+            || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[3]
+            || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[this.manager.levels[this.manager.level.current].houses.length - 1]) {
+            this.x = 1200;
+            this.y = 360;
+            this.rotation = 0;
+        }
         else if (this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[0]
             || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[2]) {
             this.x = 80;
@@ -90,6 +85,13 @@ Arrow.prototype.draw = function (ctx) {
     Entity.prototype.draw.call(this);
 }
 
+function buildStartRoom(level) {
+    level.streets[0].neighbors[2] = level.streets[5];
+    level.streets[5].neighbors[0] = level.streets[0];
+    level.houses[5].neighbors[1] = level.streets[5];
+    level.streets[5].neighbors[3] = level.houses[5];
+}
+
 function SceneManager(game) {
     this.game = game;
     this.levels = [];
@@ -103,11 +105,14 @@ function SceneManager(game) {
     this.menus.lose = new Background(game, './img/GameOver.png');
 
     for (var i = 0; i < 4; i++) this.buildLevel(i);
-    this.levels[0].streets[0].walls.push(new Wall(game, 0, 0, 240, 180));
-    this.levels[0].streets[0].walls.push(new Wall(game, 226, 180, 14, 310));
-    this.levels[0].streets[0].walls.push(new Wall(game, 226, 607, 14, 113));
-    this.levels[0].streets[0].walls.push(new Wall(game, 145, 607, 81, 10));
-    this.levels[0].streets[0].walls.push(new Mailbox(game, 200));
+    this.levels[0].streets.push(new Background(this.game, './img/backgrounds/street00.png', 0));
+    this.levels[0].houses.push(new Background(this.game, './img/backgrounds/house00.jpg', 0));
+    buildStartRoom(this.levels[0]);
+    // this.levels[0].streets[0].walls.push(new Wall(game, 0, 0, 240, 180));
+    // this.levels[0].streets[0].walls.push(new Wall(game, 226, 180, 14, 310));
+    // this.levels[0].streets[0].walls.push(new Wall(game, 226, 607, 14, 113));
+    // this.levels[0].streets[0].walls.push(new Wall(game, 145, 607, 81, 10));
+    // this.levels[0].streets[0].walls.push(new Mailbox(game, 200));
     // for (var i = 0; i < this.levels.length; i++) {
     //     for (var j = 0; j < this.levels[i].streets.length; j++) {
     //         for (var k = 0; k < Math.floor(Math.random()*2)+1; k++)
@@ -128,7 +133,7 @@ SceneManager.prototype.update = function () {
     if (this.changedBG) this.updateBackground();
     if (this.start) this.startGame();
     if (this.activeBG.level == -1 && this.game.click)
-        this.changeBackground(this.levels[0].streets[0]);
+        this.changeBackground(this.levels[0].houses[5]);
     for (var i = this.activeBG.enemies.length - 1; i >= 0; --i) {
         if (this.activeBG.enemies[i].health <= 0) {
             this.activeBG.enemies[i].removeFromWorld = true;
