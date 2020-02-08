@@ -59,7 +59,8 @@ Arrow.prototype.update = function () {
         else if (this.manager.activeBG === this.manager.levels[this.manager.level.current].streets[4]
             || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[1]
             || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[3]
-            || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[this.manager.levels[this.manager.level.current].houses.length - 1]) {
+            || this.manager.activeBG === this.manager.levels[this.manager.level.current]
+            .houses[this.manager.levels[this.manager.level.current].houses.length - 1]) {
             this.x = 1200;
             this.y = 360;
             this.rotation = 0;
@@ -115,6 +116,7 @@ function SceneManager(game) {
     // this.levels[0].streets[0].walls.push(new Mailbox(game, 200));
     for (var i = 0; i < this.levels.length; i++) {
         for (var j = 0; j < this.levels[i].streets.length; j++) {
+            this.levels[i].streets[j].enemies.push(new Dog(this.game));
             // for (var k = 0; k < Math.floor(Math.random()*2)+1; k++)
                 this.levels[i].streets[j].enemies.push(new Thug(this.game, Math.floor(Math.random()*2)));
         }

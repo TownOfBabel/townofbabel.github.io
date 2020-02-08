@@ -1,18 +1,24 @@
 function Enemy(game) {
     // Properties
     this.enemy = true;
-    this.radius = 24;
-    this.faces = 28;
-    this.sides = 38;
-    this.rotation = Math.random()*(Math.PI*2) - Math.PI;
+    this.radius = 20;
+    this.rotation = 0;
+    this.rotations = [];
+    this.rotationLag = 1;
     this.acceleration = 100;
-    this.velocity = { x: 0, y: 0};
-    this.maxSpeed = 125;
+    this.velocity = { x: 0, y: 0 };
+    this.maxSpeed = 100;
     this.weapon = 'unarmed';
-    this.health = 5;
+    this.range = 50;
+    this.sight = 200;
+    this.fov = Math.PI/2;
+    this.health = 10;
+
     this.atkCD = 0;
-    this.canBeHit = 0;
-    console.log('added enemy');
+    this.hitCD = 0;
+    this.ctr = 0;
+    console.log('created enemy');
+
     Entity.call(this, game, 640, 360);
 }
 
@@ -20,30 +26,196 @@ Enemy.prototype = new Entity();
 Enemy.prototype.constructor = Enemy;
 
 Enemy.prototype.update = function () {
+
+    this.ctr++;
+    if (this.atkCD > 0) this.atkCD--;
+    if (this.hitCD > 0) this.hitCD--;
+    if (this.hitCD <= 0) this.hurt = false;
+
+    // Update animations
+    if (this.hurt) {
+        if (this.weapon == 'knife' && this.anim.knifeHit.isDone()) {
+            this.anim.knifeHit.elapsedTime = 0;
+            this.hurt = false;
+        }
+        else if (this.weapon == 'sword' && this.anim.swordHit.isDone()) {
+            this.anim.swordHit.elapsedTime = 0;
+            this.hurt = false;
+        }
+        else if (this.weapon == 'bite' && this.anim.hit.isDone()) {
+            this.anim.hit.elapsedTime = 0;
+            this.hurt = false;
+        }
+    }
+    if (this.attacking) {
+        if (this.weapon == 'bite' && this.anim.atk.isDone()) {
+            this.anim.atk.elapsedTime = 0;
+            this.attacking = false;
+            this.atkCD = 120;
+            this.acceleration /= 2;
+            this.maxSpeed /= 2;
+        }
+        else if (this.weapon == 'knife' && this.anim.knifeAtk.isDone()) {
+            this.anim.knifeAtk.elapsedTime = 0;
+            this.attacking = false;
+            this.atkCD = 60;
+        }
+        else if (this.weapon == 'sword' && this.anim.swordAtk.isDone()) {
+            this.anim.swordAtk.elapsedTime = 0;
+            this.attacking = false;
+            this.atkCD = 90;
+        }
+    }
+
+    // Boundary collisions
+    if (this.collideLeft() || this.collideRight()) {
+        this.velocity.x = -this.velocity.x * (1/friction);
+        if (this.collideLeft()) this.x = this.radius;
+        if (this.collideRight()) this.x = 1280 - this.radius;
+    }
+    if (this.collideTop() || this.collideBottom()) {
+        this.velocity.y = -this.velocity.y * (1/friction);
+        if (this.collideTop()) this.y = this.radius;
+        if (this.collideBottom()) this.y = 720 - this.radius;
+    }
+
+    // Wall and Player/Enemy collisions
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (ent.wall) {
+            if (this.collide(ent)) {
+                if (this.side == 'left' || this.side == 'right') {
+                    this.velocity.x = -this.velocity.x * (1/friction);
+                    if (this.side == 'left') this.x = ent.x - this.radius;
+                    else this.x = ent.x+ent.w + this.radius;
+                }
+                else if (this.side == 'top' || this.side == 'bottom') {
+                    this.velocity.y = -this.velocity.y * (1/friction);
+                    if (this.side == 'top') this.y = ent.y - this.radius;
+                    else this.y = ent.y+ent.h + this.radius;
+                }
+            }
+        }
+        else if (ent.enemy) {
+            var difX = Math.cos(this.rotation);
+            var difY = Math.sin(this.rotation);
+            var delta = this.radius + ent.radius - distance(this, ent);
+            if (this.collide(ent)) {
+                this.velocity.x = -this.velocity.x * (1/friction);
+                this.velocity.y = -this.velocity.y * (1/friction);
+                this.x -= difX * delta/2;
+                this.y -= difY * delta/2;
+                ent.x += difX * delta/2;
+                ent.y += difY * delta/2;
+            }
+        }
+        else if (ent.player && ent.alive) {
+            var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
+            var rotationDif = Math.abs(this.rotation - atan);
+            if (rotationDif > Math.PI) rotationDif = (Math.PI*2) - rotationDif;
+            if ((distance(this, ent) < this.sight && rotationDif < this.fov) || distance(this, ent) < this.range + 50) {
+                // Determine rotation
+                if (rotationDif < Math.PI/32 || this.rotations.length > (this.rotationLag*10)) {
+                    for (var j = this.rotations.length - 1; j >= 0; j -= 2) {
+                        this.rotations.splice(j, 1);
+                    }
+                }
+                this.rotations.push(atan);
+                if (this.ctr % this.rotationLag == 0) this.rotation = this.rotations.shift();
+
+                var difX = Math.cos(this.rotation);
+                var difY = Math.sin(this.rotation);
+                var delta = this.radius + ent.radius - distance(this, ent);
+                if (this.collide(ent)) {
+                    this.velocity.x = -this.velocity.x * (1/friction);
+                    this.velocity.y = -this.velocity.y * (1/friction);
+                    this.x -= difX * delta/2;
+                    this.y -= difY * delta/2;
+                    ent.x += difX * delta/2;
+                    ent.y += difY * delta/2;
+                }
+                else {
+                    this.velocity.x += difX * this.acceleration;
+                    this.velocity.y += difY * this.acceleration;
+                }
+                // Attack calculations
+                if (this.weapon == 'bite' && distance(this, ent) < (this.range + 100) && this.atkCD <= 0) {
+                    this.attacking = true;
+                    this.atkCD = 130;
+                    this.acceleration *= 2;
+                    this.maxSpeed *= 2;
+                }
+                else if (distance(this, ent) < (this.range + 20) && this.atkCD <= 0) {
+                    if (this.weapon == 'knife') {
+                        this.attacking = true;
+                        this.atkCD = 112;
+                    }
+                    else if (this.weapon == 'sword') {
+                        this.attacking = true;
+                        this.atkCD = 116;
+                    }
+                }
+                if (this.attacking && ent.hitCD <= 0 && this.hit(ent) && this.atkCD > 88 && this.atkCD <= 100) {
+                    ent.hurt = true;
+                    ent.health.current--;
+                    ent.hitCD = 12;
+                }
+            }
+        }
+    }
+
+    // Speed control
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+
+    this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
+    this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
+
     Entity.prototype.update.call(this);
 }
 
 Enemy.prototype.draw = function (ctx) {
+    if (this.hurt) {
+        if (this.weapon == 'knife')
+            this.anim.knifeHit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        else if (this.weapon == 'sword')
+            this.anim.swordHit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        else if (this.weapon == 'bite')
+            this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+    }
+    else if (this.attacking) {
+        if (this.weapon == 'knife')
+            this.anim.knifeAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        else if (this.weapon == 'sword')
+            this.anim.swordAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        else if (this.weapon == 'bite')
+            this.anim.atk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+    }
+    else {
+        if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5) {
+            if (this.weapon == 'knife')
+                this.anim.knifeIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon == 'sword')
+                this.anim.swordIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon == 'bite')
+                this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        }
+        else {
+            if (this.weapon == 'knife')
+                this.anim.knifeMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon == 'sword')
+                this.anim.swordMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon == 'bite')
+                this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        }
+    }
     Entity.prototype.draw.call(this);
-}
-
-// Enemy.prototype.hit = function (other) {
-//     var rotdif = 0;
-//     if (other.rotation < this.rotation) rotdif = this.rotation - other.rotation;
-//     else rotdif = other.rotation - this.rotation;
-    
-//     if ((rotdif > Math.PI*3/4 && rotdif < Math.PI*5/4) || (rotdif > Math.PI*7/4) || (rotdif < Math.PI/4))
-//         return distance(this, other) < this.range + other.faces;
-//     else return distance(this, other) < this.range + other.sides;
-// }
-
-function chooseWeapon(that, type) {
-    var weapons = [];
-    if (type == 'thug') weapons = ['knife', 'sword'];
-    else if (type == 'swat') weapons = ['baton', 'gun'];
-    that.weapon = weapons[Math.floor(Math.random()*weapons.length)];
-    if (that.weapon == 'knife') that.range = 70;
-    else that.range = 110;
 }
 
 function Mailbox(game, timer) {
@@ -99,28 +271,37 @@ Mailbox.prototype.draw = function (ctx) {
 }
 
 function Dog(game) {
-    this.image = ASSET_MANAGER.getAsset('./img/dog.png');
+    this.anim = {};
+    this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
+    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 1, 1, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 0.1, 1, false, false);
+
+    // Properties
     this.enemy = true;
     this.radius = 20;
     this.faces = 42;
     this.sides = 18;
     this.rotation = Math.random()*(Math.PI*2) - Math.PI;
+    this.rotations = [];
+    this.rotationLag = 1;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 200;
-    this.range = 135;
+    this.weapon = 'bite';
+    this.range = 50;
+    this.sight = 350;
+    this.health = 3;
+
+    this.atkCD = 0;
+    this.hitCD = 0;
+    this.ctr = 0;
+
+    Entity.call(this, game, Math.random()*420+410, Math.random()*620+50);
 }
 
 Dog.prototype = new Enemy();
 Dog.prototype.constructor = Dog;
-
-Dog.prototype.update = function () {
-
-}
-
-Dog.prototype.draw = function (ctx) {
-
-}
 
 function Thug(game, weapon) {
     // Animations
@@ -141,6 +322,8 @@ function Thug(game, weapon) {
     this.faces = 28;
     this.sides = 38;
     this.rotation = Math.random()*(Math.PI*2) - Math.PI;
+    this.rotations = [];
+    this.rotationLag = 2;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0};
     this.maxSpeed = 125;
@@ -148,159 +331,38 @@ function Thug(game, weapon) {
     else this.weapon = 'knife';
     if (weapon == 'sword') this.range = 110;
     else this.range = 70;
-    this.health = 50;
+    this.sight = 250;
+    this.fov = Math.PI*2/5;
+    this.health = 5;
+
     this.atkCD = 0;
-    this.canBeHit = 0;
-    this.playRots = [];
-    this.rotLag = 0;
-    console.log('added thug');
+    this.hitCD = 0;
+    this.ctr = 0;
+
     Entity.call(this, game, Math.random()*420+410, Math.random()*620+50);
 }
 
 Thug.prototype = new Enemy();
 Thug.prototype.constructor = Thug;
 
-Thug.prototype.update = function () {
-    this.rotLag++;
-    if (this.atkCD > 0) this.atkCD--;
-    if (this.canBeHit > 0) this.canBeHit--;
-    if (this.canBeHit <= 0) this.hurt = false;
-
-    // Update animations
-    if (this.hurt) {
-        if (this.weapon == 'knife' && this.anim.knifeHit.isDone()) {
-            this.anim.knifeHit.elapsedTime = 0;
-            this.hurt = false;
-        }
-        else if (this.weapon == 'sword' && this.anim.swordHit.isDone()) {
-            this.anim.swordHit.elapsedTime = 0;
-            this.hurt = false;
-        }
-    }
-    if (this.attacking) {
-        if (this.weapon == 'knife' && this.anim.knifeAtk.isDone()) {
-            this.anim.knifeAtk.elapsedTime = 0;
-            this.attacking = false;
-            this.atkCD = 60;
-        }
-        else if (this.weapon == 'sword' && this.anim.swordAtk.isDone()) {
-            this.anim.swordAtk.elapsedTime = 0;
-            this.attacking = false;
-            this.atkCD = 90;
-        }
-    }
-
-    // Boundary collisions
-    if (this.collideLeft() || this.collideRight()) {
-        this.velocity.x = -this.velocity.x * (1/friction);
-        if (this.collideLeft()) this.x = this.radius;
-        if (this.collideRight()) this.x = 1280 - this.radius;
-    }
-    if (this.collideTop() || this.collideBottom()) {
-        this.velocity.y = -this.velocity.y * (1/friction);
-        if (this.collideTop()) this.y = this.radius;
-        if (this.collideBottom()) this.y = 720 - this.radius;
-    }
-
-    // Wall and Player collisions
-    for (var i = 0; i < this.game.entities.length; i++) {
-        var ent = this.game.entities[i];
-        if (ent.wall) {
-            if (this.collide(ent)) {
-                if (this.side == 'left' || this.side == 'right') {
-                    this.velocity.x = -this.velocity.x * (1/friction);
-                    if (this.side == 'left') this.x = ent.x - this.radius;
-                    else this.x = ent.x+ent.w + this.radius;
-                }
-                else if (this.side == 'top' || this.side == 'bottom') {
-                    this.velocity.y = -this.velocity.y * (1/friction);
-                    if (this.side == 'top') this.y = ent.y - this.radius;
-                    else this.y = ent.y+ent.h + this.radius;
-                }
-            }
-        }
-        else if (ent.player && ent.alive) {
-            if (distance(this, ent) < 250) {
-                // length 40 with update every 4 frames
-                // length 30 with update every 3 frames
-                // length 20 with update every 2 frames
-                var rot = Math.atan2(ent.y - this.y, ent.x - this.x);
-                if (Math.abs(this.rotation - rot) < Math.PI/32 || this.playRots.length > 20) {
-                    for (var j = this.playRots.length - 1; j >= 0; j -= 2) {
-                        this.playRots.splice(j, 1);
-                    }
-                }
-                this.playRots.push(rot);
-                if (this.rotLag % 2 == 0) this.rotation = this.playRots.shift();
-
-                var difX = Math.cos(this.rotation);
-                var difY = Math.sin(this.rotation);
-                var delta = this.radius + ent.radius - distance(this, ent);
-                if (this.collide(ent)) {
-                    this.velocity.x = -this.velocity.x * (1/friction);
-                    this.velocity.y = -this.velocity.y * (1/friction);
-                    this.x -= difX * delta/2;
-                    this.y -= difY * delta/2;
-                    ent.x += difX * delta/2;
-                    ent.y += difY * delta/2;
-                }
-                else {
-                    this.velocity.x += difX * this.acceleration;
-                    this.velocity.y += difY * this.acceleration;
-                }
-                if (distance(this, ent) < (this.range + 20) && this.atkCD <= 0) {
-                    if (this.weapon == 'knife') {
-                        this.attacking = true;
-                        this.atkCD = 112;
-                    }
-                    else if(this.weapon == 'sword') {
-                        this.attacking = true;
-                        this.atkCD = 116;
-                    }
-                }
-                if (this.attacking && ent.canBeHit <= 0 && this.hit(ent) && this.atkCD > 88 && this.atkCD <= 100) {
-                    ent.hurt = true;
-                    ent.health.current--;
-                    ent.canBeHit = 12;
-                }
-            }
-        }
-    }
-
-    // Speed control
-    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
-    if (speed > this.maxSpeed) {
-        var ratio = this.maxSpeed / speed;
-        this.velocity.x *= ratio;
-        this.velocity.y *= ratio;
-    }
-    this.x += this.velocity.x * this.game.clockTick;
-    this.y += this.velocity.y * this.game.clockTick;
-
-    this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
-    this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-
-    Entity.prototype.update.call(this);
-}
-
-Thug.prototype.draw = function (ctx) {
-    if (this.hurt) {
-        if (this.weapon == 'knife') this.anim.knifeHit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        else this.anim.swordHit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-    }
-    else if (this.attacking) {
-        if (this.weapon == 'knife') this.anim.knifeAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        else this.anim.swordAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-    }
-    else {
-        if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5) {
-            if (this.weapon == 'knife') this.anim.knifeIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            else this.anim.swordIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        }
-        else {
-            if (this.weapon == 'knife') this.anim.knifeMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            else this.anim.swordMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        }
-    }
-    Entity.prototype.draw.call(this);
-}
+// Thug.prototype.draw = function (ctx) {
+//     if (this.hurt) {
+//         if (this.weapon == 'knife') this.anim.knifeHit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+//         else this.anim.swordHit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+//     }
+//     else if (this.attacking) {
+//         if (this.weapon == 'knife') this.anim.knifeAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+//         else this.anim.swordAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+//     }
+//     else {
+//         if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5) {
+//             if (this.weapon == 'knife') this.anim.knifeIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+//             else this.anim.swordIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+//         }
+//         else {
+//             if (this.weapon == 'knife') this.anim.knifeMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+//             else this.anim.swordMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+//         }
+//     }
+//     Entity.prototype.draw.call(this);
+// }

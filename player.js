@@ -52,9 +52,9 @@ function Frump(game) {
     this.weapon = 'unarmed';
     this.health = new Health(game, 5);
     this.dash = false;
-    this.dashTime = 0;
+    this.dashCD = 0;
     this.atkCD = 0;
-    this.canBeHit = 0;
+    this.hitCD = 0;
 
     Entity.call(this, game, 65, 430);
 }
@@ -66,16 +66,16 @@ Frump.prototype.update = function () {
     // Player faces mouse pointer
     this.rotation = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x - this.x);
 
+    if (this.dashCD > 0) this.dashCD--;
     if (this.atkCD > 0) this.atkCD--;
-    if (this.dashTime > 0) this.dashTime--;
-    if (this.canBeHit > 0) this.canBeHit--;
-    if (this.canBeHit <= 0) this.hurt = false;
+    if (this.hitCD > 0) this.hitCD--;
+    if (this.hitCD <= 0) this.hurt = false;
 
     if (this.game.player.shift) {
         this.weapon = this.weapons[this.weaponCtr++];
         if (this.weaponCtr >= 3) this.weaponCtr = 0;
     }
-    if (this.game.player.space && this.dashTime <= 0) {
+    if (this.game.player.space && this.dashCD <= 0) {
         if (this.attacking) {
             this.attacking = false;
             this.anim.atk.elapsedTime = 0;
@@ -84,8 +84,8 @@ Frump.prototype.update = function () {
         }
         this.dash = true;
         this.radius = 0;
-        this.dashTime = 100;
-        this.canBeHit = 20;
+        this.dashCD = 100;
+        this.hitCD = 20;
         this.acceleration *= 3;
         this.maxSpeed *= 2;
     }
@@ -117,7 +117,7 @@ Frump.prototype.update = function () {
             this.anim.dash.elapsedTime = 0;
             this.dash = false;
             this.radius = 24;
-            this.dashTime = 60;
+            this.dashCD = 60;
             this.acceleration /= 3;
             this.maxSpeed /= 2;
         }
@@ -159,10 +159,10 @@ Frump.prototype.update = function () {
             }
         }
         else if (ent.enemy) {
-            if (this.attacking && ent.canBeHit <= 0 && this.hit(ent) && this.atkCD > 88 && this.atkCD <= 100) {
+            if (this.attacking && ent.hitCD <= 0 && this.hit(ent) && this.atkCD > 88 && this.atkCD <= 100) {
                 ent.hurt = true;
                 ent.health--;
-                ent.canBeHit = 18;
+                ent.hitCD = 18;
             }
         }
     }

@@ -165,7 +165,7 @@ Entity.prototype.collide = function (other) {
         if (this.x < other.x) {
             if (this.y < other.y) {
                 this.side = 'topleft';
-                return distance(this, other.x, other.y) < this.radius;
+                return distance(this, other) < this.radius;
             }
             else if (this.y > other.y+other.h) {
                 this.side = 'bottomleft';
@@ -222,26 +222,20 @@ Entity.prototype.collideBottom = function () {
 }
 
 Entity.prototype.hit = function (other) {
-    var atan = Math.atan2(other.y - this.y, other.x - this.x);
-    var dif = Math.abs(this.rotation - atan);
-    if (dif > Math.PI) dif = (Math.PI*2) - dif;
+    var acc = Math.abs(this.rotation - Math.atan2(other.y - this.y, other.x - this.x));
+    if (acc > Math.PI) acc = (Math.PI*2) - acc;
 
-    var lookdif = 0;
-    if ((this.rotation > 0) == (other.rotation > 0)) lookdif = Math.abs(this.rotation - other.rotation);
-    else lookdif = Math.abs(this.rotation + other.rotation);
+    var orien = Math.abs(this.rotation - other.rotation);
+    if (orien > Math.PI) orien = (Math.PI*2) - orien;
 
-    if (lookdif < Math.PI/4 || lookdif > Math.PI*2/5) {
-        if ((this.weapon == 'sword' && dif < Math.PI*1/3) || dif < Math.PI/8)
+    if ((this.weapon == 'sword' && acc < Math.PI*2/5) || acc < Math.PI/8) {
+        if (orien < Math.PI/4 || orien > Math.PI*3/4)
             return distance(this, other) < this.range + other.faces;
         else
-            return false;
-    }
-    else {
-        if ((this.weapon == 'sword' && dif < Math.PI*2/5) || dif < Math.PI/8)
             return distance(this, other) < this.range + other.sides;
-        else
-            return false;
     }
+    else
+        return false;
 }
 
 Entity.prototype.update = function () {
