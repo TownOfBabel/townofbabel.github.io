@@ -106,8 +106,8 @@ function SceneManager(game) {
     this.menus.lose = new Background(game, './img/GameOver.png');
 
     for (var i = 0; i < 4; i++) this.buildLevel(i);
-    this.levels[0].streets.push(new Background(this.game, './img/backgrounds/street00.png', 0));
-    this.levels[0].houses.push(new Background(this.game, './img/backgrounds/house00.jpg', 0));
+    this.levels[0].streets.push(new Background(game, './img/backgrounds/street00.png', 0));
+    this.levels[0].houses.push(new Background(game, './img/backgrounds/house00.jpg', 0));
     buildStartRoom(this.levels[0]);
     // this.levels[0].streets[0].walls.push(new Wall(game, 0, 0, 240, 180));
     // this.levels[0].streets[0].walls.push(new Wall(game, 226, 180, 14, 310));
@@ -116,9 +116,10 @@ function SceneManager(game) {
     // this.levels[0].streets[0].walls.push(new Mailbox(game, 200));
     for (var i = 0; i < this.levels.length; i++) {
         for (var j = 0; j < this.levels[i].streets.length; j++) {
-            this.levels[i].streets[j].enemies.push(new Dog(this.game));
+            this.levels[i].streets[j].enemies.push(new Dog(game));
+            this.levels[i].streets[j].enemies.push(new Bodyguard(game));
             // for (var k = 0; k < Math.floor(Math.random()*2)+1; k++)
-                this.levels[i].streets[j].enemies.push(new Thug(this.game, Math.floor(Math.random()*2)));
+                // this.levels[i].streets[j].enemies.push(new Thug(this.game, Math.floor(Math.random()*2)));
         }
     }
 
