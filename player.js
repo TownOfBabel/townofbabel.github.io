@@ -1,8 +1,13 @@
 function Health(game, hp) {
-    this.health = ASSET_MANAGER.getAsset('./img/Health.png');
+    // this.health = ASSET_MANAGER.getAsset('./img/HealthBig.png');
+    this.health = [];
+    this.rotation = 0;
+    for (var i = 0; i <= hp; i++) {
+        this.health[i] = new Animation(ASSET_MANAGER.getAsset('./img/HealthBig.png'), 0, 400 - i*20, 200, 20, 1, 1, true, false);
+    }
     this.max = hp;
     this.current = hp;
-    Entity.call(this, game, 0, 0);
+    Entity.call(this, game, 105, 15);
 }
 
 Health.prototype = new Entity();
@@ -12,12 +17,14 @@ Health.prototype.update = function () {
 }
 
 Health.prototype.draw = function (ctx) {
-    if (this.current >= 5) ctx.drawImage(this.health, 0, 0, 100, 20, 5, 5, 100, 20);
-    else if (this.current == 4) ctx.drawImage(this.health, 0, 20, 100, 20, 5, 5, 100, 20);
-    else if (this.current == 3) ctx.drawImage(this.health, 0, 40, 100, 20, 5, 5, 100, 20);
-    else if (this.current == 2) ctx.drawImage(this.health, 0, 60, 100, 20, 5, 5, 100, 20);
-    else if (this.current == 1) ctx.drawImage(this.health, 0, 80, 100, 20, 5, 5, 100, 20);
-    else ctx.drawImage(this.health, 0, 100, 100, 20, 5, 5, 100, 20);
+    // if (this.current >= 5) ctx.drawImage(this.health, 0, 0, 100, 20, 5, 5, 100, 20);
+    // else if (this.current == 4) ctx.drawImage(this.health, 0, 20, 100, 20, 5, 5, 100, 20);
+    // else if (this.current == 3) ctx.drawImage(this.health, 0, 40, 100, 20, 5, 5, 100, 20);
+    // else if (this.current == 2) ctx.drawImage(this.health, 0, 60, 100, 20, 5, 5, 100, 20);
+    // else if (this.current == 1) ctx.drawImage(this.health, 0, 80, 100, 20, 5, 5, 100, 20);
+    // else ctx.drawImage(this.health, 0, 100, 100, 20, 5, 5, 100, 20);
+    if (this.current < 0) this.health[0].drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+    else this.health[this.current].drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     Entity.prototype.draw.call(this);
 }
 
@@ -50,7 +57,7 @@ function Frump(game) {
     this.weapons = ['unarmed', 'knife', 'sword'];
     this.weaponCtr = 0;
     this.weapon = 'unarmed';
-    this.health = new Health(game, 5);
+    this.health = new Health(game, 20);
     this.dash = false;
     this.dashCD = 0;
     this.atkCD = 0;

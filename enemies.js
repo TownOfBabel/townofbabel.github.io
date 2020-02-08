@@ -52,8 +52,8 @@ Enemy.prototype.update = function () {
             this.anim.atk.elapsedTime = 0;
             this.attacking = false;
             this.atkCD = 120;
-            this.acceleration /= 2;
-            this.maxSpeed /= 2;
+            this.acceleration /= 3;
+            this.maxSpeed /= 3;
         }
         else if (this.weapon == 'knife' && this.anim.knifeAtk.isDone()) {
             this.anim.knifeAtk.elapsedTime = 0;
@@ -142,8 +142,8 @@ Enemy.prototype.update = function () {
                 if (this.weapon == 'bite' && distance(this, ent) < (this.range + 100) && this.atkCD <= 0) {
                     this.attacking = true;
                     this.atkCD = 130;
-                    this.acceleration *= 2;
-                    this.maxSpeed *= 2;
+                    this.acceleration *= 3;
+                    this.maxSpeed *= 3;
                 }
                 else if (distance(this, ent) < (this.range + 20) && this.atkCD <= 0) {
                     if (this.weapon == 'knife') {
@@ -287,7 +287,7 @@ function Dog(game) {
     this.rotationLag = 1;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 200;
+    this.maxSpeed = 225;
     this.weapon = 'bite';
     this.range = 50;
     this.sight = 350;

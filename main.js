@@ -95,6 +95,7 @@ ASSET_MANAGER.queueDownload('./img/GameOver.png');
 ASSET_MANAGER.queueDownload('./img/LilFrump.png');
 ASSET_MANAGER.queueDownload('./img/Enemy.png');
 ASSET_MANAGER.queueDownload('./img/Health.png');
+ASSET_MANAGER.queueDownload('./img/HealthBig.png');
 ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 ASSET_MANAGER.queueDownload('./img/Arrow.png');
 ASSET_MANAGER.queueDownload('./img/bodyguard.png');
