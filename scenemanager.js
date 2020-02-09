@@ -118,6 +118,7 @@ function SceneManager(game) {
         for (var j = 0; j < this.levels[i].streets.length; j++) {
             this.levels[i].streets[j].enemies.push(new Dog(game));
             this.levels[i].streets[j].enemies.push(new Bodyguard(game));
+            this.levels[i].streets[j].walls.push(new Knife(game, 0));
             // for (var k = 0; k < Math.floor(Math.random()*2)+1; k++)
                 // this.levels[i].streets[j].enemies.push(new Thug(this.game, Math.floor(Math.random()*2)));
         }

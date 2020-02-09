@@ -100,6 +100,7 @@ ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 ASSET_MANAGER.queueDownload('./img/Arrow.png');
 ASSET_MANAGER.queueDownload('./img/bodyguard.png');
 ASSET_MANAGER.queueDownload('./img/dog.png');
+ASSET_MANAGER.queueDownload('./img/bat_drop.png');
 
 ASSET_MANAGER.downloadAll(function () {
     console.log('loading game...');

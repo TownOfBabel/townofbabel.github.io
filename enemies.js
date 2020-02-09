@@ -354,7 +354,7 @@ function Thug(game, weapon) {
     else this.range = 70;
     this.sight = 250;
     this.fov = Math.PI*2/5;
-    this.health = 5;
+    this.health = 100;
 
     this.atkCD = 0;
     this.hitCD = 0;
@@ -370,7 +370,7 @@ function Bodyguard(game) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
-    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 0, 200, 200, 0.7, 1, false, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 200, 200, 200, 0.7, 1, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 0, 200, 200, 0.1, 1, false, false);
 
     this.enemy = true;
@@ -384,7 +384,7 @@ function Bodyguard(game) {
     this.velocity = { x: 0, y: 0};
     this.maxSpeed = 100;
     this.weapon = 'swing';
-    this.range = 95;
+    this.range = 60;
     this.sight = 200;
     this.fov = Math.PI*3/7;
     this.health = 10;

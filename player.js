@@ -28,6 +28,64 @@ Health.prototype.draw = function (ctx) {
     Entity.prototype.draw.call(this);
 }
 
+function calcDmg(weapon) {
+    switch (weapon.rarity) {
+        case 0:
+            weapon.damage = 20;
+            break;
+        case 1:
+            weapon.damage = 25;
+            break;
+        case 2:
+            weapon.damage = 34;
+            break;
+        case 3:
+            weapon.damage = 50;
+            break;
+        default:
+            weapon.damage = 1;
+    }
+}
+
+function Weapon(game, rarity) {
+    this.game = game;
+    this.rarity = rarity;
+    this.floating = true;
+    this.range = 50;
+    calcDmg(this);
+
+    Entity.call(this, game, 640, 360);
+}
+
+Weapon.prototype = new Entity();
+Weapon.prototype.constructor = Weapon;
+
+Weapon.prototype.update = function () {
+    Entity.prototype.update.call(this);
+}
+
+Weapon.prototype.draw = function (ctx) {
+    if (this.floating) this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+    else ctx.drawImage(this.static, this.x, this.y);
+
+    Entity.prototype.draw.call(this);
+}
+
+function Knife(game, rarity) {
+    this.rarity = rarity;
+    this.floating = true;
+    this.range = 70;
+    calcDmg(this);
+
+    this.static = ASSET_MANAGER.getAsset('./img/bat_drop.png');
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/bat_drop.png'), 0, 0, 33, 33, 1, 1, true, false);
+
+    Entity.call(this, game, 640, 360);
+}
+
+Knife.prototype = new Weapon();
+Knife.prototype.constructor = Knife;
+
 function Frump(game) {
     // Animations
     this.anim = {};
@@ -50,13 +108,14 @@ function Frump(game) {
     this.radius = 24;
     this.faces = 20;
     this.sides = 38;
-    this.range = 50;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 250;
     this.weapons = ['unarmed', 'knife', 'sword'];
     this.weaponCtr = 0;
     this.weapon = 'unarmed';
+    this.range = 50;
+    this.damage = 1;
     this.health = new Health(game, 20);
     this.dash = false;
     this.dashCD = 0;
@@ -110,7 +169,7 @@ Frump.prototype.update = function () {
         }
         else {
             this.atkCD = 109;
-            this.range = 50;
+            this.range = 60;
         }
     }
 
@@ -133,7 +192,7 @@ Frump.prototype.update = function () {
         if (this.weapon == 'unarmed' && this.anim.atk.isDone()) {
             this.anim.atk.elapsedTime = 0;
             this.attacking = false;
-            this.atkCD = 30;
+            this.atkCD = 24;
         }
         else if (this.weapon == 'knife' && this.anim.knifeAtk.isDone()) {
             this.anim.knifeAtk.elapsedTime = 0;
@@ -168,7 +227,7 @@ Frump.prototype.update = function () {
         else if (ent.enemy) {
             if (this.attacking && ent.hitCD <= 0 && this.hit(ent) && this.atkCD > 88 && this.atkCD <= 100) {
                 ent.hurt = true;
-                ent.health--;
+                ent.health -= this.damage;
                 ent.hitCD = 18;
             }
         }
