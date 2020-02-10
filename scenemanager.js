@@ -1,8 +1,12 @@
-function Background(game, image, lvl) {
+function Background(game, image, lvl, weapon) {
     this.game = game;
     this.image = image;
     if (lvl === undefined) this.level = -1;
     else this.level = lvl;
+    // this.level = lvl || -1;
+    if (weapon === undefined) this.weaponDrop = new Weapon(game, 0);
+    else this.weaponDrop = weapon;
+    // this.weaponDrop = weapon || new Weapon(game, 0);
     this.walls = [];
     this.enemies = [];
     this.neighbors = [];
@@ -118,14 +122,16 @@ function SceneManager(game) {
         for (var j = 0; j < this.levels[i].streets.length; j++) {
             this.levels[i].streets[j].enemies.push(new Dog(game));
             this.levels[i].streets[j].enemies.push(new Bodyguard(game));
-            this.levels[i].streets[j].walls.push(new Knife(game, 0));
+            //this.levels[i].streets[j].weaponDrop = new Knife(game, 0);
             // for (var k = 0; k < Math.floor(Math.random()*2)+1; k++)
                 // this.levels[i].streets[j].enemies.push(new Thug(this.game, Math.floor(Math.random()*2)));
         }
     }
+    //this.levels[0].houses[5].weaponDrop = new Bat(game, 0);
 
     this.activeBG = this.menus.start;
     this.start = true;
+    this.swapHeld = 0;
 
     Entity.call(this, game, 0, 0);
 }
@@ -146,8 +152,23 @@ SceneManager.prototype.update = function () {
     }
     if (this.levels[this.level.current].houses[4].enemies.length == 0)
         this.level.clear = true;
-    if (this.level.clear) {
-
+    if (this.activeBG.level != -1 && this.activeBG.enemies.length == 0) {
+        console.log('ooops');
+        this.updateLevel = true;
+        if (this.game.player.interact) this.swapHeld++;
+        else this.swapHeld = 0;
+        if (this.swapHeld > 90 && distance(this.player, this.activeBG.weaponDrop) < 100) {
+            this.player.weapon.hidden = true;
+            this.player.weapon = this.activeBG.weaponDrop;
+            this.player.weapon.floating = false;
+            this.player.weapon.x = 5;
+            this.player.weapon.y = 30;
+            this.swapHeld = 0;
+        }
+    }
+    if (this.updateLevel) {
+        this.activeBG.weaponDrop.hidden = false;
+        this.updateLevel = false;
     }
     this.checkBounds();
     // if (this.player.health.current <= 0) {
@@ -181,6 +202,7 @@ SceneManager.prototype.updateBackground = function () {
         this.prevBG.walls[i].removeFromWorld = false;
     for (var i = 0; i < this.prevBG.enemies.length; i++)
         this.prevBG.enemies[i].removeFromWorld = false;
+    this.prevBG.weaponDrop.removeFromWorld = false;
     this.arrow.removeFromWorld = false;
     this.player.removeFromWorld = false;
     this.player.health.removeFromWorld = false;
@@ -240,6 +262,7 @@ SceneManager.prototype.changeBackground = function (nextBG) {
         this.activeBG.walls[i].removeFromWorld = true;
     for (var i = 0; i < this.activeBG.enemies.length; i++)
         this.activeBG.enemies[i].removeFromWorld = true;
+    this.activeBG.weaponDrop.removeFromWorld = true;
     this.activeBG.removeFromWorld = true;
     this.arrow.removeFromWorld = true;
     this.player.removeFromWorld = true;
@@ -254,6 +277,7 @@ SceneManager.prototype.changeBackground = function (nextBG) {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.game.addEntity(this.activeBG.enemies[i]);
     }
+    this.game.addEntity(this.activeBG.weaponDrop);
     this.changedBG = true;
 }
 
@@ -261,8 +285,8 @@ SceneManager.prototype.buildLevel = function (lvl) {
     this.levels[lvl] = { streets: [], houses: [] };
 
     for (var i = 0; i < 5; i++) {
-        this.levels[lvl].streets[i] = new Background(this.game, ('./img/backgrounds/street' + lvl + (Math.floor(Math.random()*3)+1) + '.jpg'), lvl);
-        this.levels[lvl].houses[i] = new Background(this.game, ('./img/backgrounds/house' + lvl + (Math.floor(Math.random()*3)+1) + '.jpg'), lvl);
+        this.levels[lvl].streets[i] = new Background(this.game, ('./img/backgrounds/street' + lvl + (Math.floor(Math.random()*3)+1) + '.jpg'), lvl, new Knife(this.game, lvl));
+        this.levels[lvl].houses[i] = new Background(this.game, ('./img/backgrounds/house' + lvl + (Math.floor(Math.random()*3)+1) + '.jpg'), lvl, new Bat(this.game, lvl));
     }
 
     // this.levels[lvl].streets[0] = new Background(this.game, './img/backgrounds/street1.png', lvl);

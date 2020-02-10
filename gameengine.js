@@ -77,7 +77,7 @@ GameEngine.prototype.startInput = function () {
         if (e.keyCode == '40' || e.keyCode == '83') that.player.down = true;
         if (e.keyCode == '37' || e.keyCode == '65') that.player.left = true;
         if (e.keyCode == '39' || e.keyCode == '68') that.player.right = true;
-        if (e.keyCode == '69') that.player.swap = true;
+        if (e.keyCode == '69') that.player.interact = true;
         e.preventDefault();
     }, false);
 
@@ -86,6 +86,7 @@ GameEngine.prototype.startInput = function () {
         if (e.keyCode == '40' || e.keyCode == '83') that.player.down = false;
         if (e.keyCode == '37' || e.keyCode == '65') that.player.left = false;
         if (e.keyCode == '39' || e.keyCode == '68') that.player.right = false;
+        if (e.keyCode == '69') that.player.interact = false;
         e.preventDefault();
     }, false);
 
@@ -139,7 +140,6 @@ GameEngine.prototype.loop = function () {
     this.click = null;
     this.player.shift = null;
     this.player.space = null;
-    this.player.swap = null;
 }
 
 function distance(a, b, c) {
@@ -230,7 +230,7 @@ Entity.prototype.hit = function (other) {
     var orien = Math.abs(this.rotation - other.rotation);
     if (orien > Math.PI) orien = (Math.PI*2) - orien;
 
-    if ((this.weapon == 'sword' && acc < Math.PI*2/5) || acc < Math.PI/8) {
+    if ((this.weapon == 'bat' && acc < Math.PI*2/5) || acc < Math.PI/8) {
         if (orien < Math.PI/4 || orien > Math.PI*3/4)
             return distance(this, other) < this.range + other.faces;
         else

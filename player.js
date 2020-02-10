@@ -37,10 +37,10 @@ function calcDmg(weapon) {
             weapon.damage = 25;
             break;
         case 2:
-            weapon.damage = 34;
+            weapon.damage = 40;
             break;
         case 3:
-            weapon.damage = 50;
+            weapon.damage = 60;
             break;
         default:
             weapon.damage = 1;
@@ -48,11 +48,15 @@ function calcDmg(weapon) {
 }
 
 function Weapon(game, rarity) {
-    this.game = game;
+    this.hidden = true;
+    this.type = 'unarmed';
     this.rarity = rarity;
     this.floating = true;
-    this.range = 50;
+    this.range = 55;
     calcDmg(this);
+
+    this.static = ASSET_MANAGER.getAsset('./img/bat_drop.png');
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/bat_drop.png'), 0, 0, 33, 33, 1, 1, true, false);
 
     Entity.call(this, game, 640, 360);
 }
@@ -65,13 +69,16 @@ Weapon.prototype.update = function () {
 }
 
 Weapon.prototype.draw = function (ctx) {
-    if (this.floating) this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+    if (this.hidden) {}
+    else if (this.floating) this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     else ctx.drawImage(this.static, this.x, this.y);
 
     Entity.prototype.draw.call(this);
 }
 
 function Knife(game, rarity) {
+    this.hidden = true;
+    this.type = 'knife';
     this.rarity = rarity;
     this.floating = true;
     this.range = 70;
@@ -86,6 +93,23 @@ function Knife(game, rarity) {
 Knife.prototype = new Weapon();
 Knife.prototype.constructor = Knife;
 
+function Bat(game, rarity) {
+    this.hidden = true;
+    this.type = 'bat';
+    this.rarity = rarity;
+    this.floating = true;
+    this.range = 110;
+    calcDmg(this);
+
+    this.static = ASSET_MANAGER.getAsset('./img/bat_drop.png');
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/bat_drop.png'), 0, 0, 33, 33, 1, 1, true, false);
+
+    Entity.call(this, game, 640, 360);
+}
+
+Bat.prototype = new Weapon();
+Bat.prototype.constructor = Bat;
+
 function Frump(game) {
     // Animations
     this.anim = {};
@@ -98,9 +122,9 @@ function Frump(game) {
     this.anim.knifeIdle = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 600, 200, 200, 0.4, 2, true, false);
     this.anim.knifeMove = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 400, 200, 200, 0.1, 8, true, false);
     this.anim.knifeAtk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 600, 200, 200, 0.05, 4, false, false);
-    this.anim.swordIdle = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 1000, 200, 200, 0.4, 2, true, false);
-    this.anim.swordMove = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 800, 200, 200, 0.1, 8, true, false);
-    this.anim.swordAtk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 1000, 200, 300, 0.1, 5, false, false);
+    this.anim.batIdle = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 1000, 200, 200, 0.4, 2, true, false);
+    this.anim.batMove = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 800, 200, 200, 0.1, 8, true, false);
+    this.anim.batAtk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 1000, 200, 300, 0.1, 5, false, false);
 
     // Properties
     this.player = true;
@@ -111,11 +135,10 @@ function Frump(game) {
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 250;
-    this.weapons = ['unarmed', 'knife', 'sword'];
     this.weaponCtr = 0;
-    this.weapon = 'unarmed';
-    this.range = 50;
-    this.damage = 1;
+    this.weapon = new Knife(game, 0);
+    this.range = 70;
+    this.damage = 20;
     this.health = new Health(game, 20);
     this.dash = false;
     this.dashCD = 0;
@@ -146,7 +169,7 @@ Frump.prototype.update = function () {
             this.attacking = false;
             this.anim.atk.elapsedTime = 0;
             this.anim.knifeAtk.elapsedTime = 0;
-            this.anim.swordAtk.elapsedTime = 0;
+            this.anim.batAtk.elapsedTime = 0;
         }
         this.dash = true;
         this.radius = 0;
@@ -159,11 +182,11 @@ Frump.prototype.update = function () {
     // Check for attack + update range
     if (!this.dash && this.game.click && this.atkCD == 0) {
         this.attacking = true;
-        if (this.weapon == 'knife') {
+        if (this.weapon.type == 'knife') {
             this.atkCD = 106;
             this.range = 70;
         }
-        else if (this.weapon == 'sword') {
+        else if (this.weapon.type == 'bat') {
             this.atkCD = 112;
             this.range = 110;
         }
@@ -189,18 +212,18 @@ Frump.prototype.update = function () {
         }
     }
     else if (this.attacking) {
-        if (this.weapon == 'unarmed' && this.anim.atk.isDone()) {
+        if (this.weapon.type == 'unarmed' && this.anim.atk.isDone()) {
             this.anim.atk.elapsedTime = 0;
             this.attacking = false;
             this.atkCD = 24;
         }
-        else if (this.weapon == 'knife' && this.anim.knifeAtk.isDone()) {
+        else if (this.weapon.type == 'knife' && this.anim.knifeAtk.isDone()) {
             this.anim.knifeAtk.elapsedTime = 0;
             this.attacking = false;
             this.atkCD = 9;
         }
-        else if (this.weapon == 'sword' && this.anim.swordAtk.isDone()) {
-            this.anim.swordAtk.elapsedTime = 0;
+        else if (this.weapon.type == 'bat' && this.anim.batAtk.isDone()) {
+            this.anim.batAtk.elapsedTime = 0;
             this.attacking = false;
             this.atkCD = 18;
         }
@@ -272,19 +295,19 @@ Frump.prototype.draw = function (ctx) {
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
     else if (this.dash) this.anim.dash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
     else if (this.attacking) {
-        if (this.weapon == 'knife') this.anim.knifeAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        else if (this.weapon == 'sword') this.anim.swordAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        if (this.weapon.type == 'knife') this.anim.knifeAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        else if (this.weapon.type == 'bat') this.anim.batAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
         else this.anim.atk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
     }
     else {
         if (this.game.player.up || this.game.player.left || this.game.player.down || this.game.player.right) {
-            if (this.weapon == 'knife') this.anim.knifeMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            else if (this.weapon == 'sword') this.anim.swordMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            if (this.weapon.type == 'knife') this.anim.knifeMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon.type == 'bat') this.anim.batMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
             else this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
         }
         else {
-            if (this.weapon == 'knife') this.anim.knifeIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            else if (this.weapon == 'sword') this.anim.swordIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            if (this.weapon.type == 'knife') this.anim.knifeIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+            else if (this.weapon.type == 'bat') this.anim.batIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
             else this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
         }
     }
