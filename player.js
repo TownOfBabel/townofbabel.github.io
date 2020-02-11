@@ -1,5 +1,4 @@
 function Health(game, hp) {
-    // this.health = ASSET_MANAGER.getAsset('./img/HealthBig.png');
     this.health = [];
     this.rotation = 0;
     for (var i = 0; i <= hp; i++) {
@@ -17,12 +16,6 @@ Health.prototype.update = function () {
 }
 
 Health.prototype.draw = function (ctx) {
-    // if (this.current >= 5) ctx.drawImage(this.health, 0, 0, 100, 20, 5, 5, 100, 20);
-    // else if (this.current == 4) ctx.drawImage(this.health, 0, 20, 100, 20, 5, 5, 100, 20);
-    // else if (this.current == 3) ctx.drawImage(this.health, 0, 40, 100, 20, 5, 5, 100, 20);
-    // else if (this.current == 2) ctx.drawImage(this.health, 0, 60, 100, 20, 5, 5, 100, 20);
-    // else if (this.current == 1) ctx.drawImage(this.health, 0, 80, 100, 20, 5, 5, 100, 20);
-    // else ctx.drawImage(this.health, 0, 100, 100, 20, 5, 5, 100, 20);
     if (this.current < 0) this.health[0].drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     else this.health[this.current].drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     Entity.prototype.draw.call(this);
@@ -54,9 +47,7 @@ function Weapon(game, rarity) {
     this.floating = true;
     this.range = 55;
     calcDmg(this);
-
-    this.static = ASSET_MANAGER.getAsset('./img/bat_drop.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/bat_drop.png'), 0, 0, 33, 33, 1, 1, true, false);
+    this.radius = 0;
 
     Entity.call(this, game, 640, 360);
 }
@@ -72,7 +63,6 @@ Weapon.prototype.draw = function (ctx) {
     if (this.hidden) {}
     else if (this.floating) this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     else ctx.drawImage(this.static, this.x, this.y);
-
     Entity.prototype.draw.call(this);
 }
 
@@ -135,7 +125,6 @@ function Frump(game) {
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 250;
-    this.weaponCtr = 0;
     this.weapon = new Knife(game, 0);
     this.range = 70;
     this.damage = 20;
@@ -154,16 +143,15 @@ Frump.prototype.constructor = Frump;
 Frump.prototype.update = function () {
     // Player faces mouse pointer
     this.rotation = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x - this.x);
-
     if (this.dashCD > 0) this.dashCD--;
     if (this.atkCD > 0) this.atkCD--;
     if (this.hitCD > 0) this.hitCD--;
     if (this.hitCD <= 0) this.hurt = false;
 
-    if (this.game.player.shift) {
-        this.weapon = this.weapons[this.weaponCtr++];
-        if (this.weaponCtr >= 3) this.weaponCtr = 0;
-    }
+    // if (this.game.player.shift) {
+    //     this.weapon = this.weapons[this.weaponCtr++];
+    //     if (this.weaponCtr >= 3) this.weaponCtr = 0;
+    // }
     if (this.game.player.space && this.dashCD <= 0) {
         if (this.attacking) {
             this.attacking = false;
@@ -250,7 +238,7 @@ Frump.prototype.update = function () {
         else if (ent.enemy) {
             if (this.attacking && ent.hitCD <= 0 && this.hit(ent) && this.atkCD > 88 && this.atkCD <= 100) {
                 ent.hurt = true;
-                ent.health -= this.damage;
+                ent.health -= this.weapon.damage;
                 ent.hitCD = 18;
             }
         }

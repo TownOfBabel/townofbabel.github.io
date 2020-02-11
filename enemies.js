@@ -17,7 +17,6 @@ function Enemy(game) {
     this.atkCD = 0;
     this.hitCD = 0;
     this.ctr = 0;
-    console.log('created enemy');
 
     Entity.call(this, game, 640, 360);
 }

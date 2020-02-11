@@ -107,24 +107,7 @@ ASSET_MANAGER.downloadAll(function () {
     var canvas = document.getElementById('gameWorld');
     var ctx = canvas.getContext('2d');
 
-    var gameEngine = new GameEngine();
-    //var bg = new Background(gameEngine);
-    var fence1 = new Wall(gameEngine, 0, 0, 240, 180);
-    var fence2 = new Wall(gameEngine, 226, 180, 14, 310);
-    var fence3 = new Wall(gameEngine, 226, 607, 14, 113);
-    var fence4 = new Wall(gameEngine, 145, 607, 81, 10);
-    var frump = new Frump(gameEngine);
-    //var enemy = new Enemy(gameEngine);
-
-    // gameEngine.addEntity(street);
-    // gameEngine.addEntity(fence1);
-    // gameEngine.addEntity(fence2);
-    // gameEngine.addEntity(fence3);
-    // gameEngine.addEntity(fence4);
-    // var enemies = Math.floor(Math.random()*2+1);
-    // for (var j = 0; j < enemies; j++) gameEngine.addEntity(new Enemy(gameEngine));
-    // gameEngine.addEntity(frump);
- 
+    var gameEngine = new GameEngine(); 
     var manager = new SceneManager(gameEngine);
     gameEngine.addEntity(manager);
 
