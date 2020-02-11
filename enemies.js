@@ -121,7 +121,7 @@ Enemy.prototype.update = function () {
             var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
             var rotationDif = Math.abs(this.rotation - atan);
             if (rotationDif > Math.PI) rotationDif = (Math.PI*2) - rotationDif;
-            if ((distance(this, ent) < this.sight && rotationDif < this.fov) || distance(this, ent) < this.range + 50) {
+            if ((distance(this, ent) < this.sight && rotationDif < this.fov) || distance(this, ent) < this.range + 50 || this.hurt) {
                 // Determine rotation
                 if (rotationDif < Math.PI/32 || this.rotations.length > (this.rotationLag*10)) {
                     for (var j = this.rotations.length - 1; j >= 0; j -= 2) {

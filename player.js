@@ -125,7 +125,7 @@ function Frump(game) {
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 250;
-    this.weapon = new Knife(game, 0);
+    this.weapon = new Weapon(game, 0);
     this.range = 70;
     this.damage = 20;
     this.health = new Health(game, 20);
