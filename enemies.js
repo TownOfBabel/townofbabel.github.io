@@ -1,24 +1,16 @@
 function Enemy(game) {
-    // Properties
+    //Properties
     this.enemy = true;
-    this.radius = 20;
-    this.rotation = 0;
     this.rotations = [];
-    this.rotationLag = 1;
+    this.rotation = Math.random()*(Math.PI*2) - Math.PI;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 100;
-    this.weapon = 'unarmed';
-    this.range = 50;
-    this.sight = 200;
-    this.fov = Math.PI/2;
-    this.health = 10;
 
     this.atkCD = 0;
     this.hitCD = 0;
     this.ctr = 0;
 
-    Entity.call(this, game, 640, 360);
+    Entity.call(this, game, Math.random()*420+410, Math.random()*620+50);
 }
 
 Enemy.prototype = new Entity();
@@ -337,29 +329,38 @@ function Thug(game, weapon) {
     // this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug.png'), 0, 0, 200, 300, 0.1, 5, false, false);
 
     // Properties
-    this.enemy = true;
     this.radius = 24;
     this.faces = 28;
     this.sides = 38;
-    this.rotation = Math.random()*(Math.PI*2) - Math.PI;
-    this.rotations = [];
     this.rotationLag = 2;
-    this.acceleration = 100;
-    this.velocity = { x: 0, y: 0};
-    this.maxSpeed = 125;
-    if (weapon == 1) this.weapon = 'bat';
-    else this.weapon = 'knife';
-    if (weapon == 'bat') this.range = 110;
-    else this.range = 70;
+    this.maxSpeed = 150;
     this.sight = 250;
-    this.fov = Math.PI*2/5;
+    this.fov = Math.PI * 2/5;
     this.health = 100;
 
-    this.atkCD = 0;
-    this.hitCD = 0;
-    this.ctr = 0;
+    // Determine weapon + animations
+    if (weapon == 0) {
+        this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 1, true, false);
+        this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 8, true, false);
+        this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 600, 200, 200, 0.1, 4, false, false);
+        this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 700, 200, 200, 0.1, 1, false, false);
+        this.weapon = 'knife';
+        this.begLag = 112;
+        this.endLag = 45;
+        this.range = 70;
+    }
+    else {
+        this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 200, 200, 200, 0.12, 1, true, false);
+        this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 200, 200, 200, 0.12, 8, true, false);
+        this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 400, 200, 300, 0.15, 5, false, false);
+        this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 200, 700, 200, 200, 0.1, 1, false, false);
+        this.weapon = 'bat';
+        this.begLag = 116;
+        this.endLag = 65;
+        this.range = 110;
+    }
 
-    Entity.call(this, game, Math.random()*420+410, Math.random()*620+50);
+    Enemy.call(this, game);
 }
 
 Thug.prototype = new Enemy();
