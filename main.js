@@ -60,6 +60,11 @@ var friction = 8;
 
 var ASSET_MANAGER = new AssetManager();
 
+// menus
+ASSET_MANAGER.queueDownload('./img/menus/start.png');
+ASSET_MANAGER.queueDownload('./img/menus/win.png');
+ASSET_MANAGER.queueDownload('./img/menus/lose.png');
+
 // backgrounds
 ASSET_MANAGER.queueDownload('./img/backgrounds/street00.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street01.jpg');
@@ -87,10 +92,15 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/house23.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house31.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house32.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house33.jpg');
+ASSET_MANAGER.queueDownload('./img/backgrounds/arrow.png');
 
 // entities (player + enemies)
+ASSET_MANAGER.queueDownload('./img/entities/frump.png');
+ASSET_MANAGER.queueDownload('./img/entities/health.png');
+ASSET_MANAGER.queueDownload('./img/entities/dog.png');
 ASSET_MANAGER.queueDownload('./img/entities/thug_bat.png');
 ASSET_MANAGER.queueDownload('./img/entities/thug_knife.png');
+ASSET_MANAGER.queueDownload('./img/entities/bodyguard.png');
 
 // weapons
 ASSET_MANAGER.queueDownload('./img/weapons/bat00.png');
@@ -98,18 +108,7 @@ ASSET_MANAGER.queueDownload('./img/weapons/bat10.png');
 ASSET_MANAGER.queueDownload('./img/weapons/bat20.png');
 ASSET_MANAGER.queueDownload('./img/weapons/bat30.png');
 
-ASSET_MANAGER.queueDownload('./img/Start.png');
-ASSET_MANAGER.queueDownload('./img/Victory.png');
-ASSET_MANAGER.queueDownload('./img/GameOver.png');
-ASSET_MANAGER.queueDownload('./img/LilFrump.png');
-ASSET_MANAGER.queueDownload('./img/Enemy.png');
-ASSET_MANAGER.queueDownload('./img/Health.png');
-ASSET_MANAGER.queueDownload('./img/HealthBig.png');
 ASSET_MANAGER.queueDownload('./img/Mailbox.png');
-ASSET_MANAGER.queueDownload('./img/Arrow.png');
-ASSET_MANAGER.queueDownload('./img/bodyguard.png');
-ASSET_MANAGER.queueDownload('./img/dog.png');
-ASSET_MANAGER.queueDownload('./img/bat_drop.png');
 
 ASSET_MANAGER.downloadAll(function () {
     console.log('loading game...');

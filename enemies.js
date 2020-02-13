@@ -33,8 +33,8 @@ Enemy.prototype.update = function () {
         this.attacking = false;
         this.atkCD = this.endLag;
         if (this.weapon.type == 'bite') {
-            this.acceleration /= 3;
-            this.maxSpeed /= 3;
+            this.acceleration /= 2;
+            this.maxSpeed /= 2.5;
         }
     }
 
@@ -120,8 +120,8 @@ Enemy.prototype.update = function () {
                     && distance(this, ent) < (this.range + ent.range)) {
                     this.attacking = true;
                     this.atkCD = this.begLag;
-                    this.acceleration *= 3;
-                    this.maxSpeed *= 3;
+                    this.acceleration *= 2;
+                    this.maxSpeed *= 2.5;
                 }
                 if (this.attacking && ent.hitCD <= 0 && this.hit(ent)
                     && this.atkCD > (100 - this.hitDur) && this.atkCD <= 100) {
@@ -218,10 +218,10 @@ Mailbox.prototype.draw = function (ctx) {
 function Dog(game) {
     // Animations
     this.anim = {};
-    this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
-    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
-    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 1, 1, false, false);
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 0.1, 1, false, false);
+    this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
+    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 1, 1, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 0.1, 1, false, false);
 
     // Properties
     this.radius = 20;
@@ -291,10 +291,10 @@ Thug.prototype.constructor = Thug;
 function Bodyguard(game) {
     // Animations
     this.anim = {};
-    this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
-    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
-    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 200, 200, 200, 0.7, 1, false, false);
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 0, 200, 200, 0.1, 1, false, false);
+    this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
+    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 200, 200, 200, 0.7, 1, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 0.1, 1, false, false);
 
     // Properties
     this.radius = 26;

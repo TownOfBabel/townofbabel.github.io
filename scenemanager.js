@@ -51,7 +51,7 @@ Wall.prototype.draw = function (ctx) {
 }
 
 function Arrow(game, manager) {
-    this.image = new Animation(ASSET_MANAGER.getAsset('./img/Arrow.png'), 0, 0, 100, 100, 0.25, 4, true, false);
+    this.image = new Animation(ASSET_MANAGER.getAsset('./img/backgrounds/arrow.png'), 0, 0, 100, 100, 0.25, 4, true, false);
     this.manager = manager;
     this.rotation = 0;
     Entity.call(this, game, 640, 360);
@@ -112,9 +112,9 @@ function SceneManager(game) {
     this.player = new Frump(game);
     this.arrow = new Arrow(game, this);
 
-    this.menus.start = new Menu(game, './img/Start.png');
-    this.menus.win = new Menu(game, './img/Victory.png');
-    this.menus.lose = new Menu(game, './img/GameOver.png');
+    this.menus.start = new Menu(game, './img/menus/start.png');
+    this.menus.win = new Menu(game, './img/menus/win.png');
+    this.menus.lose = new Menu(game, './img/menus/lose.png');
 
     for (var i = 0; i < 4; i++) this.buildLevel(i);
     this.levels[0].streets.push(new Background(game, './img/backgrounds/street00.png', new Bat(game, 0), 0));
