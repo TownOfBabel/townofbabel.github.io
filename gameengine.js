@@ -230,7 +230,9 @@ Entity.prototype.hit = function (other) {
     var orien = Math.abs(this.rotation - other.rotation);
     if (orien > Math.PI) orien = (Math.PI*2) - orien;
 
-    if ((this.weapon == 'bat' && acc < Math.PI*2/5) || acc < Math.PI/8) {
+    if ((distance(this, other) < 75 && acc < Math.PI/4) 
+        || (this.weapon.type == 'bat' && acc < Math.PI*2/5)
+        || acc < Math.PI/8) {
         if (orien < Math.PI/4 || orien > Math.PI*3/4)
             return distance(this, other) < this.range + other.faces;
         else

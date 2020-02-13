@@ -24,46 +24,17 @@ Enemy.prototype.update = function () {
     if (this.hitCD <= 0) this.hurt = false;
 
     // Update animations
-    if (this.hurt) {
-        if (this.weapon == 'knife' && this.anim.knifeHit.isDone()) {
-            this.anim.knifeHit.elapsedTime = 0;
-            this.hurt = false;
-        }
-        else if (this.weapon == 'bat' && this.anim.batHit.isDone()) {
-            this.anim.batHit.elapsedTime = 0;
-            this.hurt = false;
-        }
-        else if (this.weapon == 'bite' && this.anim.hit.isDone()) {
-            this.anim.hit.elapsedTime = 0;
-            this.hurt = false;
-        }
-        else if (this.weapon == 'swing' && this.anim.hit.isDone()) {
-            this.anim.hit.elapsedTime = 0;
-            this.hurt = false;
-        }
+    if (this.hurt && this.anim.hit.isDone()) {
+        this.anim.hit.elapsedTime = 0;
+        this.hurt = false;
     }
-    if (this.attacking) {
-        if (this.weapon == 'bite' && this.anim.atk.isDone()) {
-            this.anim.atk.elapsedTime = 0;
-            this.attacking = false;
-            this.atkCD = 120;
+    if (this.attacking && this.anim.atk.isDone()) {
+        this.anim.atk.elapsedTime = 0;
+        this.attacking = false;
+        this.atkCD = this.endLag;
+        if (this.weapon.type == 'bite') {
             this.acceleration /= 3;
             this.maxSpeed /= 3;
-        }
-        else if (this.weapon == 'knife' && this.anim.knifeAtk.isDone()) {
-            this.anim.knifeAtk.elapsedTime = 0;
-            this.attacking = false;
-            this.atkCD = 45;
-        }
-        else if (this.weapon == 'bat' && this.anim.batAtk.isDone()) {
-            this.anim.batAtk.elapsedTime = 0;
-            this.attacking = false;
-            this.atkCD = 65;
-        }
-        else if (this.weapon == 'swing' && this.anim.atk.isDone()) {
-            this.anim.atk.elapsedTime = 0;
-            this.attacking = false;
-            this.atkCD = 85;
         }
     }
 
@@ -113,7 +84,9 @@ Enemy.prototype.update = function () {
             var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
             var rotationDif = Math.abs(this.rotation - atan);
             if (rotationDif > Math.PI) rotationDif = (Math.PI*2) - rotationDif;
-            if ((distance(this, ent) < this.sight && rotationDif < this.fov) || distance(this, ent) < this.range + 50 || this.hurt) {
+
+            if ((distance(this, ent) < this.sight && rotationDif < this.fov)
+                || distance(this, ent) < (this.range + ent.radius + 50) || this.hurt) {
                 // Determine rotation
                 if (rotationDif < Math.PI/32 || this.rotations.length > (this.rotationLag*10)) {
                     for (var j = this.rotations.length - 1; j >= 0; j -= 2) {
@@ -139,30 +112,22 @@ Enemy.prototype.update = function () {
                     this.velocity.y += difY * this.acceleration;
                 }
                 // Attack calculations
-                if (this.weapon == 'bite' && distance(this, ent) < (this.range + 100) && this.atkCD <= 0) {
+                if (distance(this, ent) < (this.range + ent.radius/2) && this.atkCD <= 0) {
                     this.attacking = true;
-                    this.atkCD = 130;
+                    this.atkCD = this.begLag;
+                }
+                else if (this.weapon.type == 'bite' && this.atkCD <= 0
+                    && distance(this, ent) < (this.range + ent.range)) {
+                    this.attacking = true;
+                    this.atkCD = this.begLag;
                     this.acceleration *= 3;
                     this.maxSpeed *= 3;
                 }
-                else if (distance(this, ent) < (this.range + 20) && this.atkCD <= 0) {
-                    if (this.weapon == 'knife') {
-                        this.attacking = true;
-                        this.atkCD = 112;
-                    }
-                    else if (this.weapon == 'bat') {
-                        this.attacking = true;
-                        this.atkCD = 116;
-                    }
-                    else if (this.weapon == 'swing') {
-                        this.attacking = true;
-                        this.atkCD = 114;
-                    }
-                }
-                if (this.attacking && ent.hitCD <= 0 && this.hit(ent) && this.atkCD > 88 && this.atkCD <= 100) {
+                if (this.attacking && ent.hitCD <= 0 && this.hit(ent)
+                    && this.atkCD > (100 - this.hitDur) && this.atkCD <= 100) {
                     ent.hurt = true;
                     ent.health.current--;
-                    ent.hitCD = 12;
+                    ent.hitCD = this.hitDur;
                 }
             }
         }
@@ -185,47 +150,15 @@ Enemy.prototype.update = function () {
 }
 
 Enemy.prototype.draw = function (ctx) {
-    if (this.hurt) {
-        if (this.weapon == 'knife')
-            this.anim.knifeHit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        else if (this.weapon == 'bat')
-            this.anim.batHit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        else if (this.weapon == 'bite')
-            this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        else if (this.weapon == 'swing')
-            this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-    }
-    else if (this.attacking) {
-        if (this.weapon == 'knife')
-            this.anim.knifeAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        else if (this.weapon == 'bat')
-            this.anim.batAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        else if (this.weapon == 'bite')
-            this.anim.atk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        else if (this.weapon == 'swing')
-            this.anim.atk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-    }
+    if (this.hurt)
+        this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+    else if (this.attacking)
+        this.anim.atk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
     else {
-        if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5) {
-            if (this.weapon == 'knife')
-                this.anim.knifeIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            else if (this.weapon == 'bat')
-                this.anim.batIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            else if (this.weapon == 'bite')
-                this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            else if (this.weapon == 'swing')
-                this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        }
-        else {
-            if (this.weapon == 'knife')
-                this.anim.knifeMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            else if (this.weapon == 'bat')
-                this.anim.batMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            else if (this.weapon == 'bite')
-                this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-            else if (this.weapon == 'swing')
-                this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
-        }
+        if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5)
+            this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
+        else
+            this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation+Math.PI/2);
     }
     Entity.prototype.draw.call(this);
 }
@@ -283,6 +216,7 @@ Mailbox.prototype.draw = function (ctx) {
 }
 
 function Dog(game) {
+    // Animations
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
@@ -290,43 +224,53 @@ function Dog(game) {
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/dog.png'), 0, 0, 200, 200, 0.1, 1, false, false);
 
     // Properties
-    this.enemy = true;
     this.radius = 20;
     this.faces = 42;
     this.sides = 18;
-    this.rotation = Math.random()*(Math.PI*2) - Math.PI;
-    this.rotations = [];
     this.rotationLag = 1;
-    this.acceleration = 100;
-    this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 225;
-    this.weapon = 'bite';
+    this.weapon = {};
+    this.weapon.type = 'bite';
+    this.begLag = 130;
+    this.endLag = 120;
+    this.hitDur = 12;
     this.range = 50;
     this.sight = 350;
+    this.fov = Math.PI * 3/7;
     this.health = 60;
 
-    this.atkCD = 0;
-    this.hitCD = 0;
-    this.ctr = 0;
-
-    Entity.call(this, game, Math.random()*420+410, Math.random()*620+50);
+    Enemy.call(this, game);
 }
 
 Dog.prototype = new Enemy();
 Dog.prototype.constructor = Dog;
 
 function Thug(game, weapon) {
-    // Animations
+    // Weapons & Animations
     this.anim = {};
-    this.anim.knifeIdle = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 1, true, false);
-    this.anim.knifeMove = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 8, true, false);
-    this.anim.knifeAtk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 600, 200, 200, 0.1, 4, false, false);
-    this.anim.knifeHit = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 700, 200, 200, 0.1, 1, false, false);
-    this.anim.batIdle = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 200, 200, 200, 0.12, 1, true, false);
-    this.anim.batMove = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 200, 200, 200, 0.12, 8, true, false);
-    this.anim.batAtk = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 400, 200, 300, 0.15, 5, false, false);
-    this.anim.batHit = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 200, 700, 200, 200, 0.1, 1, false, false);
-    // this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug.png'), 0, 0, 200, 300, 0.1, 5, false, false);
+    this.weapon = {};
+    if (weapon == 0) {
+        this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 0, 200, 200, 0.12, 1, true, false);
+        this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 0, 200, 200, 0.12, 8, true, false);
+        this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 200, 200, 200, 0.1, 4, false, false);
+        this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 400, 200, 200, 0.1, 1, false, false);
+        this.weapon.type = 'knife';
+        this.begLag = 110;
+        this.endLag = 45;
+        this.hitDur = 14;
+        this.range = 90;
+    }
+    else {
+        this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 1, true, false);
+        this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 8, true, false);
+        this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 200, 200, 300, 0.15, 4, false, false);
+        this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 500, 200, 200, 0.1, 1, false, false);
+        this.weapon.type = 'bat';
+        this.begLag = 116;
+        this.endLag = 65;
+        this.hitDur = 21;
+        this.range = 110;
+    }
 
     // Properties
     this.radius = 24;
@@ -338,28 +282,6 @@ function Thug(game, weapon) {
     this.fov = Math.PI * 2/5;
     this.health = 100;
 
-    // Determine weapon + animations
-    if (weapon == 0) {
-        this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 1, true, false);
-        this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 0, 200, 200, 0.12, 8, true, false);
-        this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 600, 200, 200, 0.1, 4, false, false);
-        this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 700, 200, 200, 0.1, 1, false, false);
-        this.weapon = 'knife';
-        this.begLag = 112;
-        this.endLag = 45;
-        this.range = 70;
-    }
-    else {
-        this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 200, 200, 200, 0.12, 1, true, false);
-        this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 200, 200, 200, 0.12, 8, true, false);
-        this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 0, 400, 200, 300, 0.15, 5, false, false);
-        this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/Enemy.png'), 200, 700, 200, 200, 0.1, 1, false, false);
-        this.weapon = 'bat';
-        this.begLag = 116;
-        this.endLag = 65;
-        this.range = 110;
-    }
-
     Enemy.call(this, game);
 }
 
@@ -367,33 +289,30 @@ Thug.prototype = new Enemy();
 Thug.prototype.constructor = Thug;
 
 function Bodyguard(game) {
+    // Animations
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 200, 200, 200, 0.7, 1, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/bodyguard.png'), 0, 0, 200, 200, 0.1, 1, false, false);
 
-    this.enemy = true;
+    // Properties
     this.radius = 26;
     this.faces = 30;
     this.sides = 48;
-    this.rotation = Math.random()*(Math.PI*2) - Math.PI;
-    this.rotations = [];
     this.rotationLag = 3;
-    this.acceleration = 90;
-    this.velocity = { x: 0, y: 0};
     this.maxSpeed = 100;
-    this.weapon = 'swing';
+    this.weapon = {};
+    this.weapon.type = 'swing';
+    this.begLag = 114;
+    this.endLag = 85;
+    this.hitDur = 12;
     this.range = 60;
     this.sight = 200;
-    this.fov = Math.PI*3/7;
+    this.fov = Math.PI * 4/9;
     this.health = 140;
 
-    this.atkCD = 0;
-    this.hitCD = 0;
-    this.ctr = 0;
-
-    Entity.call(this, game, Math.random()*420+410, Math.random()*620+50);
+    Enemy.call(this, game);
 }
 
 Bodyguard.prototype = new Enemy();

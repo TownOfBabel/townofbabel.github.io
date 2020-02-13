@@ -61,8 +61,8 @@ Weapon.prototype.update = function () {
 
 Weapon.prototype.draw = function (ctx) {
     if (this.hidden) {}
-    else if (this.floating) this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
-    else ctx.drawImage(this.static, this.x, this.y);
+    else if (this.floating) this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 0.7);
+    else ctx.drawImage(this.static, 0, 0, 100, 100, this.x, this.y, 50, 50);
     Entity.prototype.draw.call(this);
 }
 
@@ -71,11 +71,11 @@ function Knife(game, rarity) {
     this.type = 'knife';
     this.rarity = rarity;
     this.floating = true;
-    this.range = 70;
+    this.range = 90;
     calcDmg(this);
 
-    this.static = ASSET_MANAGER.getAsset('./img/bat_drop.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/bat_drop.png'), 0, 0, 33, 33, 1, 1, true, false);
+    this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
 
     Entity.call(this, game, 640, 360);
 }
@@ -91,8 +91,8 @@ function Bat(game, rarity) {
     this.range = 110;
     calcDmg(this);
 
-    this.static = ASSET_MANAGER.getAsset('./img/bat_drop.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/bat_drop.png'), 0, 0, 33, 33, 1, 1, true, false);
+    this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
 
     Entity.call(this, game, 640, 360);
 }
@@ -105,7 +105,7 @@ function Frump(game) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 200, 200, 200, 0.4, 2, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 0, 200, 200, 0.1, 8, true, false);
-    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 200, 200, 200, 0.1, 4, false, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 200, 200, 200, 0.15, 4, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 1300, 200, 200, 0.1, 1, false, false);
     this.anim.dash = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 1600, 200, 200, 0.05, 5, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 200, 1300, 200, 300, 0.1, 5, false, false);
@@ -114,18 +114,18 @@ function Frump(game) {
     this.anim.knifeAtk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 600, 200, 200, 0.05, 4, false, false);
     this.anim.batIdle = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 1000, 200, 200, 0.4, 2, true, false);
     this.anim.batMove = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 0, 800, 200, 200, 0.1, 8, true, false);
-    this.anim.batAtk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 1000, 200, 300, 0.1, 5, false, false);
+    this.anim.batAtk = new Animation(ASSET_MANAGER.getAsset('./img/LilFrump.png'), 400, 1000, 200, 300, 0.1, 4, false, false);
 
     // Properties
     this.player = true;
     this.alive = true;
     this.radius = 24;
-    this.faces = 20;
+    this.faces = 28;
     this.sides = 38;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 250;
-    this.weapon = new Weapon(game, 0);
+    this.weapon = new Knife(game, 0);
     this.range = 70;
     this.damage = 20;
     this.health = new Health(game, 20);
@@ -171,15 +171,18 @@ Frump.prototype.update = function () {
     if (!this.dash && this.game.click && this.atkCD == 0) {
         this.attacking = true;
         if (this.weapon.type == 'knife') {
-            this.atkCD = 106;
-            this.range = 70;
+            this.atkCD = 105;
+            this.hitDur = 7;
+            this.range = 90;
         }
         else if (this.weapon.type == 'bat') {
-            this.atkCD = 112;
+            this.atkCD = 110;
+            this.hitDur = 14;
             this.range = 110;
         }
         else {
             this.atkCD = 109;
+            this.hitDur = 18;
             this.range = 60;
         }
     }
@@ -236,10 +239,11 @@ Frump.prototype.update = function () {
             }
         }
         else if (ent.enemy) {
-            if (this.attacking && ent.hitCD <= 0 && this.hit(ent) && this.atkCD > 88 && this.atkCD <= 100) {
+            if (this.attacking && ent.hitCD <= 0 && this.hit(ent)
+                && this.atkCD > (100 - this.hitDur) && this.atkCD <= 100) {
                 ent.hurt = true;
                 ent.health -= this.weapon.damage;
-                ent.hitCD = 18;
+                ent.hitCD = this.hitDur;
             }
         }
     }

@@ -88,6 +88,15 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/house31.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house32.jpg');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house33.jpg');
 
+// entities (player + enemies)
+ASSET_MANAGER.queueDownload('./img/entities/thug_bat.png');
+ASSET_MANAGER.queueDownload('./img/entities/thug_knife.png');
+
+// weapons
+ASSET_MANAGER.queueDownload('./img/weapons/bat00.png');
+ASSET_MANAGER.queueDownload('./img/weapons/bat10.png');
+ASSET_MANAGER.queueDownload('./img/weapons/bat20.png');
+ASSET_MANAGER.queueDownload('./img/weapons/bat30.png');
 
 ASSET_MANAGER.queueDownload('./img/Start.png');
 ASSET_MANAGER.queueDownload('./img/Victory.png');
