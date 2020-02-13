@@ -33,7 +33,7 @@ Enemy.prototype.update = function () {
         this.attacking = false;
         this.atkCD = this.endLag;
         if (this.weapon.type == 'bite') {
-            this.acceleration /= 2;
+            this.acceleration /= 3;
             this.maxSpeed /= 3;
         }
     }
@@ -120,7 +120,7 @@ Enemy.prototype.update = function () {
                     && distance(this, ent) < (this.range + ent.range)) {
                     this.attacking = true;
                     this.atkCD = this.begLag;
-                    this.acceleration *= 2;
+                    this.acceleration *= 3;
                     this.maxSpeed *= 3;
                 }
                 if (this.attacking && ent.hitCD <= 0 && this.hit(ent)
@@ -220,18 +220,18 @@ function Dog(game) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
-    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 1, 1, false, false);
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 0.1, 1, false, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 0.5, 1, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 0.15, 1, false, false);
 
     // Properties
     this.radius = 20;
     this.faces = 42;
     this.sides = 18;
     this.rotationLag = 1;
-    this.maxSpeed = 225;
+    this.maxSpeed = 250;
     this.weapon = {};
     this.weapon.type = 'bite';
-    this.begLag = 130;
+    this.begLag = 118;
     this.endLag = 120;
     this.hitDur = 12;
     this.range = 50;
@@ -253,7 +253,7 @@ function Thug(game, weapon) {
         this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 0, 200, 200, 0.12, 1, true, false);
         this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 0, 200, 200, 0.12, 8, true, false);
         this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 200, 200, 200, 0.1, 4, false, false);
-        this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 400, 200, 200, 0.1, 1, false, false);
+        this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 400, 200, 200, 0.15, 1, false, false);
         this.weapon.type = 'knife';
         this.begLag = 110;
         this.endLag = 45;
@@ -264,11 +264,11 @@ function Thug(game, weapon) {
         this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 1, true, false);
         this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 8, true, false);
         this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 200, 200, 300, 0.15, 4, false, false);
-        this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 500, 200, 200, 0.1, 1, false, false);
+        this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 500, 200, 200, 0.15, 1, false, false);
         this.weapon.type = 'bat';
         this.begLag = 116;
         this.endLag = 65;
-        this.hitDur = 21;
+        this.hitDur = 20;
         this.range = 110;
     }
 
@@ -294,7 +294,7 @@ function Bodyguard(game) {
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 200, 200, 200, 0.7, 1, false, false);
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 0.1, 1, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 0.15, 1, false, false);
 
     // Properties
     this.radius = 26;

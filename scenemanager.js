@@ -118,8 +118,9 @@ function SceneManager(game) {
 
     for (var i = 0; i < 4; i++) this.buildLevel(i);
     this.levels[0].streets.push(new Background(game, './img/backgrounds/street00.png', new Bat(game, 0), 0));
-    this.levels[0].houses.push(new Background(game, './img/backgrounds/house00.jpg', new Knife(game, 0), 0));
+    this.levels[0].houses.push(new Background(game, './img/backgrounds/house00.png', new Knife(game, 0), 0));
     buildStartRoom(this.levels[0]);
+
     // this.levels[0].streets[0].walls.push(new Wall(game, 0, 0, 240, 180));
     // this.levels[0].streets[0].walls.push(new Wall(game, 226, 180, 14, 310));
     // this.levels[0].streets[0].walls.push(new Wall(game, 226, 607, 14, 113));
@@ -253,7 +254,7 @@ SceneManager.prototype.updateBackground = function () {
     // add entities back into game engine
     this.game.addEntity(this.player.weapon);
     this.game.addEntity(this.player);
-    if (this.level.clear) this.game.addEntity(this.arrow);
+    this.game.addEntity(this.arrow);
     this.game.addEntity(this.player.health);
     this.changedBG = false;
     this.level.clear = false;

@@ -148,10 +148,6 @@ Frump.prototype.update = function () {
     if (this.hitCD > 0) this.hitCD--;
     if (this.hitCD <= 0) this.hurt = false;
 
-    // if (this.game.player.shift) {
-    //     this.weapon = this.weapons[this.weaponCtr++];
-    //     if (this.weaponCtr >= 3) this.weaponCtr = 0;
-    // }
     if (this.game.player.space && this.dashCD <= 0) {
         if (this.attacking) {
             this.attacking = false;
@@ -164,7 +160,7 @@ Frump.prototype.update = function () {
         this.dashCD = 100;
         this.hitCD = 20;
         this.acceleration *= 3;
-        this.maxSpeed *= 2;
+        this.maxSpeed *= 3;
     }
 
     // Check for attack + update range
@@ -199,7 +195,7 @@ Frump.prototype.update = function () {
             this.radius = 24;
             this.dashCD = 60;
             this.acceleration /= 3;
-            this.maxSpeed /= 2;
+            this.maxSpeed /= 3;
         }
     }
     else if (this.attacking) {
