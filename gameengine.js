@@ -2,13 +2,13 @@
 
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            window.oRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||
-            function (/* function */ callback, /* DOMElement */ element) {
-                window.setTimeout(callback, 1000 / 60);
-            };
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function (/* function */ callback, /* DOMElement */ element) {
+            window.setTimeout(callback, 1000 / 60);
+        };
 })();
 
 
@@ -169,27 +169,27 @@ Entity.prototype.collide = function (other) {
                 this.side = 'topleft';
                 return distance(this, other) < this.radius;
             }
-            else if (this.y > other.y+other.h) {
+            else if (this.y > other.y + other.h) {
                 this.side = 'bottomleft';
-                return distance(this, other.x, other.y+other.h) < this.radius;
+                return distance(this, other.x, other.y + other.h) < this.radius;
             }
             else {
                 this.side = 'left';
                 return distance(this, other.x, this.y) < this.radius;
             }
         }
-        else if (this.x > other.x+other.w) {
+        else if (this.x > other.x + other.w) {
             if (this.y < other.y) {
                 this.side = 'topright';
-                return distance(this, other.x+other.w, other.y) < this.radius;
+                return distance(this, other.x + other.w, other.y) < this.radius;
             }
-            else if (this.y > other.y+other.h) {
+            else if (this.y > other.y + other.h) {
                 this.side = 'bottomright';
-                return distance(this, other.x+other.w, other.y+other.h) < this.radius;
+                return distance(this, other.x + other.w, other.y + other.h) < this.radius;
             }
             else {
                 this.side = 'right';
-                return distance(this, other.x+other.w, this.y) < this.radius;
+                return distance(this, other.x + other.w, this.y) < this.radius;
             }
         }
         else {
@@ -197,9 +197,9 @@ Entity.prototype.collide = function (other) {
                 this.side = 'top';
                 return distance(this, this.x, other.y) < this.radius;
             }
-            else if (this.y > other.y+other.h) {
+            else if (this.y > other.y + other.h) {
                 this.side = 'bottom';
-                return distance(this, this.x, other.y+other.h) < this.radius;
+                return distance(this, this.x, other.y + other.h) < this.radius;
             }
             else return true;
         }
@@ -225,15 +225,15 @@ Entity.prototype.collideBottom = function () {
 
 Entity.prototype.hit = function (other) {
     var acc = Math.abs(this.rotation - Math.atan2(other.y - this.y, other.x - this.x));
-    if (acc > Math.PI) acc = (Math.PI*2) - acc;
+    if (acc > Math.PI) acc = (Math.PI * 2) - acc;
 
     var orien = Math.abs(this.rotation - other.rotation);
-    if (orien > Math.PI) orien = (Math.PI*2) - orien;
+    if (orien > Math.PI) orien = (Math.PI * 2) - orien;
 
-    if ((distance(this, other) < 75 && acc < Math.PI/4) 
-        || (this.weapon.type == 'bat' && acc < Math.PI*2/5)
-        || acc < Math.PI/8) {
-        if (orien < Math.PI/4 || orien > Math.PI*3/4)
+    if ((distance(this, other) < 75 && acc < Math.PI / 4)
+        || (this.weapon.type == 'bat' && acc < Math.PI * 2 / 5)
+        || acc < Math.PI / 8) {
+        if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
             return distance(this, other) < this.range + other.faces;
         else
             return distance(this, other) < this.range + other.sides;

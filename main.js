@@ -40,9 +40,9 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y, angle, scaleBy) {
     ctx.setTransform(1, 0, 0, 1, locX, locY);
     ctx.rotate(angle);
     ctx.drawImage(this.spriteSheet,
-                  index * this.frameWidth + offset, vindex * this.frameHeight + this.startY,  // source from sheet
-                  this.frameWidth, this.frameHeight, -this.frameWidth/2, -this.frameHeight/2,
-                  this.frameWidth * scaleBy, this.frameHeight * scaleBy);
+        index * this.frameWidth + offset, vindex * this.frameHeight + this.startY,  // source from sheet
+        this.frameWidth, this.frameHeight, -this.frameWidth / 2, -this.frameHeight / 2,
+        this.frameWidth * scaleBy, this.frameHeight * scaleBy);
     ctx.rotate(angle);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 }
@@ -115,7 +115,7 @@ ASSET_MANAGER.downloadAll(function () {
     var canvas = document.getElementById('gameWorld');
     var ctx = canvas.getContext('2d');
 
-    var gameEngine = new GameEngine(); 
+    var gameEngine = new GameEngine();
     var manager = new SceneManager(gameEngine);
     gameEngine.addEntity(manager);
 

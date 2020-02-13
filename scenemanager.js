@@ -29,7 +29,7 @@ Background.prototype.constructor = Background;
 
 Background.prototype.update = function () {
 }
- 
+
 Background.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, 0, 0);
 }
@@ -65,13 +65,13 @@ Arrow.prototype.update = function () {
         if (this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[4]) {
             this.x = 640;
             this.y = 640;
-            this.rotation = Math.PI/2;
+            this.rotation = Math.PI / 2;
         }
         else if (this.manager.activeBG === this.manager.levels[this.manager.level.current].streets[4]
             || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[1]
             || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[3]
             || this.manager.activeBG === this.manager.levels[this.manager.level.current]
-            .houses[this.manager.levels[this.manager.level.current].houses.length - 1]) {
+                .houses[this.manager.levels[this.manager.level.current].houses.length - 1]) {
             this.x = 1200;
             this.y = 360;
             this.rotation = 0;
@@ -85,7 +85,7 @@ Arrow.prototype.update = function () {
         else {
             this.x = 640;
             this.y = 80;
-            this.rotation = -Math.PI/2;
+            this.rotation = -Math.PI / 2;
         }
     }
     Entity.prototype.update.call(this);
@@ -107,7 +107,7 @@ function buildStartRoom(level) {
 function SceneManager(game) {
     this.game = game;
     this.levels = [];
-    this.level = { current: 0, clear: false};
+    this.level = { current: 0, clear: false };
     this.menus = {};
     this.player = new Frump(game);
     this.arrow = new Arrow(game, this);
@@ -232,7 +232,7 @@ SceneManager.prototype.update = function () {
     Entity.prototype.update.call(this);
 }
 
-SceneManager.prototype.draw = function(ctx) {
+SceneManager.prototype.draw = function (ctx) {
 }
 
 SceneManager.prototype.updateBackground = function () {
@@ -271,8 +271,8 @@ SceneManager.prototype.checkBounds = function () {
                 && this.activeBG === this.levels[this.level.current].streets[4]) {
                 this.changeBackground(this.levels[this.level.current + 1].streets[0]);
                 this.level.current++;
-                this.player.x = this.player.y * (16/9);
-                this.player.y = 720 - this.player.radius*3;
+                this.player.x = this.player.y * (16 / 9);
+                this.player.y = 720 - this.player.radius * 3;
                 var vel = this.player.velocity.x;
                 this.player.velocity.x = this.player.velocity.y;
                 this.player.velocity.y = -vel;
@@ -337,9 +337,9 @@ SceneManager.prototype.buildLevel = function (lvl) {
 
     for (var i = 0; i < 5; i++) {
         this.levels[lvl].streets[i] = new Background(this.game, ('./img/backgrounds/street' + lvl
-            + (Math.floor(Math.random()*3)+1) + '.jpg'), (new Knife(this.game, lvl)), lvl);
+            + (Math.floor(Math.random() * 3) + 1) + '.jpg'), (new Knife(this.game, lvl)), lvl);
         this.levels[lvl].houses[i] = new Background(this.game, ('./img/backgrounds/house' + lvl
-            + (Math.floor(Math.random()*3)+1) + '.jpg'), (new Bat(this.game, lvl)), lvl);
+            + (Math.floor(Math.random() * 3) + 1) + '.jpg'), (new Bat(this.game, lvl)), lvl);
     }
 
     // enemies
@@ -364,8 +364,8 @@ SceneManager.prototype.buildLevel = function (lvl) {
     this.levels[lvl].streets[0].neighbors[1] = this.levels[lvl].houses[0];
     this.levels[lvl].houses[0].neighbors[3] = this.levels[lvl].streets[0];
     for (var i = 1; i < 4; i++) {
-        this.levels[lvl].streets[i].neighbors[0] = this.levels[lvl].streets[(i+1)];
-        this.levels[lvl].streets[i].neighbors[2] = this.levels[lvl].streets[(i-1)];
+        this.levels[lvl].streets[i].neighbors[0] = this.levels[lvl].streets[(i + 1)];
+        this.levels[lvl].streets[i].neighbors[2] = this.levels[lvl].streets[(i - 1)];
         if (i == 2) {
             this.levels[lvl].streets[i].neighbors[1] = this.levels[lvl].houses[i];
             this.levels[lvl].houses[i].neighbors[3] = this.levels[lvl].streets[i];
