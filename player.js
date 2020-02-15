@@ -130,7 +130,8 @@ function Bullet(game, x, y, rot, dmg) {
     this.velocity.y = Math.sin(rot) * 9999;
     this.maxSpeed = 500;
     this.damage = dmg;
-    this.radius = 2;
+    this.rotation = 0;
+    this.radius = 4;
     
     Entity.call(this, game, x, y);
 }
