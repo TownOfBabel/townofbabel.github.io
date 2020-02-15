@@ -114,6 +114,7 @@ ASSET_MANAGER.queueDownload('./img/weapons/knife10.png');
 ASSET_MANAGER.queueDownload('./img/weapons/knife20.png');
 ASSET_MANAGER.queueDownload('./img/weapons/knife30.png');
 ASSET_MANAGER.queueDownload('./img/weapons/bullet.png');
+ASSET_MANAGER.queueDownload('./img/weapons/bullet_alt.png');
 
 ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 

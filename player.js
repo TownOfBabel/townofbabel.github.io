@@ -124,13 +124,12 @@ Gun.prototype = new Weapon();
 Gun.prototype.constructor = Gun;
 
 function Bullet(game, x, y, rot, dmg) {
-    this.image = ASSET_MANAGER.getAsset('./img/weapons/bullet.png');
+    this.image = ASSET_MANAGER.getAsset('./img/weapons/bullet_alt.png');
     this.velocity = {};
     this.velocity.x = Math.cos(rot) * 9999;
     this.velocity.y = Math.sin(rot) * 9999;
     this.maxSpeed = 500;
     this.damage = dmg;
-    this.rotation = 0;
     this.radius = 4;
     
     Entity.call(this, game, x, y);
