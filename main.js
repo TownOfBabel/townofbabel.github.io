@@ -61,6 +61,8 @@ var friction = 8;
 var ASSET_MANAGER = new AssetManager();
 
 // menus
+ASSET_MANAGER.queueDownload('./img/menus/title_orig.png');
+ASSET_MANAGER.queueDownload('./img/menus/title.png');
 ASSET_MANAGER.queueDownload('./img/menus/start.png');
 ASSET_MANAGER.queueDownload('./img/menus/win.png');
 ASSET_MANAGER.queueDownload('./img/menus/lose.png');
@@ -107,6 +109,11 @@ ASSET_MANAGER.queueDownload('./img/weapons/bat00.png');
 ASSET_MANAGER.queueDownload('./img/weapons/bat10.png');
 ASSET_MANAGER.queueDownload('./img/weapons/bat20.png');
 ASSET_MANAGER.queueDownload('./img/weapons/bat30.png');
+ASSET_MANAGER.queueDownload('./img/weapons/knife00.png');
+ASSET_MANAGER.queueDownload('./img/weapons/knife10.png');
+ASSET_MANAGER.queueDownload('./img/weapons/knife20.png');
+ASSET_MANAGER.queueDownload('./img/weapons/knife30.png');
+ASSET_MANAGER.queueDownload('./img/weapons/bullet.png');
 
 ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 

@@ -48,6 +48,7 @@ function Weapon(game, rarity) {
     this.range = 55;
     calcDmg(this);
     this.radius = 0;
+    this.scale = 1;
 
     Entity.call(this, game, 640, 360);
 }
@@ -61,8 +62,10 @@ Weapon.prototype.update = function () {
 
 Weapon.prototype.draw = function (ctx) {
     if (this.hidden) { }
-    else if (this.floating) this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 0.7);
-    else ctx.drawImage(this.static, 0, 0, 100, 100, this.x, this.y, 50, 50);
+    else if (this.floating)
+        this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, this.scale);
+    else
+        ctx.drawImage(this.static, 0, 0, 100, 100, this.x, this.y, 71.4 * this.scale, 71.4 * this.scale);
     Entity.prototype.draw.call(this);
 }
 
@@ -73,9 +76,10 @@ function Knife(game, rarity) {
     this.floating = true;
     this.range = 90;
     calcDmg(this);
+    this.scale = 1;
 
-    this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
+    this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
 
     Entity.call(this, game, 640, 360);
 }
@@ -90,6 +94,7 @@ function Bat(game, rarity) {
     this.floating = true;
     this.range = 110;
     calcDmg(this);
+    this.scale = 0.7;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
     this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
@@ -99,6 +104,80 @@ function Bat(game, rarity) {
 
 Bat.prototype = new Weapon();
 Bat.prototype.constructor = Bat;
+
+function Gun(game, rarity) {
+    this.hidden = true;
+    this.type = 'gun';
+    this.rarity = rarity;
+    this.floating = true;
+    this.range = 250;
+    calcDmg(this);
+    this.scale = 0.5;
+
+    this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
+
+    Entity.call(this, game, 640, 360);
+}
+
+Gun.prototype = new Weapon();
+Gun.prototype.constructor = Gun;
+
+function Bullet(game, x, y, rot, dmg) {
+    this.image = ASSET_MANAGER.getAsset('./img/weapons/bullet.png');
+    this.velocity = {};
+    this.velocity.x = Math.cos(rot) * 9999;
+    this.velocity.y = Math.sin(rot) * 9999;
+    this.maxSpeed = 500;
+    this.damage = dmg;
+    this.radius = 2;
+    
+    Entity.call(this, game, x, y);
+}
+
+Bullet.prototype = new Entity();
+Bullet.prototype.constructor = Bullet;
+
+Bullet.prototype.update = function () {
+    if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
+        this.removeFromWorld = true;
+    
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (this.collide(ent)) {
+            if (ent.enemy) {
+                ent.hurt = true;
+                ent.health -= this.damage;
+                ent.hitCD = 6;
+                this.removeFromWorld = true;
+            }
+            else if (ent.player) {
+                ent.hurt = true;
+                ent.health.current--;
+                ent.hitCD = 6;
+                this.removeFromWorld = true;
+            }
+            else if (ent.wall)
+                this.removeFromWorld = true;
+        }
+    }
+
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+
+    Entity.prototype.update.call(this);
+}
+
+Bullet.prototype.draw = function (ctx) {
+    ctx.drawImage(this.image, this.x, this.y);
+    Entity.prototype.draw.call(this);
+}
 
 function Frump(game) {
     // Animations
@@ -125,7 +204,7 @@ function Frump(game) {
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 250;
-    this.weapon = new Knife(game, 0);
+    this.weapon = new Gun(game, 0);
     this.range = 70;
     this.damage = 20;
     this.health = new Health(game, 20);
@@ -148,6 +227,13 @@ Frump.prototype.update = function () {
     if (this.hitCD > 0) this.hitCD--;
     if (this.hitCD <= 0) this.hurt = false;
 
+    // User control
+    if (this.game.player.up) this.velocity.y -= this.acceleration;
+    if (this.game.player.down) this.velocity.y += this.acceleration;
+    if (this.game.player.left) this.velocity.x -= this.acceleration;
+    if (this.game.player.right) this.velocity.x += this.acceleration;
+
+    // Dash ability
     if (this.game.player.space && this.dashCD <= 0) {
         if (this.attacking) {
             this.attacking = false;
@@ -176,6 +262,12 @@ Frump.prototype.update = function () {
             this.hitDur = 14;
             this.range = 110;
         }
+        else if (this.weapon.type == 'gun') {
+            this.atkCD = 24;
+            var difX = Math.cos(this.rotation) * 35;
+            var difY = Math.sin(this.rotation) * 35;
+            this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation, this.weapon.damage));
+        }
         else {
             this.atkCD = 109;
             this.hitDur = 18;
@@ -199,6 +291,11 @@ Frump.prototype.update = function () {
         }
     }
     else if (this.attacking) {
+        if (this.weapon.type == 'gun') {
+            this.velocity.x *= 4/7;
+            this.velocity.y *= 4/7;
+        }
+
         if (this.weapon.type == 'unarmed' && this.anim.atk.isDone()) {
             this.anim.atk.elapsedTime = 0;
             this.attacking = false;
@@ -213,6 +310,10 @@ Frump.prototype.update = function () {
             this.anim.batAtk.elapsedTime = 0;
             this.attacking = false;
             this.atkCD = 18;
+        }
+        else if (this.weapon.type == 'gun' && this.anim.atk.isDone()) {
+            this.anim.atk.elapsedTime = 0;
+            this.attacking = false;
         }
     }
 
@@ -235,7 +336,7 @@ Frump.prototype.update = function () {
             }
         }
         else if (ent.enemy) {
-            if (this.attacking && ent.hitCD <= 0 && this.hit(ent)
+            if (this.attacking && this.weapon.type != 'gun' && ent.hitCD <= 0 && this.hit(ent)
                 && this.atkCD > (100 - this.hitDur) && this.atkCD <= 100) {
                 ent.hurt = true;
                 ent.health -= this.weapon.damage;
@@ -243,12 +344,6 @@ Frump.prototype.update = function () {
             }
         }
     }
-
-    // User control
-    if (this.game.player.up) this.velocity.y -= this.acceleration;
-    if (this.game.player.down) this.velocity.y += this.acceleration;
-    if (this.game.player.left) this.velocity.x -= this.acceleration;
-    if (this.game.player.right) this.velocity.x += this.acceleration;
 
     // Boundary collisions
     if (this.collideLeft() || this.collideRight()) {

@@ -1,7 +1,9 @@
 function Menu(game, image) {
     this.menu = true;
     this.image = ASSET_MANAGER.getAsset(image);
-    Entity.call(this, game, 0, 0);
+    this.animation = new Animation(ASSET_MANAGER.getAsset(image), 0, 0, 640, 360, 0.25, 8, true, false);
+    this.rotation = 0;
+    Entity.call(this, game, 320, 180);
 }
 
 Menu.prototype = new Entity();
@@ -11,7 +13,8 @@ Menu.prototype.update = function () {
 }
 
 Menu.prototype.draw = function (ctx) {
-    ctx.drawImage(this.image, 0, 0);
+    // ctx.drawImage(this.image, 0, 0);
+    this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 2);
 }
 
 function Background(game, image, weapon, lvl) {
@@ -104,6 +107,10 @@ function buildStartRoom(level) {
     level.streets[5].neighbors[3] = level.houses[5];
 }
 
+function findDif(weapon) {
+    return (71.4 - (weapon.scale * 71.4)) / 2;
+}
+
 function SceneManager(game) {
     this.game = game;
     this.levels = [];
@@ -112,7 +119,7 @@ function SceneManager(game) {
     this.player = new Frump(game);
     this.arrow = new Arrow(game, this);
 
-    this.menus.start = new Menu(game, './img/menus/start.png');
+    this.menus.start = new Menu(game, './img/menus/title_orig.png');
     this.menus.win = new Menu(game, './img/menus/win.png');
     this.menus.lose = new Menu(game, './img/menus/lose.png');
 
@@ -168,11 +175,12 @@ SceneManager.prototype.update = function () {
                 var old = this.player.weapon;
                 this.player.weapon = this.activeBG.drop;
                 this.player.weapon.floating = false;
-                this.player.weapon.x = 0;
-                this.player.weapon.y = 25;
+                var dif = findDif(this.player.weapon);
+                this.player.weapon.x = dif - 5;
+                this.player.weapon.y = 15 + dif;
 
-                old.x = this.player.x + 10;
-                old.y = this.player.y + 10;
+                old.x = this.player.x;
+                old.y = this.player.y;
                 old.floating = true;
                 this.activeBG.drop = old;
                 this.swapHeld = 0;
