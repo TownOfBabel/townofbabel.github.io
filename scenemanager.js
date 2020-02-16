@@ -344,31 +344,32 @@ SceneManager.prototype.changeBackground = function (nextBG) {
 SceneManager.prototype.buildLevel = function (lvl) {
     this.levels[lvl] = { streets: [], houses: [] };
 
-    for (var i = 0; i < 5; i++) {
-        this.levels[lvl].streets[i] = new Background(this.game, ('./img/backgrounds/street' + lvl
-            + (Math.floor(Math.random() * 3) + 1) + '.jpg'), (new Knife(this.game, lvl)), lvl);
-        this.levels[lvl].houses[i] = new Background(this.game, ('./img/backgrounds/house' + lvl
-            + (Math.floor(Math.random() * 3) + 1) + '.jpg'), (new Bat(this.game, lvl)), lvl);
-    }
+    // for (var i = 0; i < 5; i++) {
+    //     this.levels[lvl].streets[i] = new Background(this.game, ('./img/backgrounds/street' + lvl
+    //         + (Math.floor(Math.random() * 3) + 1) + '.png'), (new Knife(this.game, lvl)), lvl);
+    //     this.levels[lvl].houses[i] = new Background(this.game, ('./img/backgrounds/house' + lvl
+    //         + (Math.floor(Math.random() * 3) + 1) + '.png'), (new Bat(this.game, lvl)), lvl);
+    // }
+
+    this.levels[lvl].streets[0] = new Background(this.game, ('./img/backgrounds/street' + lvl + '1.png'), new Knife(this.game, lvl), lvl);
+    this.levels[lvl].streets[1] = new Background(this.game, ('./img/backgrounds/street' + lvl + '2.png'), new Knife(this.game, lvl), lvl);
+    this.levels[lvl].streets[2] = new Background(this.game, ('./img/backgrounds/street' + lvl + '3.png'), new Knife(this.game, lvl), lvl);
+    this.levels[lvl].streets[3] = new Background(this.game, ('./img/backgrounds/street' + lvl + '4.png'), new Knife(this.game, lvl), lvl);
+    this.levels[lvl].streets[4] = new Background(this.game, ('./img/backgrounds/street' + lvl + '5.png'), new Knife(this.game, lvl), lvl);
+
+    this.levels[lvl].houses[0] = new Background(this.game, ('./img/backgrounds/house' + lvl + '1.png'), new Bat(this.game, lvl), lvl);
+    this.levels[lvl].houses[1] = new Background(this.game, ('./img/backgrounds/house' + lvl + '2.png'), new Bat(this.game, lvl), lvl);
+    this.levels[lvl].houses[2] = new Background(this.game, ('./img/backgrounds/house' + lvl + '3.png'), new Bat(this.game, lvl), lvl);
+    this.levels[lvl].houses[3] = new Background(this.game, ('./img/backgrounds/house' + lvl + '4.png'), new Bat(this.game, lvl), lvl);
+    this.levels[lvl].houses[4] = new Background(this.game, ('./img/backgrounds/house' + lvl + '5.png'), new Bat(this.game, lvl), lvl);
 
     // enemies
-    this.levels[lvl].houses[4].enemies.push(new Dog(this.game));
-    this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 0));
-    this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 1));
-    this.levels[lvl].houses[4].enemies.push(new Bodyguard(this.game));
+    // this.levels[lvl].houses[4].enemies.push(new Dog(this.game));
+    // this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 0));
+    // this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 1));
+    // this.levels[lvl].houses[4].enemies.push(new Bodyguard(this.game));
 
-    // this.levels[lvl].streets[0] = new Background(this.game, './img/backgrounds/street1.png', lvl);
-    // this.levels[lvl].streets[1] = new Background(this.game, './img/backgrounds/street2.jpg', lvl);
-    // this.levels[lvl].streets[2] = new Background(this.game, './img/backgrounds/street3.jpg', lvl);
-    // this.levels[lvl].streets[3] = new Background(this.game, './img/backgrounds/street4.jpg', lvl);
-    // this.levels[lvl].streets[4] = new Background(this.game, ('./img/backgrounds/street' + lvl + '5.jpg'), lvl);
-
-    // this.levels[lvl].houses[0] = new Background(this.game, './img/backgrounds/house1.jpg', lvl);
-    // this.levels[lvl].houses[1] = new Background(this.game, './img/backgrounds/house2.jpg', lvl);
-    // this.levels[lvl].houses[2] = new Background(this.game, './img/backgrounds/house3.jpg', lvl);
-    // this.levels[lvl].houses[3] = new Background(this.game, './img/backgrounds/house4.jpg', lvl);
-    // this.levels[lvl].houses[4] = new Background(this.game, './img/backgrounds/house5.jpg', lvl);
-
+    // connections
     this.levels[lvl].streets[0].neighbors[0] = this.levels[lvl].streets[1];
     this.levels[lvl].streets[0].neighbors[1] = this.levels[lvl].houses[0];
     this.levels[lvl].houses[0].neighbors[3] = this.levels[lvl].streets[0];

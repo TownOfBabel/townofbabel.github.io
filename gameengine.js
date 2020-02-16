@@ -73,19 +73,19 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener('keydown', function (e) {
         if (String.fromCharCode(e.which) === ' ') that.player.space = true;
         if (event.shiftKey) that.player.shift = true;
-        if (e.keyCode == '38' || e.keyCode == '87') that.player.up = true;
-        if (e.keyCode == '40' || e.keyCode == '83') that.player.down = true;
-        if (e.keyCode == '37' || e.keyCode == '65') that.player.left = true;
-        if (e.keyCode == '39' || e.keyCode == '68') that.player.right = true;
+        if (e.keyCode == '87') that.player.up = true;
+        if (e.keyCode == '83') that.player.down = true;
+        if (e.keyCode == '65') that.player.left = true;
+        if (e.keyCode == '68') that.player.right = true;
         if (e.keyCode == '69') that.player.interact = true;
         e.preventDefault();
     }, false);
 
     this.ctx.canvas.addEventListener('keyup', function (e) {
-        if (e.keyCode == '38' || e.keyCode == '87') that.player.up = false;
-        if (e.keyCode == '40' || e.keyCode == '83') that.player.down = false;
-        if (e.keyCode == '37' || e.keyCode == '65') that.player.left = false;
-        if (e.keyCode == '39' || e.keyCode == '68') that.player.right = false;
+        if (e.keyCode == '87') that.player.up = false;
+        if (e.keyCode == '83') that.player.down = false;
+        if (e.keyCode == '65') that.player.left = false;
+        if (e.keyCode == '68') that.player.right = false;
         if (e.keyCode == '69') that.player.interact = false;
         e.preventDefault();
     }, false);
