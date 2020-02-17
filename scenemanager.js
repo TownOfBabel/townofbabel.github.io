@@ -1,8 +1,7 @@
 function Menu(game, image) {
     this.menu = true;
     this.image = ASSET_MANAGER.getAsset(image);
-    this.animation = new Animation(ASSET_MANAGER.getAsset(image), 0, 0, 640, 360, 0.25, 8, true, false);
-    this.rotation = 0;
+
     Entity.call(this, game, 320, 180);
 }
 
@@ -13,8 +12,60 @@ Menu.prototype.update = function () {
 }
 
 Menu.prototype.draw = function (ctx) {
-    // ctx.drawImage(this.image, 0, 0);
-    this.animation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 2);
+    ctx.drawImage(this.image, 0, 0);
+}
+
+function TitleScreen(game) {
+    this.menu = true;
+    this.image = new Animation(ASSET_MANAGER.getAsset('./img/menus/title.png'), 0, 0, 1280, 720, 0.25, 8, true, false);
+    this.rotation = 0;
+
+    Entity.call(this, game, 640, 360);
+}
+
+TitleScreen.prototype = new Entity();
+TitleScreen.prototype.constructor = TitleScreen;
+
+TitleScreen.prototype.update = function () {
+}
+
+TitleScreen.prototype.draw = function (ctx) {
+    this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+}
+
+function SelectDif(game) {
+    this.menu = true;
+    this.none = ASSET_MANAGER.getAsset('./img/menus/none_dif.png');
+    this.casual = ASSET_MANAGER.getAsset('./img/menus/casual_dif.png');
+    this.classic = ASSET_MANAGER.getAsset('./img/menus/classic_dif.png');
+    this.hover = 'none';
+
+    Entity.call(this, game, 0, 0);
+}
+
+SelectDif.prototype = new Entity();
+SelectDif.prototype.constructor = SelectDif;
+
+SelectDif.prototype.update = function () {
+    if (this.game.mouse.x > 525 && this.game.mouse.x < 755) {
+        if (this.game.mouse.y > 300 && this.game.mouse.y < 390)
+            this.hover = 'casual';
+        else if (this.game.mouse.y > 390 && this.game.mouse.y < 480)
+            this.hover = 'classic';
+        else
+            this.hover = 'none';
+    }
+    else
+        this.hover = 'none';
+}
+
+SelectDif.prototype.draw = function (ctx) {
+    if (this.hover == 'casual')
+        ctx.drawImage(this.casual, 0, 0);
+    else if (this.hover == 'classic')
+        ctx.drawImage(this.classic, 0, 0);
+    else
+        ctx.drawImage(this.none, 0, 0);
 }
 
 function Background(game, image, weapon, lvl) {
@@ -107,19 +158,21 @@ function buildStartRoom(level) {
     level.streets[5].neighbors[3] = level.houses[5];
 }
 
-function findDif(weapon) {
+function getTrans(weapon) {
     return (71.4 - (weapon.scale * 71.4)) / 2;
 }
 
 function SceneManager(game) {
     this.game = game;
+    this.difficulty = 0;
     this.levels = [];
     this.level = { current: 0, clear: false };
-    this.menus = {};
     this.player = new Frump(game);
     this.arrow = new Arrow(game, this);
 
-    this.menus.start = new Menu(game, './img/menus/title_orig.png');
+    this.menus = {};
+    this.menus.title = new TitleScreen(game);
+    this.menus.dif = new SelectDif(game);
     this.menus.win = new Menu(game, './img/menus/win.png');
     this.menus.lose = new Menu(game, './img/menus/lose.png');
 
@@ -142,7 +195,7 @@ function SceneManager(game) {
     //     }
     // }
 
-    this.activeBG = this.menus.start;
+    this.activeBG = this.menus.title;
     this.start = true;
     this.swapHeld = 0;
 
@@ -156,7 +209,16 @@ SceneManager.prototype.update = function () {
     if (this.changedBG) this.updateBackground();
     if (this.start) this.startGame();
     if (this.activeBG.menu) {
-        if (this.game.click) this.changeBackground(this.levels[0].houses[5]);
+        // if (this.game.click) this.changeBackground(this.levels[0].houses[5]);
+        if (this.activeBG === this.menus.title && this.game.click) {
+            this.game.addEntity(this.menus.dif);
+            this.activeBG = this.menus.dif;
+        }
+        else if (this.activeBG === this.menus.dif && this.game.click && this.menus.dif.hover != 'none') {
+            if (this.menus.dif.hover == 'classic')
+                this.difficulty = 1;
+            this.changeBackground(this.levels[0].houses[5]);
+        }
     }
     else {
         for (var i = this.activeBG.enemies.length - 1; i >= 0; --i) {
@@ -175,7 +237,7 @@ SceneManager.prototype.update = function () {
                 var old = this.player.weapon;
                 this.player.weapon = this.activeBG.drop;
                 this.player.weapon.floating = false;
-                var dif = findDif(this.player.weapon);
+                var dif = getTrans(this.player.weapon);
                 this.player.weapon.x = dif - 5;
                 this.player.weapon.y = 15 + dif;
 

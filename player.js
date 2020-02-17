@@ -112,10 +112,10 @@ function Gun(game, rarity) {
     this.floating = true;
     this.range = 250;
     calcDmg(this);
-    this.scale = 0.5;
+    this.scale = 0.85;
 
-    this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
+    this.static = ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png');
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
 
     Entity.call(this, game, 640, 360);
 }
@@ -131,7 +131,7 @@ function Bullet(game, x, y, rot, dmg) {
     this.maxSpeed = 500;
     this.damage = dmg;
     this.radius = 4;
-    
+
     Entity.call(this, game, x, y);
 }
 
@@ -141,7 +141,7 @@ Bullet.prototype.constructor = Bullet;
 Bullet.prototype.update = function () {
     if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
         this.removeFromWorld = true;
-    
+
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
         if (this.collide(ent)) {
@@ -292,8 +292,8 @@ Frump.prototype.update = function () {
     }
     else if (this.attacking) {
         if (this.weapon.type == 'gun') {
-            this.velocity.x *= 4/7;
-            this.velocity.y *= 4/7;
+            this.velocity.x *= 4 / 7;
+            this.velocity.y *= 4 / 7;
         }
 
         if (this.weapon.type == 'unarmed' && this.anim.atk.isDone()) {
