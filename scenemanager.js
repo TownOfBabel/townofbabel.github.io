@@ -180,6 +180,7 @@ function SceneManager(game) {
     this.levels[0].streets.push(new Background(game, './img/backgrounds/street00.png', new Bat(game, 0), 0));
     this.levels[0].houses.push(new Background(game, './img/backgrounds/house00.png', new Knife(game, 0), 0));
     buildStartRoom(this.levels[0]);
+    this.buildLevelOne();
 
     // this.levels[0].streets[0].walls.push(new Wall(game, 0, 0, 240, 180));
     // this.levels[0].streets[0].walls.push(new Wall(game, 226, 180, 14, 310));
@@ -304,6 +305,137 @@ SceneManager.prototype.update = function () {
 }
 
 SceneManager.prototype.draw = function (ctx) {
+}
+
+SceneManager.prototype.buildLevelOne = function () {
+    // house00 - Lil' Frump's House
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 0, 0, 210, 720));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 0, 0, 548, 314));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 0, 0, 693, 175));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 0, 0, 1280, 127));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 627, 281, 68, 439));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 582, 437, 90, 282));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 200, 430, 86, 60));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 200, 483, 225, 256));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 0, 693, 1280, 20));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 880, 203, 142, 142));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 809, 274, 53, 61));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 1022, 227, 53, 61));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 1250, 0, 30, 176));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 1250, 272, 30, 450));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 1181, 447, 52, 200));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 989, 457, 94, 192));
+    this.levels[0].houses[5].walls.push(new Wall(this.game, 788, 427, 92, 248));
+
+    // street00
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 226, 180, 14, 310));
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 226, 607, 14, 113));
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 145, 607, 81, 10));
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 0, 0, 54, 79));
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 0, 176, 244, 22));
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 720, 45, 205, 390));
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 1035, 0, 21, 164));
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 1035, 145, 245, 16));
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 1217, 0, 63, 720));
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 0, 235, 27, 141));
+    this.levels[0].streets[5].walls.push(new Wall(this.game, 0, 488, 27, 232));
+
+    // street01
+    this.levels[0].streets[0].walls.push(new Wall(this.game, 0, 0, 55, 720));
+    this.levels[0].streets[0].walls.push(new Wall(this.game, 1253, 0, 27, 120));
+    this.levels[0].streets[0].walls.push(new Wall(this.game, 1033, 160, 247, 33));
+    this.levels[0].streets[0].walls.push(new Wall(this.game, 1033, 160, 33, 269));
+    this.levels[0].streets[0].walls.push(new Wall(this.game, 1033, 535, 33, 184));
+    this.levels[0].streets[0].walls.push(new Wall(this.game, 1225, 191, 63, 248));
+    this.levels[0].streets[0].walls.push(new Wall(this.game, 1225, 551, 63, 248));
+
+    // street02
+    this.levels[0].streets[1].walls.push(new Wall(this.game, 224, 0, 34, 150));
+    this.levels[0].streets[1].walls.push(new Wall(this.game, 217, 372, 33, 348));
+    this.levels[0].streets[1].walls.push(new Wall(this.game, 0, 650, 250, 70));
+    this.levels[0].streets[1].walls.push(new Wall(this.game, 1032, 0, 22, 181));
+    this.levels[0].streets[1].walls.push(new Wall(this.game, 1032, 161, 248, 20));
+    this.levels[0].streets[1].walls.push(new Wall(this.game, 1250, 0, 31, 720));
+    this.levels[0].streets[1].walls.push(new Wall(this.game, 0, 0, 56, 156));
+    this.levels[0].streets[1].walls.push(new Wall(this.game, 0, 270, 56, 450));
+
+    // street03
+    this.levels[0].streets[2].walls.push(new Wall(this.game, 0, 0, 45, 334));
+    this.levels[0].streets[2].walls.push(new Wall(this.game, 229, 0, 22, 720));
+    this.levels[0].streets[2].walls.push(new Wall(this.game, 0, 496, 248, 36));
+    this.levels[0].streets[2].walls.push(new Wall(this.game, 0, 558, 56, 162));
+    this.levels[0].streets[2].walls.push(new Wall(this.game, 1037, 0, 37, 324));
+    this.levels[0].streets[2].walls.push(new Wall(this.game, 1037, 0, 243, 40));
+    this.levels[0].streets[2].walls.push(new Wall(this.game, 1037, 543, 29, 177));
+    this.levels[0].streets[2].walls.push(new Wall(this.game, 1227, 0, 53, 386));
+    this.levels[0].streets[2].walls.push(new Wall(this.game, 1227, 496, 53, 224));
+
+    // street04
+    this.levels[0].streets[3].walls.push(new Wall(this.game, 0, 203, 254, 37));
+    this.levels[0].streets[3].walls.push(new Wall(this.game, 225, 203, 33, 203));
+    this.levels[0].streets[3].walls.push(new Wall(this.game, 225, 629, 33, 91));
+    this.levels[0].streets[3].walls.push(new Wall(this.game, 715, 237, 205, 389));
+    this.levels[0].streets[3].walls.push(new Wall(this.game, 1147, 291, 133, 429));
+    this.levels[0].streets[3].walls.push(new Wall(this.game, 0, 305, 42, 173));
+    this.levels[0].streets[3].walls.push(new Wall(this.game, 0, 589, 42, 131));
+
+    // street05
+    this.levels[0].streets[4].walls.push(new Wall(this.game, 33, 250, 444, 236));
+    this.levels[0].streets[4].walls.push(new Wall(this.game, 329, 0, 271, 29));
+    this.levels[0].streets[4].walls.push(new Wall(this.game, 711, 0, 271, 29));
+
+    // house01
+    this.levels[0].houses[0].walls.push(new Wall(this.game, 0, 0, 1280, 34));
+    this.levels[0].houses[0].walls.push(new Wall(this.game, 0, 685, 1280, 34));
+    this.levels[0].houses[0].walls.push(new Wall(this.game, 0, 0, 34, 362));
+    this.levels[0].houses[0].walls.push(new Wall(this.game, 0, 470, 34, 250));
+    this.levels[0].houses[0].walls.push(new Wall(this.game, 0, 297, 379, 37));
+    this.levels[0].houses[0].walls.push(new Wall(this.game, 341, 0, 37, 185));
+    this.levels[0].houses[0].walls.push(new Wall(this.game, 654, 396, 37, 324));
+    this.levels[0].houses[0].walls.push(new Wall(this.game, 690, 437, 95, 273));
+    this.levels[0].houses[0].walls.push(new Wall(this.game, 880, 157, 214, 214));
+    this.levels[0].houses[0].walls.push(new Wall(this.game, 1247, 0, 34, 720));
+
+    // house02
+    this.levels[0].houses[1].walls.push(new Wall(this.game, 0, 0, 1280, 34));
+    this.levels[0].houses[1].walls.push(new Wall(this.game, 0, 685, 1280, 34));
+    this.levels[0].houses[1].walls.push(new Wall(this.game, 0, 0, 37, 720));
+    this.levels[0].houses[1].walls.push(new Wall(this.game, 324, 159, 43, 353));
+    this.levels[0].houses[1].walls.push(new Wall(this.game, 795, 217, 43, 353));
+    this.levels[0].houses[1].walls.push(new Wall(this.game, 1093, 0, 187, 100));
+    this.levels[0].houses[1].walls.push(new Wall(this.game, 1244, 0, 36, 312));
+    this.levels[0].houses[1].walls.push(new Wall(this.game, 1244, 421, 36, 300));
+
+    // house03
+    this.levels[0].houses[2].walls.push(new Wall(this.game, 0, 0, 1280, 34));
+    this.levels[0].houses[2].walls.push(new Wall(this.game, 0, 685, 1280, 34));
+    this.levels[0].houses[2].walls.push(new Wall(this.game, 0, 0, 34, 297));
+    this.levels[0].houses[2].walls.push(new Wall(this.game, 0, 406, 34, 314));
+    this.levels[0].houses[2].walls.push(new Wall(this.game, 1247, 0, 34, 720));
+    this.levels[0].houses[2].walls.push(new Wall(this.game, 339, 0, 37, 285));
+    this.levels[0].houses[2].walls.push(new Wall(this.game, 743, 369, 37, 351));
+    this.levels[0].houses[2].walls.push(new Wall(this.game, 900, 581, 259, 109));
+
+    // house04
+    this.levels[0].houses[3].walls.push(new Wall(this.game, 0, 0, 1280, 34));
+    this.levels[0].houses[3].walls.push(new Wall(this.game, 0, 685, 1280, 34));
+    this.levels[0].houses[3].walls.push(new Wall(this.game, 0, 0, 37, 720));
+    this.levels[0].houses[3].walls.push(new Wall(this.game, 90, 0, 203, 90));
+    this.levels[0].houses[3].walls.push(new Wall(this.game, 496, 0, 41, 283));
+    this.levels[0].houses[3].walls.push(new Wall(this.game, 762, 134, 152, 152));
+    this.levels[0].houses[3].walls.push(new Wall(this.game, 324, 482, 607, 41));
+    this.levels[0].houses[3].walls.push(new Wall(this.game, 1247, 0, 34, 189));
+    this.levels[0].houses[3].walls.push(new Wall(this.game, 1247, 302, 34, 418));
+
+    // house05
+    this.levels[0].houses[4].walls.push(new Wall(this.game, 0, 0, 1280, 34));
+    this.levels[0].houses[4].walls.push(new Wall(this.game, 0, 0, 37, 720));
+    this.levels[0].houses[4].walls.push(new Wall(this.game, 1247, 0, 34, 720));
+    this.levels[0].houses[4].walls.push(new Wall(this.game, 531, 0, 217, 286));
+    this.levels[0].houses[4].walls.push(new Wall(this.game, 210, 481, 263, 37));
+    this.levels[0].houses[4].walls.push(new Wall(this.game, 808, 481, 263, 37));
+    this.levels[0].houses[4].walls.push(new Wall(this.game, 0, 688, 577, 32));
+    this.levels[0].houses[4].walls.push(new Wall(this.game, 693, 688, 587, 32));
 }
 
 SceneManager.prototype.updateBackground = function () {

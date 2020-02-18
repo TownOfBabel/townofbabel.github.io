@@ -79,7 +79,7 @@ function Knife(game, rarity) {
     this.scale = 1;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
 
     Entity.call(this, game, 640, 360);
 }
@@ -97,7 +97,7 @@ function Bat(game, rarity) {
     this.scale = 0.7;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
 
     Entity.call(this, game, 640, 360);
 }
@@ -115,7 +115,7 @@ function Gun(game, rarity) {
     this.scale = 0.85;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png'), 100, 0, 100, 100, .3, 4, true, false);
+    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
 
     Entity.call(this, game, 640, 360);
 }
@@ -213,7 +213,7 @@ function Frump(game) {
     this.atkCD = 0;
     this.hitCD = 0;
 
-    Entity.call(this, game, 65, 430);
+    Entity.call(this, game, 515, 470);
 }
 
 Frump.prototype = new Entity();
