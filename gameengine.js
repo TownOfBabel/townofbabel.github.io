@@ -163,7 +163,7 @@ function Entity(game, x, y) {
 }
 
 Entity.prototype.collide = function (other) {
-    if (other.wall) {
+    if (other.wall || other.door) {
         if (this.x < other.x) {
             if (this.y < other.y) {
                 this.side = 'topleft';
