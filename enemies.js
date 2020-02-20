@@ -50,15 +50,29 @@ Enemy.prototype.update = function () {
     }
 
     // Boundary collisions
-    if (this.collideLeft() || this.collideRight()) {
-        this.velocity.x = -this.velocity.x * (1 / friction);
-        if (this.collideLeft()) this.x = this.radius;
-        if (this.collideRight()) this.x = 1280 - this.radius;
+    if (this.caged) {
+        if (this.collideLeft() || this.collideRight()) {
+            this.velocity.x = -this.velocity.x * (1 / friction);
+            if (this.collideLeft()) this.x = this.radius + 1150;
+            if (this.collideRight()) this.x = 1280 - this.radius;
+        }
+        if (this.collideTop() || this.collideBottom()) {
+            this.velocity.y = -this.velocity.y * (1 / friction);
+            if (this.collideTop()) this.y = this.radius;
+            if (this.collideBottom()) this.y = 150 - this.radius;
+        }
     }
-    if (this.collideTop() || this.collideBottom()) {
-        this.velocity.y = -this.velocity.y * (1 / friction);
-        if (this.collideTop()) this.y = this.radius;
-        if (this.collideBottom()) this.y = 720 - this.radius;
+    else {
+        if (this.collideLeft() || this.collideRight()) {
+            this.velocity.x = -this.velocity.x * (1 / friction);
+            if (this.collideLeft()) this.x = this.radius;
+            if (this.collideRight()) this.x = 1280 - this.radius;
+        }
+        if (this.collideTop() || this.collideBottom()) {
+            this.velocity.y = -this.velocity.y * (1 / friction);
+            if (this.collideTop()) this.y = this.radius;
+            if (this.collideBottom()) this.y = 720 - this.radius;
+        }
     }
 
     // Wall and Player/Enemy collisions
@@ -177,6 +191,181 @@ Enemy.prototype.draw = function (ctx) {
         this.anim.slam.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.attacking)
         this.anim.atk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else {
+        if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5)
+            this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+        else
+            this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    }
+}
+
+function MiniBoss(game, dogs) {
+    // animations
+    this.anim = {};
+    this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 1, 1, true, false);
+    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 0.15, 1, true, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 200, 200, 200, 0.6, 1, false, false);
+    this.anim.sht = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 0.7, 1, false, false);
+    this.anim.wsl = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 0.5, 1, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 0.15, 1, false, false);
+
+    // properties
+    this.enemy = true;
+    this.dogs = dogs;
+    this.radius = 38;
+    this.faces = 42;
+    this.sides = 42;
+    this.rotation = Math.PI / 2;
+    this.acceleration = 60;
+    this.velocity = { x: 0, y: 0 };
+    this.maxSpeed = 85;
+    this.weapon = {};
+    this.weapon.type = 'bat';
+    this.range = 100;
+    this.health = 200;
+
+    this.atkCD = 0;
+    this.shtCD = 0;
+    this.wslCD = 0;
+    this.hitCD = 0;
+
+    Entity.call(this, game, 640, 300);
+}
+
+MiniBoss.prototype = new Entity();
+MiniBoss.prototype.constructor = MiniBoss;
+
+MiniBoss.prototype.update = function () {
+
+    if (this.atkCD > 0) this.atkCD--;
+    if (this.shtCD > 0) this.shtCD--;
+    if (this.wslCD > 0) this.wslCD--;
+    if (this.hitCD > 0) this.hitCD--;
+    else this.hurt = false;
+
+    // animation control
+    if (this.hurt && this.anim.hit.isDone()) {
+        this.anim.hit.elapsedTime = 0;
+        this.hurt = false;
+    }
+    if (this.whistle || this.shoot) {
+        this.velocity.x *= (4 / 7);
+        this.velocity.y *= (4 / 7);
+        if (this.anim.wsl.isDone()) {
+            this.anim.wsl.elapsedTime = 0;
+            this.whistle = false;
+            this.wslCD = 480;
+        }
+        if (this.anim.sht.isDone()) {
+            this.anim.sht.elapsedTime = 0;
+            this.shoot = false;
+            this.shtCD = 90;
+        }
+    }
+    if (this.attack && this.anim.atk.isDone()) {
+        this.anim.atk.elapsedTime = 0;
+        this.attack = false;
+        this.atkCD = 30;
+    }
+
+    // boundary collisions
+    if (this.collideLeft() || this.collideRight()) {
+        this.velocity.x = -this.velocity.x * (1 / friction);
+        if (this.collideLeft()) this.x = this.radius;
+        if (this.collideRight()) this.x = 1280 - this.radius;
+    }
+    if (this.collideTop() || this.collideBottom()) {
+        this.velocity.y = -this.velocity.y * (1 / friction);
+        if (this.collideTop()) this.y = this.radius;
+        if (this.collideBottom()) this.y = 720 - this.radius;
+    }
+
+    // entity collisions
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (ent.wall) {
+            if (this.collide(ent)) {
+                if (this.side == 'left' || this.side == 'right') {
+                    this.velocity.x = -this.velocity.x * (1 / friction);
+                    if (this.side == 'left') this.x = ent.x - this.radius;
+                    else this.x = ent.x + ent.w + this.radius;
+                }
+                else if (this.side == 'top' || this.side == 'bottom') {
+                    this.velocity.y = -this.velocity.y * (1 / friction);
+                    if (this.side == 'top') this.y = ent.y - this.radius;
+                    else this.y = ent.y + ent.h + this.radius;
+                }
+            }
+        }
+        else if (ent.player && ent.alive) {
+            this.rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
+            var difX = Math.cos(this.rotation);
+            var difY = Math.sin(this.rotation);
+            var delta = this.radius + ent.radius - distance(this, ent);
+            if (this.collide(ent) && !ent.dash) {
+                this.velocity.x = -this.velocity.x * (1 / friction);
+                this.velocity.y = -this.velocity.y * (1 / friction);
+                this.x -= difX * delta / 2;
+                this.y -= difY * delta / 2;
+                ent.x += difX * delta / 2;
+                ent.y += difY * delta / 2;
+            }
+            else {
+                this.velocity.x += difX * this.acceleration;
+                this.velocity.y += difY * this.acceleration;
+            }
+            var dist = distance(this, ent);
+            if (this.wslCD <= 0 && this.dogs.length > 0) {
+                this.whistle = true;
+                this.dogs.pop().caged = false;
+                this.wslCD = 480;
+            }
+            else if (dist < 110 && this.atkCD <= 0) {
+                this.attack = true;
+                this.atkCD = 112;
+            }
+            else if (this.shtCD <= 0) {
+                this.shoot = true;
+                var difX = Math.cos(this.rotation) * 45;
+                var difY = Math.sin(this.rotation) * 45;
+                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 5, 1));
+                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 6, 1));
+                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 6, 1));
+                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 5, 1));
+                this.shtCD = 90;
+            }
+            if (this.attack && ent.hitCD <= 0 && this.hit(ent)
+                && this.atkCD > 76 && this.atkCD <= 100) {
+                ent.hurt = true;
+                ent.health.current -= 3;
+                ent.hitCD = 24;
+            }
+        }
+    }
+
+    // speed control
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+
+    this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
+    this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
+}
+
+MiniBoss.prototype.draw = function (ctx) {
+    if (this.hurt)
+        this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.whistle)
+        this.anim.wsl.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.attack)
+        this.anim.atk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.shoot)
+        this.anim.sht.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else {
         if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5)
             this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);

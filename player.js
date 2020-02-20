@@ -153,7 +153,6 @@ Bullet.prototype.update = function () {
             else if (ent.player) {
                 ent.hurt = true;
                 ent.health.current--;
-                ent.hitCD = 6;
                 this.removeFromWorld = true;
             }
             else if (ent.wall)

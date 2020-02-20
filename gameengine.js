@@ -222,7 +222,8 @@ Entity.prototype.collide = function (other) {
 }
 
 Entity.prototype.collideLeft = function () {
-    return (this.x - this.radius) < 0;
+    if (this.caged) return (this.x - this.radius) < 1150;
+    else return (this.x - this.radius) < 0;
 }
 
 Entity.prototype.collideRight = function () {
@@ -234,7 +235,8 @@ Entity.prototype.collideTop = function () {
 }
 
 Entity.prototype.collideBottom = function () {
-    return (this.y + this.radius) > 720;
+    if (this.caged) return (this.y + this.radius) > 150;
+    else return (this.y + this.radius) > 720;
 }
 
 Entity.prototype.hit = function (other, range) {
@@ -246,7 +248,7 @@ Entity.prototype.hit = function (other, range) {
 
     if (range === undefined) {
         if ((distance(this, other) < 75 && acc < Math.PI / 4)
-            || (this.weapon.type == 'bat' && acc < Math.PI * 2 / 5)
+            || ((this.weapon.type == 'bat' || this.weapon.type == 'swing') && acc < Math.PI * 2 / 5)
             || acc < Math.PI / 8) {
             if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
                 return distance(this, other) < this.range + other.faces;

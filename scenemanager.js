@@ -160,7 +160,7 @@ Arrow.prototype.update = function () {
             this.rotation = -Math.PI / 2;
         }
     }
-    
+
 }
 
 Arrow.prototype.draw = function (ctx) {
@@ -187,7 +187,12 @@ function SceneManager(game) {
     this.menus.lose = new Menu(game, './img/menus/lose.png');
 
     this.buildLevelOne(game);
-    this.levels[0].streets[5].enemies.push(new Bodyguard(game));
+    var dogs = [new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game)];
+    for (var i = 0; i < dogs.length; i++) {
+        dogs[i].caged = true;
+        this.levels[0].streets[5].enemies.push(dogs[i]);
+    }
+    this.levels[0].streets[5].enemies.push(new MiniBoss(game, dogs));
 
     this.activeBG = this.menus.title;
     this.start = true;
@@ -266,7 +271,7 @@ SceneManager.prototype.update = function () {
     //     this.player.y = 430;
     //     this.changeBackground(this.menus.win);
     // }
-    
+
 }
 
 SceneManager.prototype.draw = function (ctx) {
