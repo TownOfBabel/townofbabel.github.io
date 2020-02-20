@@ -160,13 +160,12 @@ Arrow.prototype.update = function () {
             this.rotation = -Math.PI / 2;
         }
     }
-    Entity.prototype.update.call(this);
+    
 }
 
 Arrow.prototype.draw = function (ctx) {
     if (this.manager.level.clear)
         this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
-    Entity.prototype.draw.call(this);
 }
 
 function getTrans(weapon) {
@@ -188,7 +187,7 @@ function SceneManager(game) {
     this.menus.lose = new Menu(game, './img/menus/lose.png');
 
     this.buildLevelOne(game);
-    this.levels[0].streets[5].enemies.push(new Dog(game));
+    this.levels[0].streets[5].enemies.push(new Bodyguard(game));
 
     this.activeBG = this.menus.title;
     this.start = true;
@@ -267,7 +266,7 @@ SceneManager.prototype.update = function () {
     //     this.player.y = 430;
     //     this.changeBackground(this.menus.win);
     // }
-    Entity.prototype.update.call(this);
+    
 }
 
 SceneManager.prototype.draw = function (ctx) {

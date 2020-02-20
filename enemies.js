@@ -6,6 +6,7 @@ function Enemy(game) {
     this.velocity = { x: 0, y: 0 };
 
     this.atkCD = 0;
+    this.slamCD = 0;
     this.hitCD = 0;
     this.ctr = 0;
 
@@ -19,6 +20,7 @@ Enemy.prototype.update = function () {
 
     this.ctr++;
     if (this.atkCD > 0) this.atkCD--;
+    if (this.slamCD > 0) this.slamCD--;
     if (this.hitCD > 0) this.hitCD--;
     if (this.hitCD <= 0) this.hurt = false;
     if (this.hurt) this.engage = true;
@@ -27,6 +29,15 @@ Enemy.prototype.update = function () {
     if (this.hurt && this.anim.hit.isDone()) {
         this.anim.hit.elapsedTime = 0;
         this.hurt = false;
+    }
+    if (this.slamming) {
+        this.velocity.x = 0;
+        this.velocity.y = 0;
+        if (this.anim.slam.isDone()) {
+            this.anim.slam.elapsedTime = 0;
+            this.slamming = false;
+            this.slamCD = 180;
+        }
     }
     if (this.attacking && this.anim.atk.isDone()) {
         this.anim.atk.elapsedTime = 0;
@@ -113,7 +124,11 @@ Enemy.prototype.update = function () {
                     this.velocity.y += difY * this.acceleration;
                 }
                 // Attack calculations
-                if (distance(this, ent) < (this.range + ent.radius / 2) && this.atkCD <= 0) {
+                if (this.weapon.type == 'swing' && distance(this, ent) < 220 && this.slamCD <= 0) {
+                    this.slamming = true;
+                    this.slamCD = 150;
+                }
+                else if (distance(this, ent) < (this.range + ent.radius / 2) && this.atkCD <= 0) {
                     this.attacking = true;
                     this.atkCD = this.begLag;
                 }
@@ -123,6 +138,13 @@ Enemy.prototype.update = function () {
                     this.atkCD = this.begLag;
                     this.acceleration = 400;
                     this.maxSpeed = 400;
+                }
+                if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 200)
+                    && this.slamCD > 91 && this.slamCD <= 100) {
+                    ent.hurt = true;
+                    ent.health.current--;
+                    ent.hitCD = 9;
+                    ent.stunCD = 45;
                 }
                 if (this.attacking && ent.hitCD <= 0 && this.hit(ent)
                     && this.atkCD > (100 - this.hitDur) && this.atkCD <= 100) {
@@ -146,13 +168,13 @@ Enemy.prototype.update = function () {
 
     this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-
-    Entity.prototype.update.call(this);
 }
 
 Enemy.prototype.draw = function (ctx) {
     if (this.hurt)
         this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.slamming)
+        this.anim.slam.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.attacking)
         this.anim.atk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else {
@@ -161,7 +183,6 @@ Enemy.prototype.draw = function (ctx) {
         else
             this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     }
-    Entity.prototype.draw.call(this);
 }
 
 function Mailbox(game, timer) {
@@ -208,12 +229,10 @@ Mailbox.prototype.update = function () {
     }
     this.x += this.velocity.x * this.game.clockTick;
     this.y += this.velocity.y * this.game.clockTick;
-    Entity.prototype.update.call(this);
 }
 
 Mailbox.prototype.draw = function (ctx) {
     ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
-    Entity.prototype.draw.call(this);
 }
 
 function Dog(game) {
@@ -299,6 +318,7 @@ function Bodyguard(game) {
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 0.15, 8, true, false);
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 200, 200, 200, 0.14, 5, false, false);
+    this.anim.slam = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 400, 200, 200, 0.14, 7, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 1400, 400, 200, 200, 0.15, 1, false, false);
 
     // Properties
