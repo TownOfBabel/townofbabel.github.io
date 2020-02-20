@@ -227,7 +227,7 @@ SceneManager.prototype.update = function () {
             this.updateLevel = true;
             if (this.game.player.interact) this.swapHeld++;
             else this.swapHeld = 0;
-            if (this.swapHeld > 60 && distance(this.player, this.activeBG.drop) < 100) {
+            if (this.swapHeld > 30 && distance(this.player, this.activeBG.drop) < 100) {
                 var old = this.player.weapon;
                 this.player.weapon = this.activeBG.drop;
                 this.player.weapon.floating = false;

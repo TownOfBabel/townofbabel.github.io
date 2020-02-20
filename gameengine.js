@@ -204,7 +204,7 @@ Entity.prototype.collide = function (other) {
             else return true;
         }
     }
-    else return distance(this, other.x, other.y) < this.radius + other.radius;
+    else return distance(this, other) < this.radius + other.radius;
 }
 
 Entity.prototype.collideLeft = function () {
