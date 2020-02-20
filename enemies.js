@@ -3,7 +3,6 @@ function Enemy(game) {
     this.enemy = true;
     this.rotations = [];
     this.rotation = Math.random() * (Math.PI * 2) - Math.PI;
-    this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
 
     this.atkCD = 0;
@@ -34,8 +33,8 @@ Enemy.prototype.update = function () {
         this.attacking = false;
         this.atkCD = this.endLag;
         if (this.weapon.type == 'bite') {
-            this.acceleration /= 3;
-            this.maxSpeed /= 3;
+            this.acceleration = 200;
+            this.maxSpeed = 200;
         }
     }
 
@@ -86,7 +85,7 @@ Enemy.prototype.update = function () {
             var rotationDif = Math.abs(this.rotation - atan);
             if (rotationDif > Math.PI) rotationDif = (Math.PI * 2) - rotationDif;
 
-            if ((distance(this, ent) < this.sight && rotationDif < this.fov)
+            if ((distance(this, ent) < this.sight && rotationDif <= this.fov)
                 || distance(this, ent) < (this.range + ent.radius + 50) || this.engage) {
                 this.engage = true;
                 // Determine rotation
@@ -119,11 +118,11 @@ Enemy.prototype.update = function () {
                     this.atkCD = this.begLag;
                 }
                 else if (this.weapon.type == 'bite' && this.atkCD <= 0
-                    && distance(this, ent) < (this.range + ent.range)) {
+                    && distance(this, ent) < (this.range * 3 / 2 + ent.range)) {
                     this.attacking = true;
                     this.atkCD = this.begLag;
-                    this.acceleration *= 3;
-                    this.maxSpeed *= 3;
+                    this.acceleration = 400;
+                    this.maxSpeed = 400;
                 }
                 if (this.attacking && ent.hitCD <= 0 && this.hit(ent)
                     && this.atkCD > (100 - this.hitDur) && this.atkCD <= 100) {
@@ -222,7 +221,7 @@ function Dog(game) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 200, 200, 200, 0.1, 6, true, false);
-    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 600, 200, 200, 0.1, 5, false, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 600, 200, 200, 0.05, 5, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 1000, 0, 200, 200, 0.15, 1, false, false);
 
     // Properties
@@ -230,15 +229,16 @@ function Dog(game) {
     this.faces = 42;
     this.sides = 18;
     this.rotationLag = 1;
-    this.maxSpeed = 250;
+    this.acceleration = 200;
+    this.maxSpeed = 200;
     this.weapon = {};
     this.weapon.type = 'bite';
-    this.begLag = 118;
-    this.endLag = 120;
-    this.hitDur = 12;
-    this.range = 50;
-    this.sight = 350;
-    this.fov = Math.PI * 3 / 7;
+    this.begLag = 109;
+    this.endLag = 75;
+    this.hitDur = 6;
+    this.range = 70;
+    this.sight = 450;
+    this.fov = Math.PI;
     this.health = 60;
     this.dmg = 2;
 
@@ -280,6 +280,7 @@ function Thug(game, weapon) {
     this.faces = 28;
     this.sides = 38;
     this.rotationLag = 2;
+    this.acceleration = 100;
     this.maxSpeed = 150;
     this.sight = 250;
     this.fov = Math.PI * 2 / 5;
@@ -305,6 +306,7 @@ function Bodyguard(game) {
     this.faces = 30;
     this.sides = 48;
     this.rotationLag = 3;
+    this.acceleration = 75;
     this.maxSpeed = 100;
     this.weapon = {};
     this.weapon.type = 'swing';

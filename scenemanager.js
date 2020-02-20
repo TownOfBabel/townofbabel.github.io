@@ -188,6 +188,7 @@ function SceneManager(game) {
     this.menus.lose = new Menu(game, './img/menus/lose.png');
 
     this.buildLevelOne(game);
+    this.levels[0].streets[5].enemies.push(new Dog(game));
 
     this.activeBG = this.menus.title;
     this.start = true;
