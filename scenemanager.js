@@ -221,16 +221,18 @@ SceneManager.prototype.update = function () {
         // }
     }
     else {
+        var bossDead = false;
         for (var i = this.activeBG.enemies.length - 1; i >= 0; --i) {
             var ent = this.activeBG.enemies[i];
-            if (this.activeBG.enemies[i].health <= 0) {
+            if (ent.health <= 0) {
                 if (ent.boss) {
-                    for (var j = ent.dogs.length - 1; j >= 0; j--) {
-                        ent.dogs[j].removeFromWorld = true;
-                        ent.dogs.splice(j, 1);
-                    }
+                    bossDead = true;
                 }
-                this.activeBG.enemies[i].removeFromWorld = true;
+                ent.removeFromWorld = true;
+                this.activeBG.enemies.splice(i, 1);
+            }
+            else if (bossDead) {
+                ent.removeFromWorld = true;
                 this.activeBG.enemies.splice(i, 1);
             }
         }

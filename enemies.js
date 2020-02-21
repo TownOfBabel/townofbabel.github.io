@@ -1,3 +1,19 @@
+function HealthDrop(game, x, y, heal) {
+    this.image = ASSET_MANAGER.getAsset('./img/entities/health.png');
+    this.heal = heal;
+    Entity.call(this, game, x, y);
+}
+
+HealthDrop.prototype = new Entity();
+HealthDrop.prototype.constructor = HealthDrop;
+
+HealthDrop.prototype.update = function () {
+}
+
+HealthDrop.prototype.draw = function (ctx) {
+    ctx.drawImage(this.image, 0, 360, 20, 20, this.x, this.y, 20, 20);
+}
+
 function Enemy(game) {
     //Properties
     this.enemy = true;
@@ -17,6 +33,9 @@ Enemy.prototype = new Entity();
 Enemy.prototype.constructor = Enemy;
 
 Enemy.prototype.update = function () {
+    if (Number.isNaN(this.health)){
+        this.health = this.initHP;
+    }
 
     this.ctr++;
     if (this.atkCD > 0) this.atkCD--;
@@ -92,7 +111,7 @@ Enemy.prototype.update = function () {
                 }
             }
         }
-        else if (ent.enemy) {
+        else if (ent.enemy && !ent.boss) {
             var difX = Math.cos(this.rotation);
             var difY = Math.sin(this.rotation);
             var delta = this.radius + ent.radius - distance(this, ent);
@@ -203,11 +222,12 @@ function MiniBoss(game, dogs) {
     // animations
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 1, 1, true, false);
-    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 0.15, 1, true, false);
-    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 200, 200, 200, 0.6, 1, false, false);
-    this.anim.sht = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 0.7, 1, false, false);
-    this.anim.wsl = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 0.5, 1, false, false);
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 0.15, 1, false, false);
+    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 200, 0, 200, 200, 0.2, 3, true, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 600, 400, 300, 0.15, 4, false, false);
+    this.anim.sht = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 200, 200, 200, 0.1, 8, false, false);
+    this.anim.wsl = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 400, 200, 200, 0.1, 3, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 1400, 0, 200, 200, 0.15, 1, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 800, 0, 200, 200, 0.25, 2, false, false);
 
     // properties
     this.boss = true;
@@ -217,12 +237,12 @@ function MiniBoss(game, dogs) {
     this.faces = 42;
     this.sides = 42;
     this.rotation = Math.PI / 2;
-    this.acceleration = 60;
+    this.acceleration = 50;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 85;
+    this.maxSpeed = 65;
     this.weapon = {};
     this.weapon.type = 'bat';
-    this.range = 100;
+    this.range = 130;
     this.health = 200;
 
     this.atkCD = 0;
@@ -237,6 +257,9 @@ MiniBoss.prototype = new Entity();
 MiniBoss.prototype.constructor = MiniBoss;
 
 MiniBoss.prototype.update = function () {
+    if (Number.isNaN(this.health)) {
+        this.health = 200;
+    }
 
     if (this.atkCD > 0) this.atkCD--;
     if (this.shtCD > 0) this.shtCD--;
@@ -250,8 +273,8 @@ MiniBoss.prototype.update = function () {
         this.hurt = false;
     }
     if (this.whistle || this.shoot) {
-        this.velocity.x *= (4 / 7);
-        this.velocity.y *= (4 / 7);
+        this.velocity.x *= (3 / 7);
+        this.velocity.y *= (3 / 7);
         if (this.anim.wsl.isDone()) {
             this.anim.wsl.elapsedTime = 0;
             this.whistle = false;
@@ -266,7 +289,7 @@ MiniBoss.prototype.update = function () {
     if (this.attack && this.anim.atk.isDone()) {
         this.anim.atk.elapsedTime = 0;
         this.attack = false;
-        this.atkCD = 30;
+        this.atkCD = 60;
     }
 
     // boundary collisions
@@ -322,25 +345,28 @@ MiniBoss.prototype.update = function () {
                 dog.caged = false;
                 this.wslCD = 720;
             }
-            else if (dist < 110 && this.atkCD <= 0) {
+            else if (dist < 140 && this.atkCD <= 0) {
                 this.attack = true;
                 this.atkCD = 112;
             }
             else if (this.shtCD <= 0) {
                 this.shoot = true;
+                this.shtCD = 118;
+            }
+            if (this.attack && ent.hitCD <= 0 && this.hit(ent)
+                && this.atkCD > 80 && this.atkCD <= 100) {
+                ent.hurt = true;
+                ent.health.current -= 2;
+                ent.hitCD = 20;
+            }
+            else if (this.shoot && this.shtCD == 100) {
                 var difX = Math.cos(this.rotation) * 45;
                 var difY = Math.sin(this.rotation) * 45;
                 this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 7, 1));
                 this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 15, 1));
+                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation));
                 this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 15, 1));
                 this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 7, 1));
-                this.shtCD = 90;
-            }
-            if (this.attack && ent.hitCD <= 0 && this.hit(ent)
-                && this.atkCD > 76 && this.atkCD <= 100) {
-                ent.hurt = true;
-                ent.health.current -= 3;
-                ent.hitCD = 24;
             }
         }
     }
@@ -447,10 +473,11 @@ function Dog(game) {
     this.endLag = 75;
     this.hitDur = 6;
     this.range = 70;
-    this.sight = 450;
+    this.sight = 500;
     this.fov = Math.PI;
     this.health = 60;
-    this.dmg = 2;
+    this.initHP = 60;
+    this.dmg = 1;
 
     Enemy.call(this, game);
 }
@@ -495,6 +522,7 @@ function Thug(game, weapon) {
     this.sight = 250;
     this.fov = Math.PI * 2 / 5;
     this.health = 100;
+    this.initHP = 100;
     this.dmg = 1;
 
     Enemy.call(this, game);
@@ -528,6 +556,7 @@ function Bodyguard(game) {
     this.sight = 200;
     this.fov = Math.PI * 4 / 9;
     this.health = 140;
+    this.initHP = 140;
     this.dmg = 3;
 
     Enemy.call(this, game);

@@ -125,9 +125,9 @@ Gun.prototype.constructor = Gun;
 function Bullet(game, x, y, rot, dmg) {
     this.image = ASSET_MANAGER.getAsset('./img/weapons/bullet_alt.png');
     this.velocity = {};
-    this.velocity.x = Math.cos(rot) * 9999;
-    this.velocity.y = Math.sin(rot) * 9999;
-    this.maxSpeed = 500;
+    this.velocity.x = Math.cos(rot) * 99999;
+    this.velocity.y = Math.sin(rot) * 99999;
+    this.maxSpeed = 750;
     this.damage = dmg;
     this.radius = 4;
 
@@ -216,160 +216,171 @@ Frump.prototype = new Entity();
 Frump.prototype.constructor = Frump;
 
 Frump.prototype.update = function () {
-    // Player faces mouse pointer
-    this.rotation = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x - this.x);
-    if (this.dashCD > 0) this.dashCD--;
-    if (this.stunCD > 0) this.stunCD--;
-    if (this.atkCD > 0) this.atkCD--;
-    if (this.hitCD > 0) this.hitCD--;
-    if (this.hitCD <= 0) this.hurt = false;
-
-    // User control
-    if (this.game.player.up) this.velocity.y -= this.acceleration;
-    if (this.game.player.down) this.velocity.y += this.acceleration;
-    if (this.game.player.left) this.velocity.x -= this.acceleration;
-    if (this.game.player.right) this.velocity.x += this.acceleration;
-
-    if (this.stunCD > 0) {
-        this.velocity.x = 0;
-        this.velocity.y = 0;
+    if (this.health.current <= 0) {
+        this.die = true;
+        this.alive = false;
     }
+    if (this.die && this.anim.die.isDone()) {
+        this.anim.die.elapsedTime = 0;
+        this.die = false;
+    }
+    if (this.alive) {
+        // Player faces mouse pointer
+        this.rotation = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x - this.x);
+        if (this.dashCD > 0) this.dashCD--;
+        if (this.stunCD > 0) this.stunCD--;
+        if (this.atkCD > 0) this.atkCD--;
+        if (this.hitCD > 0) this.hitCD--;
+        if (this.hitCD <= 0) this.hurt = false;
 
-    // Dash ability
-    if (this.game.player.space && this.dashCD <= 0 && this.stunCD <= 0) {
-        if (this.attacking) {
-            this.attacking = false;
-            this.anim.atk.elapsedTime = 0;
-            this.anim.knifeAtk.elapsedTime = 0;
-            this.anim.batAtk.elapsedTime = 0;
-        }
-        this.dash = true;
-        this.dashCD = 90;
-        this.hitCD = 20;
-        this.acceleration *= 3;
-        this.maxSpeed *= 3;
-    }
+        // User control
+        if (this.game.player.up) this.velocity.y -= this.acceleration;
+        if (this.game.player.down) this.velocity.y += this.acceleration;
+        if (this.game.player.left) this.velocity.x -= this.acceleration;
+        if (this.game.player.right) this.velocity.x += this.acceleration;
 
-    // Check for attack + update range
-    if (!this.dash && this.game.click && this.atkCD <= 0 && this.stunCD <= 0) {
-        this.attacking = true;
-        if (this.weapon.type == 'knife') {
-            this.atkCD = 105;
-            this.hitDur = 7;
-            this.range = 85;
-        }
-        else if (this.weapon.type == 'bat') {
-            this.atkCD = 110;
-            this.hitDur = 14;
-            this.range = 110;
-        }
-        else if (this.weapon.type == 'gun') {
-            this.atkCD = 24;
-            var difX = Math.cos(this.rotation) * 35;
-            var difY = Math.sin(this.rotation) * 35;
-            this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation, this.weapon.damage));
-        }
-        else {
-            this.atkCD = 109;
-            this.hitDur = 18;
-            this.range = 60;
-        }
-    }
-
-    // Update animations
-    if (this.hurt && this.anim.hit.isDone()) {
-        this.anim.hit.elapsedTime = 0;
-        this.hurt = false;
-    }
-    if (this.dash && !this.attacking) {
-        if (this.anim.dash.isDone()) {
-            this.anim.dash.elapsedTime = 0;
-            this.dash = false;
-            this.radius = 24;
-            this.dashCD = 60;
-            this.acceleration /= 3;
-            this.maxSpeed /= 3;
-        }
-    }
-    else if (this.attacking) {
-        if (this.weapon.type == 'gun') {
-            this.velocity.x *= 4 / 7;
-            this.velocity.y *= 4 / 7;
+        if (this.stunCD > 0) {
+            this.velocity.x = 0;
+            this.velocity.y = 0;
         }
 
-        if (this.weapon.type == 'unarmed' && this.anim.atk.isDone()) {
-            this.anim.atk.elapsedTime = 0;
-            this.attacking = false;
-            this.atkCD = 24;
+        // Dash ability
+        if (this.game.player.space && this.dashCD <= 0 && this.stunCD <= 0) {
+            if (this.attacking) {
+                this.attacking = false;
+                this.anim.atk.elapsedTime = 0;
+                this.anim.knifeAtk.elapsedTime = 0;
+                this.anim.batAtk.elapsedTime = 0;
+            }
+            this.dash = true;
+            this.dashCD = 90;
+            this.hitCD = 20;
+            this.acceleration *= 3;
+            this.maxSpeed *= 3;
         }
-        else if (this.weapon.type == 'knife' && this.anim.knifeAtk.isDone()) {
-            this.anim.knifeAtk.elapsedTime = 0;
-            this.attacking = false;
-            this.atkCD = 9;
-        }
-        else if (this.weapon.type == 'bat' && this.anim.batAtk.isDone()) {
-            this.anim.batAtk.elapsedTime = 0;
-            this.attacking = false;
-            this.atkCD = 18;
-        }
-        else if (this.weapon.type == 'gun' && this.anim.atk.isDone()) {
-            this.anim.atk.elapsedTime = 0;
-            this.attacking = false;
-        }
-    }
 
-    // Wall collisions and enemy hurtbox collisions
-    // - normal collisions with enemy controlled by enemy
-    for (var i = 0; i < this.game.entities.length; i++) {
-        var ent = this.game.entities[i];
-        if (ent.wall) {
-            if (this.collide(ent)) {
-                if (this.side == 'left' || this.side == 'right') {
-                    this.velocity.x = -this.velocity.x * (1 / friction);
-                    if (this.side == 'left') this.x = ent.x - this.radius;
-                    else this.x = ent.x + ent.w + this.radius;
+        // Check for attack + update range
+        if (!this.dash && this.game.click && this.atkCD <= 0 && this.stunCD <= 0) {
+            this.attacking = true;
+            if (this.weapon.type == 'knife') {
+                this.atkCD = 105;
+                this.hitDur = 7;
+                this.range = 85;
+            }
+            else if (this.weapon.type == 'bat') {
+                this.atkCD = 110;
+                this.hitDur = 14;
+                this.range = 110;
+            }
+            else if (this.weapon.type == 'gun') {
+                this.atkCD = 24;
+                var difX = Math.cos(this.rotation) * 35;
+                var difY = Math.sin(this.rotation) * 35;
+                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation, this.weapon.damage));
+            }
+            else {
+                this.atkCD = 109;
+                this.hitDur = 18;
+                this.range = 60;
+            }
+        }
+
+        // Update animations
+        if (this.hurt && this.anim.hit.isDone()) {
+            this.anim.hit.elapsedTime = 0;
+            this.hurt = false;
+        }
+        if (this.dash && !this.attacking) {
+            if (this.anim.dash.isDone()) {
+                this.anim.dash.elapsedTime = 0;
+                this.dash = false;
+                this.radius = 24;
+                this.dashCD = 60;
+                this.acceleration /= 3;
+                this.maxSpeed /= 3;
+            }
+        }
+        else if (this.attacking) {
+            if (this.weapon.type == 'gun') {
+                this.velocity.x *= 4 / 7;
+                this.velocity.y *= 4 / 7;
+            }
+
+            if (this.weapon.type == 'unarmed' && this.anim.atk.isDone()) {
+                this.anim.atk.elapsedTime = 0;
+                this.attacking = false;
+                this.atkCD = 24;
+            }
+            else if (this.weapon.type == 'knife' && this.anim.knifeAtk.isDone()) {
+                this.anim.knifeAtk.elapsedTime = 0;
+                this.attacking = false;
+                this.atkCD = 9;
+            }
+            else if (this.weapon.type == 'bat' && this.anim.batAtk.isDone()) {
+                this.anim.batAtk.elapsedTime = 0;
+                this.attacking = false;
+                this.atkCD = 18;
+            }
+            else if (this.weapon.type == 'gun' && this.anim.atk.isDone()) {
+                this.anim.atk.elapsedTime = 0;
+                this.attacking = false;
+            }
+        }
+
+        // Wall collisions and enemy hurtbox collisions
+        // - normal collisions with enemy controlled by enemy
+        for (var i = 0; i < this.game.entities.length; i++) {
+            var ent = this.game.entities[i];
+            if (ent.wall) {
+                if (this.collide(ent)) {
+                    if (this.side == 'left' || this.side == 'right') {
+                        this.velocity.x = -this.velocity.x * (1 / friction);
+                        if (this.side == 'left') this.x = ent.x - this.radius;
+                        else this.x = ent.x + ent.w + this.radius;
+                    }
+                    else if (this.side == 'top' || this.side == 'bottom') {
+                        this.velocity.y = -this.velocity.y * (1 / friction);
+                        if (this.side == 'top') this.y = ent.y - this.radius;
+                        else this.y = ent.y + ent.h + this.radius;
+                    }
                 }
-                else if (this.side == 'top' || this.side == 'bottom') {
-                    this.velocity.y = -this.velocity.y * (1 / friction);
-                    if (this.side == 'top') this.y = ent.y - this.radius;
-                    else this.y = ent.y + ent.h + this.radius;
+            }
+            else if (ent.enemy) {
+                if (this.attacking && this.weapon.type != 'gun' && ent.hitCD <= 0 && this.hit(ent)
+                    && this.atkCD > (100 - this.hitDur) && this.atkCD <= 100) {
+                    ent.hurt = true;
+                    ent.health -= this.weapon.damage;
+                    ent.hitCD = this.hitDur;
+                    console.log(ent.health);
                 }
             }
         }
-        else if (ent.enemy) {
-            if (this.attacking && this.weapon.type != 'gun' && ent.hitCD <= 0 && this.hit(ent)
-                && this.atkCD > (100 - this.hitDur) && this.atkCD <= 100) {
-                ent.hurt = true;
-                ent.health -= this.weapon.damage;
-                ent.hitCD = this.hitDur;
-            }
+
+        // Boundary collisions
+        if (this.collideLeft() || this.collideRight()) {
+            this.velocity.x = -this.velocity.x * (1 / friction);
+            if (this.collideLeft()) this.x = this.radius;
+            else this.x = 1280 - this.radius;
         }
-    }
+        else if (this.collideTop() || this.collideBottom()) {
+            this.velocity.y = -this.velocity.y * (1 / friction);
+            if (this.collideTop()) this.y = this.radius;
+            else this.y = 720 - this.radius;
+        }
 
-    // Boundary collisions
-    if (this.collideLeft() || this.collideRight()) {
-        this.velocity.x = -this.velocity.x * (1 / friction);
-        if (this.collideLeft()) this.x = this.radius;
-        else this.x = 1280 - this.radius;
-    }
-    else if (this.collideTop() || this.collideBottom()) {
-        this.velocity.y = -this.velocity.y * (1 / friction);
-        if (this.collideTop()) this.y = this.radius;
-        else this.y = 720 - this.radius;
-    }
+        // Speed control
+        var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+        if (speed > this.maxSpeed) {
+            var ratio = this.maxSpeed / speed;
+            this.velocity.x *= ratio;
+            this.velocity.y *= ratio;
+        }
+        this.x += this.velocity.x * this.game.clockTick;
+        this.y += this.velocity.y * this.game.clockTick;
 
-    // Speed control
-    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
-    if (speed > this.maxSpeed) {
-        var ratio = this.maxSpeed / speed;
-        this.velocity.x *= ratio;
-        this.velocity.y *= ratio;
+        this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
+        this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
     }
-    this.x += this.velocity.x * this.game.clockTick;
-    this.y += this.velocity.y * this.game.clockTick;
-
-    this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
-    this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 }
 
 Frump.prototype.draw = function (ctx) {
