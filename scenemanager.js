@@ -190,9 +190,10 @@ function SceneManager(game) {
     var dogs = [new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game)];
     for (var i = 0; i < dogs.length; i++) {
         dogs[i].caged = true;
-        this.levels[0].streets[5].enemies.push(dogs[i]);
+        dogs[i].engage = true;
+        this.levels[0].houses[4].enemies.push(dogs[i]);
     }
-    this.levels[0].streets[5].enemies.push(new MiniBoss(game, dogs));
+    this.levels[0].houses[4].enemies.push(new MiniBoss(game, dogs));
 
     this.activeBG = this.menus.title;
     this.start = true;
@@ -221,7 +222,14 @@ SceneManager.prototype.update = function () {
     }
     else {
         for (var i = this.activeBG.enemies.length - 1; i >= 0; --i) {
+            var ent = this.activeBG.enemies[i];
             if (this.activeBG.enemies[i].health <= 0) {
+                if (ent.boss) {
+                    for (var j = ent.dogs.length - 1; j >= 0; j--) {
+                        ent.dogs[j].removeFromWorld = true;
+                        ent.dogs.splice(j, 1);
+                    }
+                }
                 this.activeBG.enemies[i].removeFromWorld = true;
                 this.activeBG.enemies.splice(i, 1);
             }
@@ -557,10 +565,10 @@ SceneManager.prototype.buildLevel = function (lvl) {
     // this.levels[lvl].houses[3] = new Background(this.game, ('./img/backgrounds/house' + lvl + '4.png'), new Bat(this.game, lvl));
     // this.levels[lvl].houses[4] = new Background(this.game, ('./img/backgrounds/house' + lvl + '5.png'), new Bat(this.game, lvl));
 
-    this.levels[lvl].houses[4].enemies.push(new Dog(this.game));
-    this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 0));
-    this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 1));
-    this.levels[lvl].houses[4].enemies.push(new Bodyguard(this.game));
+    // this.levels[lvl].houses[4].enemies.push(new Dog(this.game));
+    // this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 0));
+    // this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 1));
+    // this.levels[lvl].houses[4].enemies.push(new Bodyguard(this.game));
 
     // connections
     this.levels[lvl].streets[0].neighbors[0] = this.levels[lvl].streets[1];

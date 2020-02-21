@@ -210,6 +210,7 @@ function MiniBoss(game, dogs) {
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 0.15, 1, false, false);
 
     // properties
+    this.boss = true;
     this.enemy = true;
     this.dogs = dogs;
     this.radius = 38;
@@ -254,7 +255,7 @@ MiniBoss.prototype.update = function () {
         if (this.anim.wsl.isDone()) {
             this.anim.wsl.elapsedTime = 0;
             this.whistle = false;
-            this.wslCD = 480;
+            this.wslCD = 720;
         }
         if (this.anim.sht.isDone()) {
             this.anim.sht.elapsedTime = 0;
@@ -317,8 +318,9 @@ MiniBoss.prototype.update = function () {
             var dist = distance(this, ent);
             if (this.wslCD <= 0 && this.dogs.length > 0) {
                 this.whistle = true;
-                this.dogs.pop().caged = false;
-                this.wslCD = 480;
+                var dog = this.dogs.pop();
+                dog.caged = false;
+                this.wslCD = 720;
             }
             else if (dist < 110 && this.atkCD <= 0) {
                 this.attack = true;
@@ -328,10 +330,10 @@ MiniBoss.prototype.update = function () {
                 this.shoot = true;
                 var difX = Math.cos(this.rotation) * 45;
                 var difY = Math.sin(this.rotation) * 45;
-                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 5, 1));
-                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 6, 1));
-                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 6, 1));
-                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 5, 1));
+                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 7, 1));
+                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 15, 1));
+                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 15, 1));
+                this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 7, 1));
                 this.shtCD = 90;
             }
             if (this.attack && ent.hitCD <= 0 && this.hit(ent)
