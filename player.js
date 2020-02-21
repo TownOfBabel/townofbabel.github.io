@@ -2,11 +2,11 @@ function Health(game, hp) {
     this.health = [];
     this.rotation = 0;
     for (var i = 0; i <= hp; i++) {
-        this.health[i] = new Animation(ASSET_MANAGER.getAsset('./img/entities/health.png'), 0, 400 - i * 20, 200, 20, 1, 1, true, false);
+        this.health[i] = new Animation(ASSET_MANAGER.getAsset('./img/entities/health.png'), 0, 480 - i * 24, 240, 24, 1, 1, true, false);
     }
     this.max = hp;
     this.current = hp;
-    Entity.call(this, game, 105, 15);
+    Entity.call(this, game, 125, 17);
 }
 
 Health.prototype = new Entity();
@@ -182,7 +182,7 @@ function Frump(game) {
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 400, 200, 200, 200, 0.15, 4, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1300, 200, 200, 0.15, 1, false, false);
     this.anim.dash = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1600, 200, 200, 0.04, 5, false, false);
-    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 200, 1300, 200, 300, 0.1, 5, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 200, 1300, 200, 300, 0.2, 5, false, false);
     this.anim.knifeIdle = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 600, 200, 200, 0.4, 2, true, false);
     this.anim.knifeMove = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 400, 200, 200, 0.1, 8, true, false);
     this.anim.knifeAtk = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 400, 600, 200, 200, 0.05, 4, false, false);
@@ -351,7 +351,6 @@ Frump.prototype.update = function () {
                     ent.hurt = true;
                     ent.health -= this.weapon.damage;
                     ent.hitCD = this.hitDur;
-                    console.log(ent.health);
                 }
             }
         }
