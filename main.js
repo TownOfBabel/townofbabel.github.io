@@ -126,7 +126,10 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/roof05.png');
 
 // entities (player + enemies)
 ASSET_MANAGER.queueDownload('./img/entities/frump.png');
+ASSET_MANAGER.queueDownload('./img/entities/UI.png');
 ASSET_MANAGER.queueDownload('./img/entities/health.png');
+ASSET_MANAGER.queueDownload('./img/entities/health_drop.png');
+ASSET_MANAGER.queueDownload('./img/entities/dash.png');
 ASSET_MANAGER.queueDownload('./img/entities/dog.png');
 ASSET_MANAGER.queueDownload('./img/entities/thug_bat.png');
 ASSET_MANAGER.queueDownload('./img/entities/thug_knife.png');

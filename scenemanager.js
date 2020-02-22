@@ -179,7 +179,7 @@ Door.prototype.update = function (ctx) {
 }
 
 function Arrow(game, manager) {
-    this.image = new Animation(ASSET_MANAGER.getAsset('./img/backgrounds/arrow.png'), 0, 0, 100, 100, 0.25, 4, true, false);
+    this.image = new Animation(ASSET_MANAGER.getAsset('./img/backgrounds/arrow.png'), 0, 0, 50, 50, 0.25, 4, true, false);
     this.manager = manager;
     this.rotation = 0;
     Entity.call(this, game, 640, 360);
@@ -189,38 +189,67 @@ Arrow.prototype = new Entity();
 Arrow.prototype.constructor = Arrow;
 
 Arrow.prototype.update = function () {
-    if (this.manager.level.clear) {
-        if (this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[4]) {
-            this.x = 640;
-            this.y = 640;
-            this.rotation = Math.PI / 2;
+    var displayBG = this.manager.activeBG;
+    if (displayBG.type == 'street') {
+        if (displayBG.neighbors[1]) {
+            if (displayBG.neighbors[1].enemies.length > 0) {
+                this.x = displayBG.spawn.x - 50;
+                this.y = displayBG.spawn.y;
+                this.rotation = 0;
+            }
+            else {
+                this.x = 640;
+                this.y = 60;
+                this.rotation = -Math.PI / 2;
+            }
         }
-        else if (this.manager.activeBG === this.manager.levels[this.manager.level.current].streets[4]
-            || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[1]
-            || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[3]
-            || this.manager.activeBG === this.manager.levels[this.manager.level.current]
-                .houses[this.manager.levels[this.manager.level.current].houses.length - 1]) {
-            this.x = 1200;
+        else if (displayBG.neighbors[3]) {
+            if (displayBG.neighbors[3].enemies.length > 0) {
+                this.x = displayBG.spawn.x + 50;
+                this.y = displayBG.spawn.y;
+                this.rotation = Math.PI;
+            }
+            else {
+                this.x = 640;
+                this.y = 60;
+                this.rotation = -Math.PI / 2;
+            }
+        }
+    }
+    else if (displayBG === this.manager.levels[this.manager.level.current].streets[4]) {
+        if (displayBG.neighbors[0].enemies.length > 0) {
+            this.x = displayBG.spawn.x;
+            this.y = displayBG.spawn.y + 50;
+            this.rotation = -Math.PI / 2;
+        }
+        else {
+            this.x = 1220;
             this.y = 360;
             this.rotation = 0;
         }
-        else if (this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[0]
-            || this.manager.activeBG === this.manager.levels[this.manager.level.current].houses[2]) {
-            this.x = 80;
-            this.y = 360;
-            this.rotation = Math.PI;
-        }
-        else {
-            this.x = 640;
-            this.y = 80;
-            this.rotation = -Math.PI / 2;
-        }
     }
-
+    else if (displayBG === this.manager.levels[this.manager.level.current].houses[1]
+        || displayBG === this.manager.levels[this.manager.level.current].houses[3]
+        || displayBG === this.manager.levels[this.manager.level.current].houses[5]) {
+        this.x = displayBG.spawn.x - 50;
+        this.y = displayBG.spawn.y;
+        this.rotation = 0;
+    }
+    else if (displayBG === this.manager.levels[this.manager.level.current].houses[0]
+        || displayBG === this.manager.levels[this.manager.level.current].houses[2]) {
+        this.x = displayBG.spawn.x + 50;
+        this.y = displayBG.spawn.y;
+        this.rotation = Math.PI;
+    }
+    else {
+        this.x = displayBG.spawn.x;
+        this.y = displayBG.spawn.y - 50;
+        this.rotation = Math.PI / 2;
+    }
 }
 
 Arrow.prototype.draw = function (ctx) {
-    if (this.manager.level.clear)
+    if (this.manager.activeBG.enemies.length == 0)
         this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
 }
 
@@ -249,7 +278,6 @@ function SceneManager(game) {
     this.activeBG = this.menus.title;
     this.start = true;
     this.swapHeld = 0;
-
     Entity.call(this, game, 0, 0);
 }
 
@@ -262,8 +290,8 @@ SceneManager.prototype.update = function () {
     if (this.activeBG.menu) {
         if (this.activeBG === this.menus.title) {
             var hover = false;
-            if (this.game.mouse.x > 650 && this.game.mouse.x < 900
-                && this.game.mouse.y > 520 && this.game.mouse.y < 640)
+            if (this.game.mouse.x > 630 && this.game.mouse.x < 1000
+                && this.game.mouse.y > 480 && this.game.mouse.y < 660)
                 hover = true;
             if (this.game.click && !this.menus.fade.active && hover) {
                 this.menus.fade.tofrom = 'toBlack';
@@ -282,9 +310,11 @@ SceneManager.prototype.update = function () {
             this.buildLevelOne(this.game);
             this.bossDead = false;
             this.player.health.current = this.player.health.max;
+            this.player.alive = true;
             this.changeBackground(this.levels[0].houses[5]);
-            
         }
+        else if (this.activeBG === this.menus.lose && this.game.click)
+            this.changeBackground(this.menus.title);
         // for difficulty selection - not fully implemented
         // if (this.activeBG === this.menus.title && this.game.click) {
         //     this.game.addEntity(this.menus.dif);
@@ -297,31 +327,33 @@ SceneManager.prototype.update = function () {
         // }
     }
     else {
-        for (var i = this.activeBG.enemies.length - 1; i >= 0; --i) {
-            var ent = this.activeBG.enemies[i];
-            if (!ent.alive && !ent.die) {
-                if (ent.boss) {
-                    this.bossDead = true;
-                    this.game.addEntity(this.menus.win);
-                }
-                ent.removeFromWorld = true;
-                this.activeBG.enemies.splice(i, 1);
-            }
-            else if (this.bossDead) {
-                ent.removeFromWorld = true;
-                this.activeBG.enemies.splice(i, 1);
-            }
-        }
-        if (this.bossDead) {
-            this.level.clear = true;;
-            if (this.game.click) {
-                this.level.clear = false;
-                this.player.x = 515;
-                this.player.y = 470;
-                this.changeBackground(this.menus.title);
-            }
-        }
+        if (!this.player.alive && !this.player.die)
+            this.changeBackground(this.menus.lose);
         if (!this.activeBG.menu) {
+            for (var i = this.activeBG.enemies.length - 1; i >= 0; --i) {
+                var ent = this.activeBG.enemies[i];
+                if (!ent.alive && !ent.die) {
+                    if (ent.boss) {
+                        this.bossDead = true;
+                        this.game.addEntity(this.menus.win);
+                    }
+                    ent.removeFromWorld = true;
+                    this.activeBG.enemies.splice(i, 1);
+                }
+                else if (this.bossDead) {
+                    ent.removeFromWorld = true;
+                    this.activeBG.enemies.splice(i, 1);
+                }
+            }
+            if (this.bossDead) {
+                this.level.clear = true;;
+                if (this.game.click) {
+                    this.level.clear = false;
+                    this.player.x = 515;
+                    this.player.y = 470;
+                    this.changeBackground(this.menus.title);
+                }
+            }
             if (this.activeBG.enemies.length == 0) {
                 this.updateLevel = true;
                 if (this.game.player.interact) this.swapHeld++;
@@ -339,6 +371,10 @@ SceneManager.prototype.update = function () {
                     old.floating = true;
                     this.activeBG.drop = old;
                     this.swapHeld = 0;
+                    if (this.player.weapon.type == 'knife')
+                        this.player.faces = 33;
+                    else if (this.player.weapon.type == 'bat')
+                        this.player.faces = 28;
                 }
             }
             if (this.updateLevel) {
@@ -351,6 +387,129 @@ SceneManager.prototype.update = function () {
 }
 
 SceneManager.prototype.draw = function (ctx) {
+}
+
+function genEnemies(game, room, maxEnemies) {
+    if (maxEnemies == 2) {
+        var total = Math.floor(Math.random() * 2 + 1);
+        if (total == 1)
+            room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+        else {
+            var numDogs = Math.floor(Math.random() * 2);
+            if (numDogs == 1) {
+                room.enemies.push(new Dog(game));
+                room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+            }
+            else {
+                room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+            }
+        }
+    }
+    else if (maxEnemies == 4) {
+        var total = Math.floor(Math.random() * 3 + 2);
+        if (total == 2) {
+            room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+            room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+        }
+        else {
+            var numDogs = Math.floor(Math.random() * 2);
+            if (numDogs == 1) {
+                room.enemies.push(new Dog(game));
+                for (var i = 0; i < total - 1; i++)
+                    room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+            }
+            else {
+                for (var i = 0; i < total; i++)
+                    room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+            }
+        }
+        
+    }
+    else {
+        var total = Math.floor(Math.random() * 3 + 3);
+        var numDogs = Math.floor(Math.random() * 2);
+        if (total == 5) {
+            var numBGs = Math.floor(Math.random() * 3);
+            if (numBGs == 2) {
+                if (numDogs == 1) {
+                    room.enemies.push(new Dog(game));
+                    room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                    room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                    room.enemies.push(new Bodyguard(game));
+                    room.enemies.push(new Bodyguard(game));
+                }
+                else {
+                    for (var i = 0; i < 3; i++)
+                        room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                    room.enemies.push(new Bodyguard(game));
+                    room.enemies.push(new Bodyguard(game));
+                }
+            }
+            else if (numBGs == 1) {
+                if (numDogs == 1) {
+                    room.enemies.push(new Dog(game));
+                    for (var i = 0; i < 3; i++)
+                        room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                    room.enemies.push(new Bodyguard(game));
+                }
+                else {
+                    for (var i = 0; i < 4; i++)
+                        room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                    room.enemies.push(new Bodyguard(game));
+                }
+            }
+            else {
+                if (numDogs == 1) {
+                    room.enemies.push(new Dog(game));
+                    for (var i = 0; i < 4; i++)
+                        room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                }
+                else {
+                    for (var i = 0; i < 5; i++)
+                        room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                }
+            }
+        }
+        else if (total == 4) {
+            var numBGs = Math.floor(Math.random() * 2);
+            if (numBGs == 1) {
+                if (numDogs == 1) {
+                    room.enemies.push(new Dog(game));
+                    room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                    room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                    room.enemies.push(new Bodyguard(game));
+                }
+                else {
+                    for (var i = 0; i < 3; i++)
+                        room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                    room.enemies.push(new Bodyguard(game));
+                }
+            }
+            else {
+                if (numDogs == 1) {
+                    room.enemies.push(new Dog(game));
+                    for (var i = 0; i < 3; i++)
+                        room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                }
+                else {
+                    for (var i = 0; i < 4; i++)
+                        room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                }
+            }
+        }
+        else {
+            if (numDogs == 1) {
+                room.enemies.push(new Dog(game));
+                room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+                room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+            }
+            else {
+                for (var i = 0; i < 3; i++)
+                    room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
+            }
+        }
+    }
 }
 
 SceneManager.prototype.buildLevelOne = function (game) {
@@ -367,7 +526,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].streets[4] = new Background(game, ('./img/backgrounds/street05.png'),
         new Knife(game, 0), new Door(game, 600, 0, 111, 10), 'street');
     this.levels[0].streets[5] = new Background(game, ('./img/backgrounds/street00.png'),
-        new Bat(game, 0), new Door(game, 0, 376, 10, 112), 'street');
+        new Knife(game, 0), new Door(game, 0, 376, 10, 112), 'street');
 
     this.levels[0].houses[0] = new Background(game, ('./img/backgrounds/house01.png'),
         new Bat(game, 0), new Door(game, 0, 362, 10, 108), 'house');
@@ -378,9 +537,9 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[3] = new Background(game, ('./img/backgrounds/house04.png'),
         new Bat(game, 0), new Door(game, 1270, 189, 10, 113), 'house');
     this.levels[0].houses[4] = new Background(game, ('./img/backgrounds/house05.png'),
-        new Bat(game, 0), new Door(game, 577, 710, 116, 10), 'house');
+        new Gun(game, Math.floor(Math.random() * 2)), new Door(game, 577, 710, 116, 10), 'house');
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
-        new Knife(game, 0), new Door(game, 1270, 176, 10, 96), 'house');
+        new Bat(game, 0), new Door(game, 1270, 176, 10, 96), 'house');
 
     // house00 - Lil' Frump's House
     this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 210, 720));
@@ -527,6 +686,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[4].walls.push(new Wall(game, 808, 481, 263, 37));
     this.levels[0].houses[4].walls.push(new Wall(game, 0, 688, 577, 32));
     this.levels[0].houses[4].walls.push(new Wall(game, 693, 688, 587, 32));
+    this.levels[0].houses[4].walls.push(new Wall(game, 1065, 0, 23, 215));
     this.levels[0].houses[4].spawn = { x: 635, y: 680 };
 
     // scene connections
@@ -536,6 +696,13 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[5].neighbors[1] = this.levels[0].streets[5];
     this.levels[0].streets[5].neighbors[3] = this.levels[0].houses[5];
 
+    genEnemies(game, this.levels[0].streets[5], 2);
+    for (var i = 0; i < 5; i++)
+        genEnemies(game, this.levels[0].streets[i], 2);
+    genEnemies(game, this.levels[0].houses[0], 4);
+    genEnemies(game, this.levels[0].houses[1], 4);
+    genEnemies(game, this.levels[0].houses[2], 5);
+    genEnemies(game, this.levels[0].houses[3], 5);
     var dogs = [new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game)];
     for (var i = 0; i < dogs.length; i++) {
         dogs[i].caged = true;
@@ -558,6 +725,8 @@ SceneManager.prototype.updateBackground = function () {
     }
     this.arrow.removeFromWorld = false;
     this.player.removeFromWorld = false;
+    this.player.UI.removeFromWorld = false;
+    this.player.dashInd.removeFromWorld = false;
     this.player.weapon.removeFromWorld = false;
     this.player.health.removeFromWorld = false;
     if (this.level.clear)
@@ -566,14 +735,16 @@ SceneManager.prototype.updateBackground = function () {
 
     // add entities back into game engine
     if (!this.activeBG.menu) {
-        this.game.addEntity(this.player.weapon);
-        this.game.addEntity(this.activeBG.drop);
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.game.addEntity(this.activeBG.enemies[i]);
         this.game.addEntity(this.player);
         for (var i = 0; i < this.activeBG.walls.length; i++)
             this.game.addEntity(this.activeBG.walls[i]);
         this.game.addEntity(this.activeBG.door);
+        this.game.addEntity(this.player.UI);
+        this.game.addEntity(this.player.dashInd);
+        this.game.addEntity(this.player.weapon);
+        this.game.addEntity(this.activeBG.drop);
         this.game.addEntity(this.arrow);
         this.game.addEntity(this.player.health);
     }
@@ -602,16 +773,35 @@ SceneManager.prototype.checkBounds = function () {
         this.player.x = this.activeBG.spawn.x;
         this.player.y = this.activeBG.spawn.y;
     }
-    else if ((this.player.collideTop() || this.player.collideBottom()) && this.activeBG.type == 'street') {
-        if (this.player.collideTop() && this.activeBG.neighbors[0]) {
-            if (this.activeBG.neighbors[0].type == 'street') {
-                this.changeBackground(this.activeBG.neighbors[0]);
-                this.player.y = 720 - this.player.radius;
+    else if ((this.player.collideTop() || this.player.collideBottom())
+        && this.activeBG.type == 'street' && this.activeBG.enemies.length == 0) {
+        if (this.activeBG.neighbors[1]) {
+            if (this.activeBG.neighbors[1].enemies.length == 0) {
+                if (this.player.collideTop() && this.activeBG.neighbors[0]) {
+                    if (this.activeBG.neighbors[0].type == 'street') {
+                        this.changeBackground(this.activeBG.neighbors[0]);
+                        this.player.y = 720 - this.player.radius;
+                    }
+                }
+                else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                    this.changeBackground(this.activeBG.neighbors[2]);
+                    this.player.y = this.player.radius;
+                }
             }
         }
-        else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
-            this.changeBackground(this.activeBG.neighbors[2]);
-            this.player.y = this.player.radius;
+        else if (this.activeBG.neighbors[3]) {
+            if (this.activeBG.neighbors[3].enemies.length == 0) {
+                if (this.player.collideTop() && this.activeBG.neighbors[0]) {
+                    if (this.activeBG.neighbors[0].type == 'street') {
+                        this.changeBackground(this.activeBG.neighbors[0]);
+                        this.player.y = 720 - this.player.radius;
+                    }
+                }
+                else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                    this.changeBackground(this.activeBG.neighbors[2]);
+                    this.player.y = this.player.radius;
+                }
+            }
         }
     }
 }
@@ -629,6 +819,8 @@ SceneManager.prototype.changeBackground = function (nextBG) {
     this.activeBG.removeFromWorld = true;
     this.arrow.removeFromWorld = true;
     this.player.removeFromWorld = true;
+    this.player.UI.removeFromWorld = true;
+    this.player.dashInd.removeFromWorld = true;
     this.player.weapon.removeFromWorld = true;
     this.player.health.removeFromWorld = true;
     if (this.level.clear)
@@ -643,25 +835,6 @@ SceneManager.prototype.changeBackground = function (nextBG) {
 }
 
 SceneManager.prototype.buildLevel = function (lvl) {
-    // this.levels[lvl] = { streets: [], houses: [] };
-
-    // this.levels[lvl].streets[0] = new Background(this.game, ('./img/backgrounds/street' + lvl + '1.png'), new Knife(this.game, lvl));
-    // this.levels[lvl].streets[1] = new Background(this.game, ('./img/backgrounds/street' + lvl + '2.png'), new Knife(this.game, lvl));
-    // this.levels[lvl].streets[2] = new Background(this.game, ('./img/backgrounds/street' + lvl + '3.png'), new Knife(this.game, lvl));
-    // this.levels[lvl].streets[3] = new Background(this.game, ('./img/backgrounds/street' + lvl + '4.png'), new Knife(this.game, lvl));
-    // this.levels[lvl].streets[4] = new Background(this.game, ('./img/backgrounds/street' + lvl + '5.png'), new Knife(this.game, lvl));
-
-    // this.levels[lvl].houses[0] = new Background(this.game, ('./img/backgrounds/house' + lvl + '1.png'), new Bat(this.game, lvl));
-    // this.levels[lvl].houses[1] = new Background(this.game, ('./img/backgrounds/house' + lvl + '2.png'), new Bat(this.game, lvl));
-    // this.levels[lvl].houses[2] = new Background(this.game, ('./img/backgrounds/house' + lvl + '3.png'), new Bat(this.game, lvl));
-    // this.levels[lvl].houses[3] = new Background(this.game, ('./img/backgrounds/house' + lvl + '4.png'), new Bat(this.game, lvl));
-    // this.levels[lvl].houses[4] = new Background(this.game, ('./img/backgrounds/house' + lvl + '5.png'), new Bat(this.game, lvl));
-
-    // this.levels[lvl].houses[4].enemies.push(new Dog(this.game));
-    // this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 0));
-    // this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 1));
-    // this.levels[lvl].houses[4].enemies.push(new Bodyguard(this.game));
-
     // connections
     this.levels[lvl].streets[0].neighbors[0] = this.levels[lvl].streets[1];
     this.levels[lvl].streets[0].neighbors[1] = this.levels[lvl].houses[0];

@@ -1,3 +1,18 @@
+function InfoUI(game) {
+    this.image = ASSET_MANAGER.getAsset('./img/entities/UI.png');
+    Entity.call(this, game, 0, 0);
+}
+
+InfoUI.prototype = new Entity();
+InfoUI.prototype.constructor = InfoUI;
+
+InfoUI.prototype.update = function () {
+}
+
+InfoUI.prototype.draw = function (ctx) {
+    ctx.drawImage(this.image, 0, 0);
+}
+
 function Health(game, hp) {
     this.health = [];
     this.rotation = 0;
@@ -18,6 +33,31 @@ Health.prototype.update = function () {
 Health.prototype.draw = function (ctx) {
     if (this.current < 0) this.health[0].drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     else this.health[this.current].drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+}
+
+function DashIndicator(game, player) {
+    this.player = player;
+    this.image = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    Entity.call(this, game, 100, 35);
+}
+
+DashIndicator.prototype = new Entity();
+DashIndicator.prototype.constructor = DashIndicator;
+
+DashIndicator.prototype.update = function () {
+}
+
+DashIndicator.prototype.draw = function (ctx) {
+    if (this.player.dashCD <= 0)
+        ctx.drawImage(this.image, 240, 0, 60, 60, this.x, this.y, 40, 40);
+    else if (this.player.dashCD <= 22)
+        ctx.drawImage(this.image, 180, 0, 60, 60, this.x, this.y, 40, 40);
+    else if (this.player.dashCD <= 45)
+        ctx.drawImage(this.image, 120, 0, 60, 60, this.x, this.y, 40, 40);
+    else if (this.player.dashCD <= 67)
+        ctx.drawImage(this.image, 60, 0, 60, 60, this.x, this.y, 40, 40);
+    else
+        ctx.drawImage(this.image, 0, 0, 60, 60, this.x, this.y, 40, 40);
 }
 
 function calcDmg(weapon) {
@@ -193,13 +233,15 @@ function Frump(game) {
     // Properties
     this.player = true;
     this.alive = true;
+    this.UI = new InfoUI(game);
+    this.dashInd = new DashIndicator(game, this);
     this.radius = 24;
-    this.faces = 28;
+    this.faces = 33;
     this.sides = 38;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 250;
-    this.weapon = new Gun(game, 0);
+    this.weapon = new Knife(game, 0);
     this.range = 70;
     this.damage = 20;
     this.health = new Health(game, 20);

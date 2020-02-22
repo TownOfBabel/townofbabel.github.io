@@ -1,6 +1,9 @@
 function HealthDrop(game, x, y, heal) {
-    this.image = ASSET_MANAGER.getAsset('./img/entities/health.png');
+    this.healOne = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 0, 40, 40, 0.2, 4, true, false);
+    this.healTwo = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 40, 40, 40, 0.2, 4, true, false);
+    this.healThree = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 80, 40, 40, 0.2, 4, true, false);
     this.heal = heal;
+    this.radius = 0;
     Entity.call(this, game, x, y);
 }
 
@@ -8,10 +11,26 @@ HealthDrop.prototype = new Entity();
 HealthDrop.prototype.constructor = HealthDrop;
 
 HealthDrop.prototype.update = function () {
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (ent.player) {
+            if (this.collide(ent)) {
+                ent.health.current += this.heal;
+                if (ent.health.current > ent.health.max)
+                    ent.health.current = ent.health.max;
+                this.removeFromWorld = true;
+            }
+        }
+    }
 }
 
 HealthDrop.prototype.draw = function (ctx) {
-    ctx.drawImage(this.image, 0, 360, 20, 20, this.x, this.y, 20, 20);
+    if (this.heal == 1)
+        this.healOne.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+    else if (this.heal == 2)
+        this.healTwo.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+    else if (this.heal == 3)
+        this.healThree.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
 }
 
 function Enemy(game) {
@@ -27,7 +46,7 @@ function Enemy(game) {
     this.hitCD = 0;
     this.ctr = 0;
 
-    Entity.call(this, game, Math.random() * 420 + 410, Math.random() * 620 + 50);
+    Entity.call(this, game, 640, 360);
 }
 
 Enemy.prototype = new Entity();
@@ -44,6 +63,8 @@ Enemy.prototype.update = function () {
     }
     if (this.die && this.anim.die.isDone()) {
         this.anim.die.elapsedTime = 0;
+        if (Math.floor(Math.random() * 4) == 0)
+            this.game.addEntity(new HealthDrop(this.game, this.x, this.y, this.hpDrop));
         this.die = false;
     }
     if (this.alive) {
@@ -167,22 +188,22 @@ Enemy.prototype.update = function () {
                         this.velocity.y += difY * this.acceleration;
                     }
                     // Attack calculations
-                    if (this.weapon.type == 'swing' && distance(this, ent) < 220 && this.slamCD <= 0) {
+                    if (this.weapon.type == 'swing' && distance(this, ent) < 170 && this.slamCD <= 0) {
                         this.slamming = true;
                         this.slamCD = 150;
                     }
-                    else if (distance(this, ent) < (this.range + ent.radius / 2) && this.atkCD <= 0) {
+                    else if (distance(this, ent) < (this.range) && this.atkCD <= 0) {
                         this.attacking = true;
                         this.atkCD = this.begLag;
                     }
                     else if (this.weapon.type == 'bite' && this.atkCD <= 0
-                        && distance(this, ent) < (this.range * 3 / 2 + ent.range)) {
+                        && distance(this, ent) < (this.range * 1.75 + ent.range)) {
                         this.attacking = true;
                         this.atkCD = this.begLag;
                         this.acceleration = 400;
                         this.maxSpeed = 400;
                     }
-                    if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 200)
+                    if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 150)
                         && this.slamCD > 91 && this.slamCD <= 100) {
                         ent.hurt = true;
                         ent.health.current--;
@@ -497,11 +518,12 @@ function Dog(game) {
     this.weapon = {};
     this.weapon.type = 'bite';
     this.begLag = 109;
-    this.endLag = 75;
+    this.endLag = 120;
     this.hitDur = 6;
     this.range = 70;
     this.sight = 500;
     this.fov = Math.PI;
+    this.hpDrop = 1;
     this.health = 60;
     this.initHP = 60;
     this.dmg = 1;
@@ -523,6 +545,7 @@ function Thug(game, weapon) {
         this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 400, 200, 200, 0.15, 1, false, false);
         this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 800, 200, 200, 400, 0.33, 3, false, false);
         this.weapon.type = 'knife';
+        this.faces = 38;
         this.begLag = 110;
         this.endLag = 45;
         this.hitDur = 14;
@@ -535,6 +558,7 @@ function Thug(game, weapon) {
         this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 500, 200, 200, 0.15, 1, false, false);
         this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 800, 200, 200, 400, 0.33, 3, false, false);
         this.weapon.type = 'bat';
+        this.faces = 28;
         this.begLag = 116;
         this.endLag = 65;
         this.hitDur = 20;
@@ -543,13 +567,13 @@ function Thug(game, weapon) {
 
     // Properties
     this.radius = 24;
-    this.faces = 28;
     this.sides = 38;
     this.rotationLag = 2;
     this.acceleration = 100;
     this.maxSpeed = 150;
     this.sight = 250;
     this.fov = Math.PI * 2 / 5;
+    this.hpDrop = 2;
     this.health = 100;
     this.initHP = 100;
     this.dmg = 1;
@@ -566,7 +590,7 @@ function Bodyguard(game) {
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 0.15, 8, true, false);
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 200, 200, 200, 0.14, 5, false, false);
-    this.anim.slam = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 400, 200, 200, 0.14, 7, false, false);
+    this.anim.slam = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 1800, 300, 300, 0.14, 7, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 1400, 400, 200, 200, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 600, 200, 700, 0.25, 4, false, false);
 
@@ -585,6 +609,7 @@ function Bodyguard(game) {
     this.range = 60;
     this.sight = 200;
     this.fov = Math.PI * 4 / 9;
+    this.hpDrop = 3;
     this.health = 140;
     this.initHP = 140;
     this.dmg = 3;
