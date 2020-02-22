@@ -53,7 +53,7 @@ Enemy.prototype = new Entity();
 Enemy.prototype.constructor = Enemy;
 
 Enemy.prototype.update = function () {
-    if (Number.isNaN(this.health)){
+    if (Number.isNaN(this.health)) {
         this.health = this.initHP;
     }
 
@@ -278,14 +278,14 @@ function MiniBoss(game, dogs) {
     this.weapon = {};
     this.weapon.type = 'bat';
     this.range = 130;
-    this.health = 200;
+    this.health = 250;
 
     this.atkCD = 0;
     this.shtCD = 0;
     this.wslCD = 0;
     this.hitCD = 0;
 
-    Entity.call(this, game, 640, 300);
+    Entity.call(this, game, 100, 100);
 }
 
 MiniBoss.prototype = new Entity();
