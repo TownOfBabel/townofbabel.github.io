@@ -46,7 +46,7 @@ function Enemy(game) {
     this.hitCD = 0;
     this.ctr = 0;
 
-    Entity.call(this, game, 640, 360);
+    Entity.call(this, game, Math.random() * 100 + 590, Math.random() * 100 + 310);
 }
 
 Enemy.prototype = new Entity();
