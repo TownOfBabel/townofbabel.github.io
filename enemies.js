@@ -53,7 +53,7 @@ Enemy.prototype = new Entity();
 Enemy.prototype.constructor = Enemy;
 
 Enemy.prototype.update = function () {
-    if (Number.isNaN(this.health)){
+    if (Number.isNaN(this.health)) {
         this.health = this.initHP;
     }
 

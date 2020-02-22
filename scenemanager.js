@@ -424,7 +424,7 @@ function genEnemies(game, room, maxEnemies) {
                     room.enemies.push(new Thug(game, Math.floor(Math.random() * 2)));
             }
         }
-        
+
     }
     else {
         var total = Math.floor(Math.random() * 3 + 3);
@@ -515,27 +515,79 @@ function genEnemies(game, room, maxEnemies) {
 SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0] = { streets: [], houses: [] };
 
-    this.levels[0].streets[0] = new Background(game, ('./img/backgrounds/street01.png'),
-        new Knife(game, 0), new Door(game, 1270, 439, 10, 112), 'street');
-    this.levels[0].streets[1] = new Background(game, ('./img/backgrounds/street02.png'),
-        new Knife(game, 0), new Door(game, 0, 156, 10, 114), 'street');
-    this.levels[0].streets[2] = new Background(game, ('./img/backgrounds/street03.png'),
-        new Knife(game, 0), new Door(game, 1270, 386, 10, 110), 'street');
-    this.levels[0].streets[3] = new Background(game, ('./img/backgrounds/street04.png'),
-        new Knife(game, 0), new Door(game, 0, 478, 10, 111), 'street');
-    this.levels[0].streets[4] = new Background(game, ('./img/backgrounds/street05.png'),
-        new Knife(game, 0), new Door(game, 600, 0, 111, 10), 'street');
-    this.levels[0].streets[5] = new Background(game, ('./img/backgrounds/street00.png'),
-        new Knife(game, 0), new Door(game, 0, 376, 10, 112), 'street');
+    // creating streets
+    if (Math.floor(Math.random() * 20) == 0) {
+        this.levels[0].streets[0] = new Background(game, ('./img/backgrounds/street01.png'),
+            new Knife(game, 1), new Door(game, 1270, 439, 10, 112), 'street');
+    } else {
+        this.levels[0].streets[0] = new Background(game, ('./img/backgrounds/street01.png'),
+            new Knife(game, 0), new Door(game, 1270, 439, 10, 112), 'street');
+    }
+    if (Math.floor(Math.random() * 20) == 0) {
+        this.levels[0].streets[1] = new Background(game, ('./img/backgrounds/street02.png'),
+            new Knife(game, 1), new Door(game, 0, 156, 10, 114), 'street');
+    } else {
+        this.levels[0].streets[1] = new Background(game, ('./img/backgrounds/street02.png'),
+            new Knife(game, 0), new Door(game, 0, 156, 10, 114), 'street');
+    }
+    if (Math.floor(Math.random() * 20) == 0) {
+        this.levels[0].streets[2] = new Background(game, ('./img/backgrounds/street03.png'),
+            new Knife(game, 1), new Door(game, 1270, 386, 10, 110), 'street');
+    } else {
+        this.levels[0].streets[2] = new Background(game, ('./img/backgrounds/street03.png'),
+            new Knife(game, 0), new Door(game, 1270, 386, 10, 110), 'street');
+    }
+    if (Math.floor(Math.random() * 20) == 0) {
+        this.levels[0].streets[3] = new Background(game, ('./img/backgrounds/street04.png'),
+            new Knife(game, 1), new Door(game, 0, 478, 10, 111), 'street');
+    } else {
+        this.levels[0].streets[3] = new Background(game, ('./img/backgrounds/street04.png'),
+            new Knife(game, 0), new Door(game, 0, 478, 10, 111), 'street');
+    }
+    if (Math.floor(Math.random() * 20) == 0) {
+        this.levels[0].streets[4] = new Background(game, ('./img/backgrounds/street05.png'),
+            new Knife(game, 1), new Door(game, 600, 0, 111, 10), 'street');
+    } else {
+        this.levels[0].streets[4] = new Background(game, ('./img/backgrounds/street05.png'),
+            new Knife(game, 0), new Door(game, 600, 0, 111, 10), 'street');
+    }
+    if (Math.floor(Math.random() * 20) == 0) {
+        this.levels[0].streets[5] = new Background(game, ('./img/backgrounds/street00.png'),
+            new Knife(game, 1), new Door(game, 0, 376, 10, 112), 'street');
+    } else {
+        this.levels[0].streets[5] = new Background(game, ('./img/backgrounds/street00.png'),
+            new Knife(game, 0), new Door(game, 0, 376, 10, 112), 'street');
+    }
 
-    this.levels[0].houses[0] = new Background(game, ('./img/backgrounds/house01.png'),
-        new Bat(game, 0), new Door(game, 0, 362, 10, 108), 'house');
-    this.levels[0].houses[1] = new Background(game, ('./img/backgrounds/house02.png'),
-        new Bat(game, 0), new Door(game, 1270, 312, 10, 109), 'house');
-    this.levels[0].houses[2] = new Background(game, ('./img/backgrounds/house03.png'),
-        new Bat(game, 0), new Door(game, 0, 297, 10, 109), 'house');
-    this.levels[0].houses[3] = new Background(game, ('./img/backgrounds/house04.png'),
-        new Bat(game, 0), new Door(game, 1270, 189, 10, 113), 'house');
+    // creating houses
+    if (Math.floor(Math.random() * 10) == 0) {
+        this.levels[0].houses[0] = new Background(game, ('./img/backgrounds/house01.png'),
+            new Bat(game, 1), new Door(game, 0, 362, 10, 108), 'house');
+    } else {
+        this.levels[0].houses[0] = new Background(game, ('./img/backgrounds/house01.png'),
+            new Bat(game, 0), new Door(game, 0, 362, 10, 108), 'house');
+    }
+    if (Math.floor(Math.random() * 10) == 0) {
+        this.levels[0].houses[1] = new Background(game, ('./img/backgrounds/house02.png'),
+            new Bat(game, 1), new Door(game, 1270, 312, 10, 109), 'house');
+    } else {
+        this.levels[0].houses[1] = new Background(game, ('./img/backgrounds/house02.png'),
+            new Bat(game, 0), new Door(game, 1270, 312, 10, 109), 'house');
+    }
+    if (Math.floor(Math.random() * 7) == 0) {
+        this.levels[0].houses[2] = new Background(game, ('./img/backgrounds/house03.png'),
+            new Bat(game, 1), new Door(game, 0, 297, 10, 109), 'house');
+    } else {
+        this.levels[0].houses[2] = new Background(game, ('./img/backgrounds/house03.png'),
+            new Bat(game, 0), new Door(game, 0, 297, 10, 109), 'house');
+    }
+    if (Math.floor(Math.random() * 7) == 0) {
+        this.levels[0].houses[3] = new Background(game, ('./img/backgrounds/house04.png'),
+            new Bat(game, 1), new Door(game, 1270, 189, 10, 113), 'house');
+    } else {
+        this.levels[0].houses[3] = new Background(game, ('./img/backgrounds/house04.png'),
+            new Bat(game, 0), new Door(game, 1270, 189, 10, 113), 'house');
+    }
     this.levels[0].houses[4] = new Background(game, ('./img/backgrounds/house05.png'),
         new Gun(game, Math.floor(Math.random() * 2)), new Door(game, 577, 710, 116, 10), 'house');
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
