@@ -310,6 +310,8 @@ SceneManager.prototype.update = function () {
             this.buildLevelOne(this.game);
             this.bossDead = false;
             this.player.weapon = new Knife(game, 0);
+            this.player.x = 515;
+            this.player.y = 470;
             this.player.health.current = this.player.health.max;
             this.player.alive = true;
             this.changeBackground(this.levels[0].houses[5]);
