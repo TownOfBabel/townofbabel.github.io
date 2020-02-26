@@ -309,7 +309,7 @@ SceneManager.prototype.update = function () {
         else if (this.activeBG === this.menus.story2 && this.game.click) {
             this.buildLevelOne(this.game);
             this.bossDead = false;
-            this.player.weapon = new Knife(game, 0);
+            this.player.weapon = new Knife(this.game, 0);
             this.player.x = 515;
             this.player.y = 470;
             this.player.health.current = this.player.health.max;
