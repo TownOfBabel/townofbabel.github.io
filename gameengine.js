@@ -242,7 +242,7 @@ Entity.prototype.collideBottom = function () {
 Entity.prototype.hit = function (other, range) {
     var acc = Math.abs(this.rotation - Math.atan2(other.y - this.y, other.x - this.x));
     if (acc > Math.PI) acc = (Math.PI * 2) - acc;
-
+    
     var orien = Math.abs(this.rotation - other.rotation);
     if (orien > Math.PI) orien = (Math.PI * 2) - orien;
 

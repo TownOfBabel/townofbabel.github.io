@@ -454,6 +454,80 @@ MiniBoss.prototype.update = function () {
     }
 }
 
+Enemy.prototype.hit = function (other, range) {
+    var acc = Math.abs(this.rotation - Math.atan2(other.y - this.y, other.x - this.x));
+    if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+    
+    var orien = Math.abs(this.rotation - other.rotation);
+    if (orien > Math.PI) orien = (Math.PI * 2) - orien;
+
+    if (range === undefined) {
+        // if ((distance(this, other) < 75 && acc < Math.PI / 4)
+        //     || ((this.weapon.type == 'bat' || this.weapon.type == 'swing') && acc < Math.PI * 2 / 5)
+        //     || acc < Math.PI / 8) {
+        //     if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
+        //         return distance(this, other) < this.range + other.faces;
+        //     else
+        //         return distance(this, other) < this.range + other.sides;
+        // }
+        if (this.weapon.type == 'knife') {
+            if (this.anim.atk.currentFrame() == 1) {
+
+            }
+            else if (this.anim.atk.currentFrame() == 2) {
+
+            }
+            else if (this.anim.atk.currentFrame() == 3) {
+                
+            }
+            else {
+
+            }
+        }
+        else if (this.weapon.type == 'bat') {
+            if (this.anim.atk.currentFrame() == 1) {
+
+            }
+            else if (this.anim.atk.currentFrame() == 2) {
+
+            }
+            else if (this.anim.atk.currentFrame() == 3) {
+                
+            }
+            else {
+
+            }
+        }
+        else if (this.weapon.type == 'swing') {
+            if (this.anim.atk.currentFrame() == 1) {
+
+            }
+            else if (this.anim.atk.currentFrame() == 2) {
+
+            }
+            else if (this.anim.atk.currentFrame() == 3) {
+                
+            }
+            else {
+
+            }
+        }
+        else if (this.weapon.type == 'bite') {
+            if (this.anim.atk.currentFrame() == 3) {
+                
+            }
+            else {
+                
+            }
+        }
+        else
+            return false;
+    }
+    else {
+        return distance(this, other) < range;
+    }
+}
+
 MiniBoss.prototype.draw = function (ctx) {
     if (this.die)
         this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
