@@ -374,7 +374,23 @@ MiniBoss.prototype.update = function () {
                 }
             }
             else if (ent.player && ent.alive) {
-                this.rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
+                var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
+                if (this.rotation > atan) {
+                    var rotdif = this.rotation - atan;
+                    if (rotdif > Math.PI) {
+                        rotdif = Math.PI * 2 - rotdif;
+                        this.rotation += rotdif / 25;
+                    }
+                    else this.rotation -= rotdif / 25;
+                }
+                else {
+                    var rotdif = atan - this.rotation;
+                    if (rotdif > Math.PI) {
+                        rotdif = Math.PI * 2 - rotdif;
+                        this.rotation -= rotdif / 25;
+                    }
+                    else this.rotation += rotdif / 25;
+                }
                 var difX = Math.cos(this.rotation);
                 var difY = Math.sin(this.rotation);
                 var delta = this.radius + ent.radius - distance(this, ent);
