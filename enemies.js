@@ -37,7 +37,6 @@ function Enemy(game) {
     //Properties
     this.alive = true;
     this.enemy = true;
-    this.rotations = [];
     this.rotation = Math.random() * (Math.PI * 2) - Math.PI;
     this.velocity = { x: 0, y: 0 };
 
@@ -164,13 +163,22 @@ Enemy.prototype.update = function () {
                     || distance(this, ent) < (this.range + ent.radius + 50) || this.engage) {
                     this.engage = true;
                     // Determine rotation
-                    if (rotationDif < Math.PI / 32 || this.rotations.length > (this.rotationLag * 10)) {
-                        for (var j = this.rotations.length - 1; j >= 0; j -= 2) {
-                            this.rotations.splice(j, 1);
+                    if (this.rotation > atan) {
+                        var rotdif = this.rotation - atan;
+                        if (rotdif > Math.PI) {
+                            rotdif = Math.PI * 2 - rotdif;
+                            this.rotation += rotdif / this.rotationLag;
                         }
+                        else this.rotation -= rotdif / this.rotationLag;
                     }
-                    this.rotations.push(atan);
-                    if (this.ctr % this.rotationLag == 0) this.rotation = this.rotations.shift();
+                    else {
+                        var rotdif = atan - this.rotation;
+                        if (rotdif > Math.PI) {
+                            rotdif = Math.PI * 2 - rotdif;
+                            this.rotation -= rotdif / this.rotationLag;
+                        }
+                        else this.rotation += rotdif / this.rotationLag;
+                    }
 
                     var difX = Math.cos(this.rotation);
                     var difY = Math.sin(this.rotation);
@@ -512,7 +520,7 @@ function Dog(game) {
     this.radius = 20;
     this.faces = 42;
     this.sides = 18;
-    this.rotationLag = 1;
+    this.rotationLag = 10;
     this.acceleration = 200;
     this.maxSpeed = 200;
     this.weapon = {};
@@ -568,7 +576,7 @@ function Thug(game, weapon) {
     // Properties
     this.radius = 24;
     this.sides = 38;
-    this.rotationLag = 2;
+    this.rotationLag = 15;
     this.acceleration = 100;
     this.maxSpeed = 150;
     this.sight = 250;
@@ -598,7 +606,7 @@ function Bodyguard(game) {
     this.radius = 26;
     this.faces = 30;
     this.sides = 48;
-    this.rotationLag = 3;
+    this.rotationLag = 35;
     this.acceleration = 75;
     this.maxSpeed = 100;
     this.weapon = {};
