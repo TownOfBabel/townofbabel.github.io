@@ -175,7 +175,7 @@ Door.prototype.constructor = Door;
 Door.prototype.update = function () {
 }
 
-Door.prototype.update = function (ctx) {
+Door.prototype.draw = function (ctx) {
 }
 
 function Arrow(game, manager) {
@@ -764,7 +764,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
         dogs[i].engage = true;
         this.levels[0].houses[4].enemies.push(dogs[i]);
     }
-    this.levels[0].houses[4].enemies.push(new MiniBoss(game, dogs));
+    this.levels[0].houses[4].enemies.push(new SlowDogg(game, dogs));
 }
 
 SceneManager.prototype.updateBackground = function () {
@@ -835,13 +835,13 @@ SceneManager.prototype.checkBounds = function () {
                 if (this.player.collideTop() && this.activeBG.neighbors[0]) {
                     if (this.activeBG.neighbors[0].type == 'street') {
                         this.changeBackground(this.activeBG.neighbors[0]);
-                        this.player.y = 720 - this.player.radius;
+                        this.player.y = 720 - this.player.radius - 10;
                     }
                 }
-                else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
-                    this.changeBackground(this.activeBG.neighbors[2]);
-                    this.player.y = this.player.radius;
-                }
+            }
+            else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                this.changeBackground(this.activeBG.neighbors[2]);
+                this.player.y = this.player.radius + 10;
             }
         }
         else if (this.activeBG.neighbors[3]) {
@@ -849,13 +849,13 @@ SceneManager.prototype.checkBounds = function () {
                 if (this.player.collideTop() && this.activeBG.neighbors[0]) {
                     if (this.activeBG.neighbors[0].type == 'street') {
                         this.changeBackground(this.activeBG.neighbors[0]);
-                        this.player.y = 720 - this.player.radius;
+                        this.player.y = 720 - this.player.radius - 10;
                     }
                 }
-                else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
-                    this.changeBackground(this.activeBG.neighbors[2]);
-                    this.player.y = this.player.radius;
-                }
+            }
+            else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                this.changeBackground(this.activeBG.neighbors[2]);
+                this.player.y = this.player.radius + 10;
             }
         }
     }

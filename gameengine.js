@@ -110,6 +110,7 @@ GameEngine.prototype.draw = function () {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.save();
     for (var i = 0; i < this.entities.length; i++) {
+        console.log(this.entities[i]);
         this.entities[i].draw(this.ctx);
     }
     this.ctx.restore();
@@ -237,30 +238,6 @@ Entity.prototype.collideTop = function () {
 Entity.prototype.collideBottom = function () {
     if (this.caged) return (this.y + this.radius) > 150;
     else return (this.y + this.radius) > 720;
-}
-
-Entity.prototype.hit = function (other, range) {
-    var acc = Math.abs(this.rotation - Math.atan2(other.y - this.y, other.x - this.x));
-    if (acc > Math.PI) acc = (Math.PI * 2) - acc;
-    
-    var orien = Math.abs(this.rotation - other.rotation);
-    if (orien > Math.PI) orien = (Math.PI * 2) - orien;
-
-    if (range === undefined) {
-        if ((distance(this, other) < 75 && acc < Math.PI / 4)
-            || ((this.weapon.type == 'bat' || this.weapon.type == 'swing') && acc < Math.PI * 2 / 5)
-            || acc < Math.PI / 8) {
-            if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
-                return distance(this, other) < this.range + other.faces;
-            else
-                return distance(this, other) < this.range + other.sides;
-        }
-        else
-            return false;
-    }
-    else {
-        return distance(this, other) < range;
-    }
 }
 
 Entity.prototype.rotateAndCache = function (image, angle) {
