@@ -473,14 +473,14 @@ Frump.prototype.hit = function (other, range) {
             }
         }
         else if (this.weapon.type == 'bat') {
-            var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / (this.anim.batAtk.totalTime);
+            var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / this.anim.batAtk.totalTime;
             var batAngle = (this.rotation + Math.PI / 2) - (this.anim.batAtk.elapsedTime * moveAmnt);
             acc = Math.abs(batAngle - atan2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 105;
         }
 
-        if (acc < 0.1) {
+        if (acc < 0.15) {
             if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
                 return distance(this, other) < this.range + other.faces;
             else
@@ -489,7 +489,6 @@ Frump.prototype.hit = function (other, range) {
         else
             return false;
     }
-    else {
-        return distance(this, other) < range;
-    }
+    else
+        return distance(this, other) < range + other.radius;
 }

@@ -192,15 +192,15 @@ Enemy.prototype.update = function () {
                         ent.y += difY * delta / 2;
                     }
                     else {
-                        // this.velocity.x += difX * this.acceleration;
-                        // this.velocity.y += difY * this.acceleration;
+                        this.velocity.x += difX * this.acceleration;
+                        this.velocity.y += difY * this.acceleration;
                     }
                     // Attack calculations
                     if (this.weapon.type == 'swing' && distance(this, ent) < 170 && this.slamCD <= 0) {
                         this.slamming = true;
                         this.slamCD = 150;
                     }
-                    else if (distance(this, ent) < (this.range) && this.atkCD <= 0) {
+                    else if (distance(this, ent) < (this.range + ent.radius / 2) && this.atkCD <= 0) {
                         this.attacking = true;
                         this.atkCD = this.begLag;
                     }
@@ -261,76 +261,67 @@ Enemy.prototype.draw = function (ctx) {
 }
 
 Enemy.prototype.hit = function (other, range) {
-    var acc = Math.abs(this.rotation - Math.atan2(other.y - this.y, other.x - this.x));
-    if (acc > Math.PI) acc = (Math.PI * 2) - acc;
-
-    var orien = Math.abs(this.rotation - other.rotation);
-    if (orien > Math.PI) orien = (Math.PI * 2) - orien;
-
     if (range === undefined) {
-        if ((distance(this, other) < 75 && acc < Math.PI / 4)
-            || ((this.weapon.type == 'bat' || this.weapon.type == 'swing') && acc < Math.PI * 2 / 5)
-            || acc < Math.PI / 8) {
+        var acc = 1;
+        var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
+        var orien = Math.abs(this.rotation - other.rotation);
+        if (orien > Math.PI) orien = (Math.PI * 2) - orien;
+
+        if (this.weapon.type == 'knife') {
+            if (this.anim.atk.currentFrame() == 0) {
+                var knifeAngle = this.rotation + Math.atan(21 / 56);
+                acc = Math.abs(knifeAngle - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 60;
+            }
+            else if (this.anim.atk.currentFrame() == 1 || this.anim.atk.currentFrame == 3) {
+                var knifeAngle = this.rotation + Math.atan(13 / 68);
+                acc = Math.abs(knifeAngle - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 70;
+            }
+            else if (this.anim.atk.currentFrame() == 2) {
+                var knifeAngle = this.rotation + Math.atan(3 / 88);
+                acc = Math.abs(knifeAngle - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 90;
+            }
+        }
+        else if (this.weapon.type == 'bat') {
+            var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / this.anim.atk.totalTime;
+            var batAngle = (this.rotation + Math.PI / 2) - (this.anim.atk.elapsedTime * moveAmnt);
+            acc = Math.abs(batAngle - atan2);
+            if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+            this.range = 105;
+        }
+        else if (this.weapon.type == 'bite') {
+            var startTime = this.anim.atk.frameDuration * 2.75;
+            var endTime = this.anim.atk.frameDuration * 4.25;
+            if (this.anim.atk.elapsedTime > startTime && this.anim.atk.elapsedTime < endTime) {
+                acc = Math.abs(this.rotation - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 75;
+            }
+        }
+        else if (this.weapon.type == 'swing') {
+            var moveAmnt = (Math.atan(33 / 40) + Math.atan(20 / 48)) / this.anim.atk.totalTime;
+            var swingAngle = (this.rotation + Math.atan(33 / 40)) - (this.anim.atk.elapsedTime * moveAmnt);
+            acc = Math.abs(swingAngle - atan2);
+            if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+            this.range = 60;
+        }
+
+        if (acc < 0.1) {
             if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
                 return distance(this, other) < this.range + other.faces;
             else
                 return distance(this, other) < this.range + other.sides;
         }
-        // if (this.weapon.type == 'knife') {
-        //     if (this.anim.atk.currentFrame() == 1) {
-
-        //     }
-        //     else if (this.anim.atk.currentFrame() == 2) {
-
-        //     }
-        //     else if (this.anim.atk.currentFrame() == 3) {
-
-        //     }
-        //     else {
-
-        //     }
-        // }
-        // else if (this.weapon.type == 'bat') {
-        //     var moveAmnt = (Math.atan(92 / 29) + Math.atan(76 / 33)) / this.anim.atk.totalTime;
-        //     var batAngle = (this.rotation - Math.atan(92 / 29)) + (this.anim.atk.elapsedTime * moveAmnt);
-        //     var acc = Math.abs(batAngle - Math.atan2(other.y - this.y, other.x - this.x));
-        //     if (acc > Math.PI) acc = (Math.PI * 2) - acc;
-        //     if (acc < Math.PI / 16) {
-        //         if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
-        //             return distance(this, other) < this.range + other.faces;
-        //         else
-        //             return distance(this, other) < this.range + other.sides;
-        //     }
-        //     else return false;
-        // }
-        // else if (this.weapon.type == 'swing') {
-        //     if (this.anim.atk.currentFrame() == 1) {
-
-        //     }
-        //     else if (this.anim.atk.currentFrame() == 2) {
-
-        //     }
-        //     else if (this.anim.atk.currentFrame() == 3) {
-
-        //     }
-        //     else {
-
-        //     }
-        // }
-        // else if (this.weapon.type == 'bite') {
-        //     if (this.anim.atk.currentFrame() == 3) {
-
-        //     }
-        //     else {
-
-        //     }
-        // }
         else
             return false;
     }
-    else {
-        return distance(this, other) < range;
-    }
+    else
+        return distance(this, other) < range + other.radius;
 }
 
 function MiniBoss(game, dogs) {
@@ -607,7 +598,7 @@ function Dog(game) {
 
     // Properties
     this.radius = 20;
-    this.faces = 42;
+    this.faces = 74;
     this.sides = 18;
     this.rotationLag = 10;
     this.acceleration = 200;
@@ -617,7 +608,7 @@ function Dog(game) {
     this.begLag = 109;
     this.endLag = 120;
     this.hitDur = 6;
-    this.range = 70;
+    this.range = 75;
     this.sight = 500;
     this.fov = Math.PI;
     this.hpDrop = 1;
@@ -646,7 +637,7 @@ function Thug(game, weapon) {
         this.begLag = 110;
         this.endLag = 45;
         this.hitDur = 14;
-        this.range = 85;
+        this.range = 90;
     }
     else {
         this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 1, true, false);
@@ -693,8 +684,8 @@ function Bodyguard(game) {
 
     // Properties
     this.radius = 26;
-    this.faces = 30;
-    this.sides = 48;
+    this.faces = 36;
+    this.sides = 50;
     this.rotationLag = 35;
     this.acceleration = 75;
     this.maxSpeed = 100;
