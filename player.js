@@ -347,7 +347,6 @@ Frump.prototype.update = function () {
                 this.velocity.x *= 4 / 7;
                 this.velocity.y *= 4 / 7;
             }
-
             if (this.weapon.type == 'unarmed' && this.anim.atk.isDone()) {
                 this.anim.atk.elapsedTime = 0;
                 this.attacking = false;
@@ -388,8 +387,7 @@ Frump.prototype.update = function () {
                 }
             }
             else if (ent.enemy) {
-                if (this.attacking && this.weapon.type != 'gun' && ent.hitCD <= 0 && this.hit(ent)
-                    && this.atkCD > (100 - this.hitDur) && this.atkCD <= 100) {
+                if (this.attacking && this.weapon.type != 'gun' && ent.hitCD <= 0 && this.hit(ent)) {
                     ent.hurt = true;
                     ent.health -= this.weapon.damage;
                     ent.hitCD = this.hitDur;
@@ -444,5 +442,54 @@ Frump.prototype.draw = function (ctx) {
             else if (this.weapon.type == 'bat') this.anim.batMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
             else this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         }
+    }
+}
+
+Frump.prototype.hit = function (other, range) {
+    if (range === undefined) {
+        var acc = 1;
+        var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
+        var orien = Math.abs(this.rotation - other.rotation);
+        if (orien > Math.PI) orien = (Math.PI * 2) - orien;
+
+        if (this.weapon.type == 'knife') {
+            if (this.anim.knifeAtk.currentFrame() == 0) {
+                var knifeAngle = this.rotation + Math.atan(21 / 56);
+                acc = Math.abs(knifeAngle - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 60;
+            }
+            else if (this.anim.knifeAtk.currentFrame() == 1 || this.anim.knifeAtk.currentFrame == 3) {
+                var knifeAngle = this.rotation + Math.atan(13 / 68);
+                acc = Math.abs(knifeAngle - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 70;
+            }
+            else if (this.anim.knifeAtk.currentFrame() == 2) {
+                var knifeAngle = this.rotation + Math.atan(3 / 88);
+                acc = Math.abs(knifeAngle - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 90;
+            }
+        }
+        else if (this.weapon.type == 'bat') {
+            var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / (this.anim.batAtk.totalTime);
+            var batAngle = (this.rotation + Math.PI / 2) - (this.anim.batAtk.elapsedTime * moveAmnt);
+            acc = Math.abs(batAngle - atan2);
+            if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+            this.range = 105;
+        }
+
+        if (acc < 0.1) {
+            if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
+                return distance(this, other) < this.range + other.faces;
+            else
+                return distance(this, other) < this.range + other.sides;
+        }
+        else
+            return false;
+    }
+    else {
+        return distance(this, other) < range;
     }
 }

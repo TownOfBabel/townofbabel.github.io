@@ -192,8 +192,8 @@ Enemy.prototype.update = function () {
                         ent.y += difY * delta / 2;
                     }
                     else {
-                        this.velocity.x += difX * this.acceleration;
-                        this.velocity.y += difY * this.acceleration;
+                        // this.velocity.x += difX * this.acceleration;
+                        // this.velocity.y += difY * this.acceleration;
                     }
                     // Attack calculations
                     if (this.weapon.type == 'swing' && distance(this, ent) < 170 && this.slamCD <= 0) {
@@ -257,6 +257,79 @@ Enemy.prototype.draw = function (ctx) {
             this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else
             this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    }
+}
+
+Enemy.prototype.hit = function (other, range) {
+    var acc = Math.abs(this.rotation - Math.atan2(other.y - this.y, other.x - this.x));
+    if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+
+    var orien = Math.abs(this.rotation - other.rotation);
+    if (orien > Math.PI) orien = (Math.PI * 2) - orien;
+
+    if (range === undefined) {
+        if ((distance(this, other) < 75 && acc < Math.PI / 4)
+            || ((this.weapon.type == 'bat' || this.weapon.type == 'swing') && acc < Math.PI * 2 / 5)
+            || acc < Math.PI / 8) {
+            if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
+                return distance(this, other) < this.range + other.faces;
+            else
+                return distance(this, other) < this.range + other.sides;
+        }
+        // if (this.weapon.type == 'knife') {
+        //     if (this.anim.atk.currentFrame() == 1) {
+
+        //     }
+        //     else if (this.anim.atk.currentFrame() == 2) {
+
+        //     }
+        //     else if (this.anim.atk.currentFrame() == 3) {
+
+        //     }
+        //     else {
+
+        //     }
+        // }
+        // else if (this.weapon.type == 'bat') {
+        //     var moveAmnt = (Math.atan(92 / 29) + Math.atan(76 / 33)) / this.anim.atk.totalTime;
+        //     var batAngle = (this.rotation - Math.atan(92 / 29)) + (this.anim.atk.elapsedTime * moveAmnt);
+        //     var acc = Math.abs(batAngle - Math.atan2(other.y - this.y, other.x - this.x));
+        //     if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+        //     if (acc < Math.PI / 16) {
+        //         if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
+        //             return distance(this, other) < this.range + other.faces;
+        //         else
+        //             return distance(this, other) < this.range + other.sides;
+        //     }
+        //     else return false;
+        // }
+        // else if (this.weapon.type == 'swing') {
+        //     if (this.anim.atk.currentFrame() == 1) {
+
+        //     }
+        //     else if (this.anim.atk.currentFrame() == 2) {
+
+        //     }
+        //     else if (this.anim.atk.currentFrame() == 3) {
+
+        //     }
+        //     else {
+
+        //     }
+        // }
+        // else if (this.weapon.type == 'bite') {
+        //     if (this.anim.atk.currentFrame() == 3) {
+
+        //     }
+        //     else {
+
+        //     }
+        // }
+        else
+            return false;
+    }
+    else {
+        return distance(this, other) < range;
     }
 }
 
@@ -451,80 +524,6 @@ MiniBoss.prototype.update = function () {
 
         this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
         this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-    }
-}
-
-Enemy.prototype.hit = function (other, range) {
-    var acc = Math.abs(this.rotation - Math.atan2(other.y - this.y, other.x - this.x));
-    if (acc > Math.PI) acc = (Math.PI * 2) - acc;
-    
-    var orien = Math.abs(this.rotation - other.rotation);
-    if (orien > Math.PI) orien = (Math.PI * 2) - orien;
-
-    if (range === undefined) {
-        // if ((distance(this, other) < 75 && acc < Math.PI / 4)
-        //     || ((this.weapon.type == 'bat' || this.weapon.type == 'swing') && acc < Math.PI * 2 / 5)
-        //     || acc < Math.PI / 8) {
-        //     if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
-        //         return distance(this, other) < this.range + other.faces;
-        //     else
-        //         return distance(this, other) < this.range + other.sides;
-        // }
-        if (this.weapon.type == 'knife') {
-            if (this.anim.atk.currentFrame() == 1) {
-
-            }
-            else if (this.anim.atk.currentFrame() == 2) {
-
-            }
-            else if (this.anim.atk.currentFrame() == 3) {
-                
-            }
-            else {
-
-            }
-        }
-        else if (this.weapon.type == 'bat') {
-            if (this.anim.atk.currentFrame() == 1) {
-
-            }
-            else if (this.anim.atk.currentFrame() == 2) {
-
-            }
-            else if (this.anim.atk.currentFrame() == 3) {
-                
-            }
-            else {
-
-            }
-        }
-        else if (this.weapon.type == 'swing') {
-            if (this.anim.atk.currentFrame() == 1) {
-
-            }
-            else if (this.anim.atk.currentFrame() == 2) {
-
-            }
-            else if (this.anim.atk.currentFrame() == 3) {
-                
-            }
-            else {
-
-            }
-        }
-        else if (this.weapon.type == 'bite') {
-            if (this.anim.atk.currentFrame() == 3) {
-                
-            }
-            else {
-                
-            }
-        }
-        else
-            return false;
-    }
-    else {
-        return distance(this, other) < range;
     }
 }
 
