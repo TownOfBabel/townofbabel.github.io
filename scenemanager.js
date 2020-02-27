@@ -751,7 +751,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[5].neighbors[1] = this.levels[0].streets[5];
     this.levels[0].streets[5].neighbors[3] = this.levels[0].houses[5];
 
-    genEnemies(game, this.levels[0].streets[5], 2);
+    //genEnemies(game, this.levels[0].streets[5], 2);
     for (var i = 0; i < 5; i++)
         genEnemies(game, this.levels[0].streets[i], 2);
     genEnemies(game, this.levels[0].houses[0], 4);
@@ -765,6 +765,8 @@ SceneManager.prototype.buildLevelOne = function (game) {
         this.levels[0].houses[4].enemies.push(dogs[i]);
     }
     this.levels[0].houses[4].enemies.push(new SlowDogg(game, dogs));
+
+    this.levels[0].streets[5].enemies.push(new Bodyguard(game));
 }
 
 SceneManager.prototype.updateBackground = function () {

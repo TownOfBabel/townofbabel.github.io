@@ -196,7 +196,7 @@ Enemy.prototype.update = function () {
                         this.velocity.y += difY * this.acceleration;
                     }
                     // Attack calculations
-                    if (this.weapon.type == 'swing' && distance(this, ent) < 170 && this.slamCD <= 0) {
+                    if (this.weapon.type == 'swing' && distance(this, ent) < 140 && this.slamCD <= 0) {
                         this.slamming = true;
                         this.slamCD = 150;
                     }
