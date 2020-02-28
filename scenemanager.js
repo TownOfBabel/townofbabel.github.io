@@ -363,7 +363,12 @@ SceneManager.prototype.update = function () {
                 else this.swapHeld = 0;
                 if (this.swapHeld > 30 && distance(this.player, this.activeBG.drop) < 100) {
                     var old = this.player.weapon;
+                    if (old.ability) old.ability.removeFromWorld = true;
                     this.player.weapon = this.activeBG.drop;
+                    if (this.player.weapon.ability) {
+                        this.player.weapon.ability.removeFromWorld = false;
+                        this.game.addEntity(this.player.weapon.ability);
+                    }
                     this.player.weapon.floating = false;
                     var dif = getTrans(this.player.weapon);
                     this.player.weapon.x = dif - 5;
@@ -375,7 +380,7 @@ SceneManager.prototype.update = function () {
                     this.activeBG.drop = old;
                     this.swapHeld = 0;
                     if (this.player.weapon.type == 'knife')
-                        this.player.faces = 33;
+                        this.player.faces = 34;
                     else if (this.player.weapon.type == 'bat')
                         this.player.faces = 28;
                 }
@@ -594,7 +599,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[4] = new Background(game, ('./img/backgrounds/house05.png'),
         new Gun(game, Math.floor(Math.random() * 2)), new Door(game, 577, 710, 116, 10), 'house');
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
-        new Bat(game, 0), new Door(game, 1270, 176, 10, 96), 'house');
+        new Knife(game, 0, this.player, 0), new Door(game, 1270, 176, 10, 96), 'house');
 
     // house00 - Lil' Frump's House
     this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 210, 720));
@@ -785,6 +790,8 @@ SceneManager.prototype.updateBackground = function () {
     this.player.UI.removeFromWorld = false;
     this.player.dashInd.removeFromWorld = false;
     this.player.weapon.removeFromWorld = false;
+    if (this.player.weapon.ability)
+        this.player.weapon.ability.removeFromWorld = false;
     this.player.health.removeFromWorld = false;
     if (this.level.clear)
         this.menus.cont.removeFromWorld = false;
@@ -800,6 +807,8 @@ SceneManager.prototype.updateBackground = function () {
         this.game.addEntity(this.activeBG.door);
         this.game.addEntity(this.player.UI);
         this.game.addEntity(this.player.dashInd);
+        if (this.player.weapon.ability)
+            this.game.addEntity(this.player.weapon.ability);
         this.game.addEntity(this.player.weapon);
         this.game.addEntity(this.activeBG.drop);
         this.game.addEntity(this.arrow);
@@ -879,6 +888,8 @@ SceneManager.prototype.changeBackground = function (nextBG) {
     this.player.UI.removeFromWorld = true;
     this.player.dashInd.removeFromWorld = true;
     this.player.weapon.removeFromWorld = true;
+    if (this.player.weapon.ability)
+        this.player.weapon.ability.removeFromWorld = true;
     this.player.health.removeFromWorld = true;
     if (this.level.clear)
         this.menus.cont.removeFromWorld = true;

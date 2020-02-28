@@ -72,7 +72,7 @@ GameEngine.prototype.startInput = function () {
 
     this.ctx.canvas.addEventListener('keydown', function (e) {
         if (String.fromCharCode(e.which) === ' ') that.player.space = true;
-        if (event.shiftKey) that.player.shift = true;
+        if (event.shiftKey) that.shift = true;
         if (e.keyCode == '87') that.player.up = true;
         if (e.keyCode == '83') that.player.down = true;
         if (e.keyCode == '65') that.player.left = true;
@@ -138,7 +138,7 @@ GameEngine.prototype.loop = function () {
     this.update();
     this.draw();
     this.click = null;
-    this.player.shift = null;
+    this.shift = null;
     this.player.space = null;
 }
 

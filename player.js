@@ -107,7 +107,7 @@ Weapon.prototype.draw = function (ctx) {
         ctx.drawImage(this.static, 0, 0, 100, 100, this.x, this.y, 71.4 * this.scale, 71.4 * this.scale);
 }
 
-function Knife(game, rarity) {
+function Knife(game, rarity, player, ability) {
     this.hidden = true;
     this.type = 'knife';
     this.rarity = rarity;
@@ -115,6 +115,9 @@ function Knife(game, rarity) {
     this.range = 90;
     calcDmg(this);
     this.scale = 1;
+
+    if (ability == 0) this.ability = new SuperDash(game, player);
+    else this.ability = false;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
     this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
@@ -222,6 +225,8 @@ function Frump(game) {
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 400, 200, 200, 200, 0.15, 4, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1300, 200, 200, 0.15, 1, false, false);
     this.anim.dash = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1600, 200, 200, 0.04, 5, false, false);
+    this.anim.supDash = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1600, 200, 200, 0.06, 5, false, false);
+    this.anim.bling = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1600, 200, 200, 0.06, 5, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 200, 1300, 200, 300, 0.2, 5, false, false);
     this.anim.knifeIdle = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 600, 200, 200, 0.4, 2, true, false);
     this.anim.knifeMove = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 400, 200, 200, 0.1, 8, true, false);
@@ -286,19 +291,24 @@ Frump.prototype.update = function () {
             if (this.game.player.space && this.dashCD <= 0 && this.stunCD <= 0) {
                 if (this.attacking) {
                     this.attacking = false;
-                    this.anim.atk.elapsedTime = 0;
-                    this.anim.knifeAtk.elapsedTime = 0;
-                    this.anim.batAtk.elapsedTime = 0;
+                    if (this.weapon.type == 'knife') {
+                        this.anim.knifeAtk.elapsedTime = 0;
+                        this.atkCD = 9;
+                    }
+                    else if (this.weapon.type == 'bat') {
+                        this.anim.batAtk.elapsedTime = 0;
+                        this.atkCD = 18;
+                    }
                 }
                 this.dash = true;
                 this.dashCD = 90;
                 this.hitCD = 20;
-                this.acceleration *= 3;
-                this.maxSpeed *= 3;
+                this.acceleration = 300;
+                this.maxSpeed = 750;
             }
 
             // Check for attack + update range
-            if (!this.dash && this.game.click && this.atkCD <= 0 && this.stunCD <= 0) {
+            if (!this.dash && !this.supDash && this.game.click && this.atkCD <= 0 && this.stunCD <= 0) {
                 this.attacking = true;
                 if (this.weapon.type == 'knife') {
                     this.atkCD = 105;
@@ -329,15 +339,13 @@ Frump.prototype.update = function () {
             this.anim.hit.elapsedTime = 0;
             this.hurt = false;
         }
-        if (this.dash && !this.attacking) {
-            if (this.anim.dash.isDone()) {
-                this.anim.dash.elapsedTime = 0;
-                this.dash = false;
-                this.radius = 24;
-                this.dashCD = 60;
-                this.acceleration /= 3;
-                this.maxSpeed /= 3;
-            }
+        if (this.dash && this.anim.dash.isDone()) {
+            this.anim.dash.elapsedTime = 0;
+            this.dash = false;
+            this.radius = 24;
+            this.dashCD = 60;
+            this.acceleration = 100;
+            this.maxSpeed = 250;
         }
         else if (this.attacking) {
             if (this.weapon.type == 'gun') {
@@ -423,6 +431,7 @@ Frump.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.dash) this.anim.dash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.supDash) this.anim.supDash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.attacking) {
         if (this.weapon.type == 'knife') this.anim.knifeAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else if (this.weapon.type == 'bat') this.anim.batAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);

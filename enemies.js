@@ -42,6 +42,7 @@ function Enemy(game) {
 
     this.atkCD = 0;
     this.slamCD = 0;
+    this.stunCD = 0;
     this.hitCD = 0;
     this.ctr = 0;
 
@@ -70,6 +71,7 @@ Enemy.prototype.update = function () {
         this.ctr++;
         if (this.atkCD > 0) this.atkCD--;
         if (this.slamCD > 0) this.slamCD--;
+        if (this.stunCD > 0) this.stunCD--;
         if (this.hitCD > 0) this.hitCD--;
         if (this.hitCD <= 0) this.hurt = false;
         if (this.hurt) this.engage = true;
@@ -154,7 +156,7 @@ Enemy.prototype.update = function () {
                     ent.y += difY * delta / 2;
                 }
             }
-            else if (ent.player && ent.alive) {
+            else if (ent.player && ent.alive && this.stunCD <= 0) {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 var rotationDif = Math.abs(this.rotation - atan);
                 if (rotationDif > Math.PI) rotationDif = (Math.PI * 2) - rotationDif;
@@ -183,7 +185,7 @@ Enemy.prototype.update = function () {
                     var difX = Math.cos(this.rotation);
                     var difY = Math.sin(this.rotation);
                     var delta = this.radius + ent.radius - distance(this, ent);
-                    if (this.collide(ent) && !ent.dash) {
+                    if (this.collide(ent) && !ent.dash && !ent.supDash) {
                         this.velocity.x = -this.velocity.x * (1 / friction);
                         this.velocity.y = -this.velocity.y * (1 / friction);
                         this.x -= difX * delta / 2;
