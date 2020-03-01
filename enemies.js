@@ -37,12 +37,12 @@ function Enemy(game) {
     //Properties
     this.alive = true;
     this.enemy = true;
-    this.rotations = [];
     this.rotation = Math.random() * (Math.PI * 2) - Math.PI;
     this.velocity = { x: 0, y: 0 };
 
     this.atkCD = 0;
     this.slamCD = 0;
+    this.stunCD = 0;
     this.hitCD = 0;
     this.ctr = 0;
 
@@ -63,7 +63,7 @@ Enemy.prototype.update = function () {
     }
     if (this.die && this.anim.die.isDone()) {
         this.anim.die.elapsedTime = 0;
-        if (Math.floor(Math.random() * 4) == 0)
+        if (Math.floor(Math.random() * 3) == 0)
             this.game.addEntity(new HealthDrop(this.game, this.x, this.y, this.hpDrop));
         this.die = false;
     }
@@ -71,6 +71,7 @@ Enemy.prototype.update = function () {
         this.ctr++;
         if (this.atkCD > 0) this.atkCD--;
         if (this.slamCD > 0) this.slamCD--;
+        if (this.stunCD > 0) this.stunCD--;
         if (this.hitCD > 0) this.hitCD--;
         if (this.hitCD <= 0) this.hurt = false;
         if (this.hurt) this.engage = true;
@@ -155,7 +156,7 @@ Enemy.prototype.update = function () {
                     ent.y += difY * delta / 2;
                 }
             }
-            else if (ent.player && ent.alive) {
+            else if (ent.player && ent.alive && this.stunCD <= 0) {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 var rotationDif = Math.abs(this.rotation - atan);
                 if (rotationDif > Math.PI) rotationDif = (Math.PI * 2) - rotationDif;
@@ -164,18 +165,27 @@ Enemy.prototype.update = function () {
                     || distance(this, ent) < (this.range + ent.radius + 50) || this.engage) {
                     this.engage = true;
                     // Determine rotation
-                    if (rotationDif < Math.PI / 32 || this.rotations.length > (this.rotationLag * 10)) {
-                        for (var j = this.rotations.length - 1; j >= 0; j -= 2) {
-                            this.rotations.splice(j, 1);
+                    if (this.rotation > atan) {
+                        var rotdif = this.rotation - atan;
+                        if (rotdif > Math.PI) {
+                            rotdif = Math.PI * 2 - rotdif;
+                            this.rotation += rotdif / this.rotationLag;
                         }
+                        else this.rotation -= rotdif / this.rotationLag;
                     }
-                    this.rotations.push(atan);
-                    if (this.ctr % this.rotationLag == 0) this.rotation = this.rotations.shift();
+                    else {
+                        var rotdif = atan - this.rotation;
+                        if (rotdif > Math.PI) {
+                            rotdif = Math.PI * 2 - rotdif;
+                            this.rotation -= rotdif / this.rotationLag;
+                        }
+                        else this.rotation += rotdif / this.rotationLag;
+                    }
 
                     var difX = Math.cos(this.rotation);
                     var difY = Math.sin(this.rotation);
                     var delta = this.radius + ent.radius - distance(this, ent);
-                    if (this.collide(ent) && !ent.dash) {
+                    if (this.collide(ent) && !ent.dash && !ent.supDash) {
                         this.velocity.x = -this.velocity.x * (1 / friction);
                         this.velocity.y = -this.velocity.y * (1 / friction);
                         this.x -= difX * delta / 2;
@@ -188,11 +198,11 @@ Enemy.prototype.update = function () {
                         this.velocity.y += difY * this.acceleration;
                     }
                     // Attack calculations
-                    if (this.weapon.type == 'swing' && distance(this, ent) < 170 && this.slamCD <= 0) {
+                    if (this.weapon.type == 'swing' && distance(this, ent) < 140 && this.slamCD <= 0) {
                         this.slamming = true;
                         this.slamCD = 150;
                     }
-                    else if (distance(this, ent) < (this.range) && this.atkCD <= 0) {
+                    else if (distance(this, ent) < (this.range + ent.radius / 2) && this.atkCD <= 0) {
                         this.attacking = true;
                         this.atkCD = this.begLag;
                     }
@@ -210,8 +220,7 @@ Enemy.prototype.update = function () {
                         ent.hitCD = 9;
                         ent.stunCD = 45;
                     }
-                    if (this.attacking && ent.hitCD <= 0 && this.hit(ent)
-                        && this.atkCD > (100 - this.hitDur) && this.atkCD <= 100) {
+                    if (this.attacking && ent.hitCD <= 0 && this.hit(ent)) {
                         ent.hurt = true;
                         ent.health.current -= this.dmg;
                         ent.hitCD = this.hitDur;
@@ -252,16 +261,80 @@ Enemy.prototype.draw = function (ctx) {
     }
 }
 
-function MiniBoss(game, dogs) {
+Enemy.prototype.hit = function (other, range) {
+    if (range === undefined) {
+        var acc = 1;
+        var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
+        var orien = Math.abs(this.rotation - other.rotation);
+        if (orien > Math.PI) orien = (Math.PI * 2) - orien;
+
+        if (this.weapon.type == 'knife') {
+            if (this.anim.atk.currentFrame() == 0) {
+                var knifeAngle = this.rotation + Math.atan(21 / 56);
+                acc = Math.abs(knifeAngle - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 60;
+            }
+            else if (this.anim.atk.currentFrame() == 1 || this.anim.atk.currentFrame == 3) {
+                var knifeAngle = this.rotation + Math.atan(13 / 68);
+                acc = Math.abs(knifeAngle - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 70;
+            }
+            else if (this.anim.atk.currentFrame() == 2) {
+                var knifeAngle = this.rotation + Math.atan(3 / 88);
+                acc = Math.abs(knifeAngle - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 90;
+            }
+        }
+        else if (this.weapon.type == 'bat') {
+            var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / this.anim.atk.totalTime;
+            var batAngle = (this.rotation + Math.PI / 2) - (this.anim.atk.elapsedTime * moveAmnt);
+            acc = Math.abs(batAngle - atan2);
+            if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+            this.range = 105;
+        }
+        else if (this.weapon.type == 'bite') {
+            var startTime = this.anim.atk.frameDuration * 2.75;
+            var endTime = this.anim.atk.frameDuration * 4.25;
+            if (this.anim.atk.elapsedTime > startTime && this.anim.atk.elapsedTime < endTime) {
+                acc = Math.abs(this.rotation - atan2);
+                if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+                this.range = 75;
+            }
+        }
+        else if (this.weapon.type == 'swing') {
+            var moveAmnt = (Math.atan(33 / 40) + Math.atan(20 / 48)) / this.anim.atk.totalTime;
+            var swingAngle = (this.rotation + Math.atan(33 / 40)) - (this.anim.atk.elapsedTime * moveAmnt);
+            acc = Math.abs(swingAngle - atan2);
+            if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+            this.range = 60;
+        }
+
+        if (acc < 0.15) {
+            if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
+                return distance(this, other) < this.range + other.faces;
+            else
+                return distance(this, other) < this.range + other.sides;
+        }
+        else
+            return false;
+    }
+    else
+        return distance(this, other) < range + other.radius;
+}
+
+function SlowDogg(game, dogs) {
     // animations
     this.anim = {};
-    this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 0, 200, 200, 1, 1, true, false);
-    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 200, 0, 200, 200, 0.2, 3, true, false);
-    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 600, 400, 300, 0.15, 4, false, false);
-    this.anim.sht = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 200, 200, 200, 0.1, 8, false, false);
-    this.anim.wsl = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 0, 400, 200, 200, 0.1, 3, false, false);
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 1400, 0, 200, 200, 0.15, 1, false, false);
-    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/miniboss.png'), 800, 0, 200, 200, 0.5, 2, false, false);
+    this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 0, 0, 200, 200, 1, 1, true, false);
+    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 200, 0, 200, 200, 0.2, 3, true, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 0, 600, 400, 300, 0.15, 4, false, false);
+    this.anim.sht = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 0, 200, 200, 200, 0.1, 8, false, false);
+    this.anim.wsl = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 0, 400, 200, 200, 0.1, 3, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 1400, 0, 200, 200, 0.15, 1, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 800, 0, 200, 200, 0.25, 2, false, false);
 
     // properties
     this.alive = true;
@@ -275,8 +348,6 @@ function MiniBoss(game, dogs) {
     this.acceleration = 50;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 65;
-    this.weapon = {};
-    this.weapon.type = 'bat';
     this.range = 130;
     this.health = 250;
 
@@ -288,12 +359,12 @@ function MiniBoss(game, dogs) {
     Entity.call(this, game, 100, 100);
 }
 
-MiniBoss.prototype = new Entity();
-MiniBoss.prototype.constructor = MiniBoss;
+SlowDogg.prototype = new Entity();
+SlowDogg.prototype.constructor = SlowDogg;
 
-MiniBoss.prototype.update = function () {
+SlowDogg.prototype.update = function () {
     if (Number.isNaN(this.health)) {
-        this.health = 200;
+        this.health = 250;
     }
 
     if (this.health <= 0) {
@@ -366,7 +437,23 @@ MiniBoss.prototype.update = function () {
                 }
             }
             else if (ent.player && ent.alive) {
-                this.rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
+                var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
+                if (this.rotation > atan) {
+                    var rotdif = this.rotation - atan;
+                    if (rotdif > Math.PI) {
+                        rotdif = Math.PI * 2 - rotdif;
+                        this.rotation += rotdif / 25;
+                    }
+                    else this.rotation -= rotdif / 25;
+                }
+                else {
+                    var rotdif = atan - this.rotation;
+                    if (rotdif > Math.PI) {
+                        rotdif = Math.PI * 2 - rotdif;
+                        this.rotation -= rotdif / 25;
+                    }
+                    else this.rotation += rotdif / 25;
+                }
                 var difX = Math.cos(this.rotation);
                 var difY = Math.sin(this.rotation);
                 var delta = this.radius + ent.radius - distance(this, ent);
@@ -397,19 +484,17 @@ MiniBoss.prototype.update = function () {
                     this.shoot = true;
                     this.shtCD = 118;
                 }
-                if (this.attack && ent.hitCD <= 0 && this.hit(ent)
-                    && this.atkCD > 80 && this.atkCD <= 100) {
+                if (this.attack && ent.hitCD <= 0 && this.hit(ent)) {
                     ent.hurt = true;
                     ent.health.current -= 2;
                     ent.hitCD = 20;
                 }
                 else if (this.shoot && this.shtCD == 100) {
-                    var difX = Math.cos(this.rotation) * 45;
-                    var difY = Math.sin(this.rotation) * 45;
+                    var difX = Math.cos(this.rotation) * 75;
+                    var difY = Math.sin(this.rotation) * 75;
                     this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 7, 1));
-                    this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 15, 1));
-                    this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation));
-                    this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 15, 1));
+                    this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 21, 1));
+                    this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 21, 1));
                     this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 7, 1));
                 }
             }
@@ -430,7 +515,7 @@ MiniBoss.prototype.update = function () {
     }
 }
 
-MiniBoss.prototype.draw = function (ctx) {
+SlowDogg.prototype.draw = function (ctx) {
     if (this.die)
         this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt)
@@ -447,6 +532,29 @@ MiniBoss.prototype.draw = function (ctx) {
         else
             this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     }
+}
+
+SlowDogg.prototype.hit = function (other) {
+    var acc = 1;
+    var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
+    var orien = Math.abs(this.rotation - other.rotation);
+    if (orien > Math.PI) orien = (Math.PI * 2) - orien;
+
+    if (this.anim.atk.currentFrame() != 0) {
+        var moveAmnt = (Math.atan(158 / 10) + Math.atan(86 / 46)) / (this.anim.atk.totalTime - this.anim.atk.frameDuration);
+        var caneAngle = (this.rotation + Math.atan(158 / 10)) - ((this.anim.atk.elapsedTime - this.anim.atk.frameDuration) * moveAmnt);
+        acc = Math.abs(caneAngle - atan2);
+        if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+    }
+
+    if (acc < 0.1) {
+        if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
+            return distance(this, other) < this.range + other.faces;
+        else
+            return distance(this, other) < this.range + other.sides;
+    }
+    else
+        return false;
 }
 
 function Mailbox(game, timer) {
@@ -506,13 +614,13 @@ function Dog(game) {
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 200, 200, 200, 0.1, 6, true, false);
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 600, 200, 200, 0.05, 5, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 1000, 0, 200, 200, 0.15, 1, false, false);
-    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 200, 0, 200, 200, 0.5, 2, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 200, 0, 200, 200, 0.25, 2, false, false);
 
     // Properties
     this.radius = 20;
-    this.faces = 42;
+    this.faces = 74;
     this.sides = 18;
-    this.rotationLag = 1;
+    this.rotationLag = 10;
     this.acceleration = 200;
     this.maxSpeed = 200;
     this.weapon = {};
@@ -520,7 +628,7 @@ function Dog(game) {
     this.begLag = 109;
     this.endLag = 120;
     this.hitDur = 6;
-    this.range = 70;
+    this.range = 75;
     this.sight = 500;
     this.fov = Math.PI;
     this.hpDrop = 1;
@@ -543,20 +651,20 @@ function Thug(game, weapon) {
         this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 0, 200, 200, 0.12, 8, true, false);
         this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 200, 200, 200, 0.1, 4, false, false);
         this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 400, 200, 200, 0.15, 1, false, false);
-        this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 800, 200, 200, 400, 0.33, 3, false, false);
+        this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 800, 200, 200, 400, (0.5 / 3), 3, false, false);
         this.weapon.type = 'knife';
         this.faces = 38;
         this.begLag = 110;
         this.endLag = 45;
         this.hitDur = 14;
-        this.range = 85;
+        this.range = 90;
     }
     else {
         this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 1, true, false);
         this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 8, true, false);
         this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 200, 200, 300, 0.15, 4, false, false);
         this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 500, 200, 200, 0.15, 1, false, false);
-        this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 800, 200, 200, 400, 0.33, 3, false, false);
+        this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 800, 200, 200, 400, (0.5 / 3), 3, false, false);
         this.weapon.type = 'bat';
         this.faces = 28;
         this.begLag = 116;
@@ -568,7 +676,7 @@ function Thug(game, weapon) {
     // Properties
     this.radius = 24;
     this.sides = 38;
-    this.rotationLag = 2;
+    this.rotationLag = 15;
     this.acceleration = 100;
     this.maxSpeed = 150;
     this.sight = 250;
@@ -592,13 +700,13 @@ function Bodyguard(game) {
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 200, 200, 200, 0.14, 5, false, false);
     this.anim.slam = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 1600, 300, 300, 0.14, 7, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 1400, 400, 200, 200, 0.15, 1, false, false);
-    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 600, 200, 700, 0.25, 4, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 600, 200, 700, 0.125, 4, false, false);
 
     // Properties
     this.radius = 26;
-    this.faces = 30;
-    this.sides = 48;
-    this.rotationLag = 3;
+    this.faces = 36;
+    this.sides = 50;
+    this.rotationLag = 35;
     this.acceleration = 75;
     this.maxSpeed = 100;
     this.weapon = {};

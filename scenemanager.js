@@ -175,7 +175,7 @@ Door.prototype.constructor = Door;
 Door.prototype.update = function () {
 }
 
-Door.prototype.update = function (ctx) {
+Door.prototype.draw = function (ctx) {
 }
 
 function Arrow(game, manager) {
@@ -363,7 +363,12 @@ SceneManager.prototype.update = function () {
                 else this.swapHeld = 0;
                 if (this.swapHeld > 30 && distance(this.player, this.activeBG.drop) < 100) {
                     var old = this.player.weapon;
+                    if (old.ability) old.ability.removeFromWorld = true;
                     this.player.weapon = this.activeBG.drop;
+                    if (this.player.weapon.ability) {
+                        this.player.weapon.ability.removeFromWorld = false;
+                        this.game.addEntity(this.player.weapon.ability);
+                    }
                     this.player.weapon.floating = false;
                     var dif = getTrans(this.player.weapon);
                     this.player.weapon.x = dif - 5;
@@ -375,7 +380,7 @@ SceneManager.prototype.update = function () {
                     this.activeBG.drop = old;
                     this.swapHeld = 0;
                     if (this.player.weapon.type == 'knife')
-                        this.player.faces = 33;
+                        this.player.faces = 34;
                     else if (this.player.weapon.type == 'bat')
                         this.player.faces = 28;
                 }
@@ -764,7 +769,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
         dogs[i].engage = true;
         this.levels[0].houses[4].enemies.push(dogs[i]);
     }
-    this.levels[0].houses[4].enemies.push(new MiniBoss(game, dogs));
+    this.levels[0].houses[4].enemies.push(new SlowDogg(game, dogs));
 }
 
 SceneManager.prototype.updateBackground = function () {
@@ -783,6 +788,8 @@ SceneManager.prototype.updateBackground = function () {
     this.player.UI.removeFromWorld = false;
     this.player.dashInd.removeFromWorld = false;
     this.player.weapon.removeFromWorld = false;
+    if (this.player.weapon.ability)
+        this.player.weapon.ability.removeFromWorld = false;
     this.player.health.removeFromWorld = false;
     if (this.level.clear)
         this.menus.cont.removeFromWorld = false;
@@ -798,6 +805,8 @@ SceneManager.prototype.updateBackground = function () {
         this.game.addEntity(this.activeBG.door);
         this.game.addEntity(this.player.UI);
         this.game.addEntity(this.player.dashInd);
+        if (this.player.weapon.ability)
+            this.game.addEntity(this.player.weapon.ability);
         this.game.addEntity(this.player.weapon);
         this.game.addEntity(this.activeBG.drop);
         this.game.addEntity(this.arrow);
@@ -835,13 +844,13 @@ SceneManager.prototype.checkBounds = function () {
                 if (this.player.collideTop() && this.activeBG.neighbors[0]) {
                     if (this.activeBG.neighbors[0].type == 'street') {
                         this.changeBackground(this.activeBG.neighbors[0]);
-                        this.player.y = 720 - this.player.radius;
+                        this.player.y = 720 - this.player.radius - 10;
                     }
                 }
-                else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
-                    this.changeBackground(this.activeBG.neighbors[2]);
-                    this.player.y = this.player.radius;
-                }
+            }
+            else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                this.changeBackground(this.activeBG.neighbors[2]);
+                this.player.y = this.player.radius + 10;
             }
         }
         else if (this.activeBG.neighbors[3]) {
@@ -849,13 +858,13 @@ SceneManager.prototype.checkBounds = function () {
                 if (this.player.collideTop() && this.activeBG.neighbors[0]) {
                     if (this.activeBG.neighbors[0].type == 'street') {
                         this.changeBackground(this.activeBG.neighbors[0]);
-                        this.player.y = 720 - this.player.radius;
+                        this.player.y = 720 - this.player.radius - 10;
                     }
                 }
-                else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
-                    this.changeBackground(this.activeBG.neighbors[2]);
-                    this.player.y = this.player.radius;
-                }
+            }
+            else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                this.changeBackground(this.activeBG.neighbors[2]);
+                this.player.y = this.player.radius + 10;
             }
         }
     }
@@ -877,6 +886,8 @@ SceneManager.prototype.changeBackground = function (nextBG) {
     this.player.UI.removeFromWorld = true;
     this.player.dashInd.removeFromWorld = true;
     this.player.weapon.removeFromWorld = true;
+    if (this.player.weapon.ability)
+        this.player.weapon.ability.removeFromWorld = true;
     this.player.health.removeFromWorld = true;
     if (this.level.clear)
         this.menus.cont.removeFromWorld = true;
