@@ -349,7 +349,7 @@ SceneManager.prototype.update = function () {
                 }
             }
             if (this.bossDead) {
-                this.level.clear = true;;
+                this.level.clear = true;
                 if (this.game.click) {
                     this.level.clear = false;
                     this.player.x = 515;
@@ -357,6 +357,8 @@ SceneManager.prototype.update = function () {
                     this.changeBackground(this.menus.title);
                 }
             }
+        }
+        if (!this.activeBG.menu) {
             if (this.activeBG.enemies.length == 0) {
                 this.updateLevel = true;
                 if (this.game.player.interact) this.swapHeld++;
