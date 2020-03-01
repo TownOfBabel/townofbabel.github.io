@@ -486,7 +486,7 @@ Frump.prototype.hit = function (other, range) {
             this.range = 105;
         }
 
-        if (acc < 0.15) {
+        if (acc < 0.25) {
             if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
                 return distance(this, other) < this.range + other.faces;
             else

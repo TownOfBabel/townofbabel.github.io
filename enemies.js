@@ -63,7 +63,7 @@ Enemy.prototype.update = function () {
     }
     if (this.die && this.anim.die.isDone()) {
         this.anim.die.elapsedTime = 0;
-        if (Math.floor(Math.random() * 4) == 0)
+        if (Math.floor(Math.random() * 3) == 0)
             this.game.addEntity(new HealthDrop(this.game, this.x, this.y, this.hpDrop));
         this.die = false;
     }
@@ -312,7 +312,7 @@ Enemy.prototype.hit = function (other, range) {
             this.range = 60;
         }
 
-        if (acc < 0.1) {
+        if (acc < 0.15) {
             if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
                 return distance(this, other) < this.range + other.faces;
             else
