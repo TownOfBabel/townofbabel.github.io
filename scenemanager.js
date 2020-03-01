@@ -363,7 +363,7 @@ SceneManager.prototype.update = function () {
                 this.updateLevel = true;
                 if (this.game.player.interact) this.swapHeld++;
                 else this.swapHeld = 0;
-                if (this.swapHeld > 30 && distance(this.player, this.activeBG.drop) < 100) {
+                if (this.swapHeld > 15 && distance(this.player, this.activeBG.drop) < 100) {
                     var old = this.player.weapon;
                     if (old.ability) old.ability.removeFromWorld = true;
                     this.player.weapon = this.activeBG.drop;
@@ -865,6 +865,12 @@ SceneManager.prototype.checkBounds = function () {
                 }
             }
             else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                this.changeBackground(this.activeBG.neighbors[2]);
+                this.player.y = this.player.radius + 10;
+            }
+        }
+        else if (this.activeBG === this.levels[this.level.current].streets[4]) {
+            if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
                 this.changeBackground(this.activeBG.neighbors[2]);
                 this.player.y = this.player.radius + 10;
             }
