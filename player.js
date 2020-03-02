@@ -117,6 +117,7 @@ function Knife(game, rarity, player, ability) {
     this.scale = 1;
 
     if (ability == 0) this.ability = new SuperDash(game, player);
+    else if (ability == 1) this.ability = new BlingStun(game, player);
     else this.ability = false;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
@@ -128,7 +129,7 @@ function Knife(game, rarity, player, ability) {
 Knife.prototype = new Weapon();
 Knife.prototype.constructor = Knife;
 
-function Bat(game, rarity) {
+function Bat(game, rarity, player, ability) {
     this.hidden = true;
     this.type = 'bat';
     this.rarity = rarity;
@@ -136,6 +137,10 @@ function Bat(game, rarity) {
     this.range = 110;
     calcDmg(this);
     this.scale = 0.7;
+
+    if (ability == 0) this.ability = new SuperDash(game, player);
+    else if (ability == 1) this.ability = new BlingStun(game, player);
+    else this.ability = false;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
     this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
@@ -146,7 +151,7 @@ function Bat(game, rarity) {
 Bat.prototype = new Weapon();
 Bat.prototype.constructor = Bat;
 
-function Gun(game, rarity) {
+function Gun(game, rarity, player, ability) {
     this.hidden = true;
     this.type = 'gun';
     this.rarity = rarity;
@@ -155,6 +160,10 @@ function Gun(game, rarity) {
     calcDmg(this);
     this.damage /= 2.0;
     this.scale = 0.85;
+
+    if (ability == 0) this.ability = new SuperDash(game, player);
+    else if (ability == 1) this.ability = new BlingStun(game, player);
+    else this.ability = false;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png');
     this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
@@ -481,6 +490,8 @@ Frump.prototype.hit = function (other, range) {
         else if (this.weapon.type == 'bat') {
             var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / this.anim.batAtk.totalTime;
             var batAngle = (this.rotation + Math.PI / 2) - (this.anim.batAtk.elapsedTime * moveAmnt);
+            if (batAngle > Math.PI) batAngle = batAngle - (Math.PI * 2);
+            else if (batAngle < -Math.PI) batAngle = batAngle + (Math.PI * 2);
             acc = Math.abs(batAngle - atan2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 105;

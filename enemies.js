@@ -15,7 +15,7 @@ HealthDrop.prototype.update = function () {
         var ent = this.game.entities[i];
         if (ent.player) {
             if (this.collide(ent)) {
-                ent.health.current += this.heal;
+                ent.health.current += (this.heal * 2);
                 if (ent.health.current > ent.health.max)
                     ent.health.current = ent.health.max;
                 this.removeFromWorld = true;
@@ -26,11 +26,11 @@ HealthDrop.prototype.update = function () {
 
 HealthDrop.prototype.draw = function (ctx) {
     if (this.heal == 1)
-        this.healOne.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+        this.healOne.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 1.5);
     else if (this.heal == 2)
-        this.healTwo.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+        this.healTwo.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 1.5);
     else if (this.heal == 3)
-        this.healThree.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+        this.healThree.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 1.5);
 }
 
 function Enemy(game) {
@@ -291,6 +291,8 @@ Enemy.prototype.hit = function (other, range) {
         else if (this.weapon.type == 'bat') {
             var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / this.anim.atk.totalTime;
             var batAngle = (this.rotation + Math.PI / 2) - (this.anim.atk.elapsedTime * moveAmnt);
+            if (batAngle > Math.PI) batAngle = batAngle - (Math.PI * 2);
+            else if (batAngle < -Math.PI) batAngle = batAngle + (Math.PI * 2);
             acc = Math.abs(batAngle - atan2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 105;
