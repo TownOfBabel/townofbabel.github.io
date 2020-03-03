@@ -129,8 +129,8 @@ Background.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, 0, 0);
 }
 
-function Roof(game, x, y, roofImage) {
-    this.image = roofImage;
+function Roof(game, x, y, image) {
+    this.image = ASSET_MANAGER.getAsset(image);
     Entity.call(this, game, x, y);
 }
 
@@ -138,12 +138,10 @@ Roof.prototype = new Entity();
 Roof.prototype.constructor = Roof;
 
 Roof.prototype.update = function () {
-    Entity.prototype.update.call(this);
 }
 
 Roof.prototype.draw = function (ctx) {
-    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
-    Entity.prototype.draw.call(this);
+    ctx.drawImage(this.image, this.x, this.y);
 }
 
 function Wall(game, x, y, w, h) {
@@ -160,6 +158,23 @@ Wall.prototype.update = function () {
 }
 
 Wall.prototype.draw = function (ctx) {
+}
+
+function Column(game, x, y, radius, image) {
+    this.column = true;
+    this.image = ASSET_MANAGER.getAsset(image);
+    this.radius = radius;
+    Entity.call(this, game, x, y);
+}
+
+Column.prototype = new Entity();
+Column.prototype.constructor = Column;
+
+Column.prototype.update = function () {
+}
+
+Column.prototype.draw = function (ctx) {
+    ctx.drawImage(this.image, this.x, this.y);
 }
 
 function Door(game, x, y, w, h) {
@@ -539,26 +554,4 @@ SceneManager.prototype.changeBackground = function (nextBG) {
     // add new background
     this.game.addEntity(this.activeBG);
     this.changedBG = true;
-}
-
-SceneManager.prototype.buildLevel = function (lvl) {
-    // connections
-    this.levels[lvl].streets[0].neighbors[0] = this.levels[lvl].streets[1];
-    this.levels[lvl].streets[0].neighbors[1] = this.levels[lvl].houses[0];
-    this.levels[lvl].houses[0].neighbors[3] = this.levels[lvl].streets[0];
-    for (var i = 1; i < 4; i++) {
-        this.levels[lvl].streets[i].neighbors[0] = this.levels[lvl].streets[(i + 1)];
-        this.levels[lvl].streets[i].neighbors[2] = this.levels[lvl].streets[(i - 1)];
-        if (i == 2) {
-            this.levels[lvl].streets[i].neighbors[1] = this.levels[lvl].houses[i];
-            this.levels[lvl].houses[i].neighbors[3] = this.levels[lvl].streets[i];
-        }
-        else {
-            this.levels[lvl].streets[i].neighbors[3] = this.levels[lvl].houses[i];
-            this.levels[lvl].houses[i].neighbors[1] = this.levels[lvl].streets[i];
-        }
-    }
-    this.levels[lvl].streets[4].neighbors[0] = this.levels[lvl].houses[4];
-    this.levels[lvl].streets[4].neighbors[2] = this.levels[lvl].streets[3];
-    this.levels[lvl].houses[4].neighbors[2] = this.levels[lvl].streets[4];
 }

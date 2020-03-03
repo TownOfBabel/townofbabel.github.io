@@ -143,11 +143,22 @@ Enemy.prototype.update = function () {
                     }
                 }
             }
-            else if (ent.enemy && !ent.boss) {
-                var difX = Math.cos(this.rotation);
-                var difY = Math.sin(this.rotation);
-                var delta = this.radius + ent.radius - distance(this, ent);
+            else if (ent.column) {
                 if (this.collide(ent)) {
+                    var difX = Math.cos(this.rotation);
+                    var difY = Math.sin(this.rotation);
+                    var delta = this.radius + ent.radius - distance(this, ent);
+                    this.velocity.x = -this.velocity.x * (1 / friction);
+                    this.velocity.y = -this.velocity.y * (1 / friction);
+                    this.x -= difX * delta;
+                    this.y -= difY * delta;
+                }
+            }
+            else if (ent.enemy && !ent.boss) {
+                if (this.collide(ent)) {
+                    var difX = Math.cos(this.rotation);
+                    var difY = Math.sin(this.rotation);
+                    var delta = this.radius + ent.radius - distance(this, ent);
                     this.velocity.x = -this.velocity.x * (1 / friction);
                     this.velocity.y = -this.velocity.y * (1 / friction);
                     this.x -= difX * delta / 2;
@@ -182,10 +193,10 @@ Enemy.prototype.update = function () {
                         else this.rotation += rotdif / this.rotationLag;
                     }
 
-                    var difX = Math.cos(this.rotation);
-                    var difY = Math.sin(this.rotation);
-                    var delta = this.radius + ent.radius - distance(this, ent);
                     if (this.collide(ent) && !ent.dash && !ent.supDash) {
+                        var difX = Math.cos(this.rotation);
+                        var difY = Math.sin(this.rotation);
+                        var delta = this.radius + ent.radius - distance(this, ent);
                         this.velocity.x = -this.velocity.x * (1 / friction);
                         this.velocity.y = -this.velocity.y * (1 / friction);
                         this.x -= difX * delta / 2;
@@ -438,6 +449,17 @@ SlowDogg.prototype.update = function () {
                     }
                 }
             }
+            else if (ent.column) {
+                if (this.collide(ent)) {
+                    var difX = Math.cos(this.rotation);
+                    var difY = Math.sin(this.rotation);
+                    var delta = this.radius + ent.radius - distance(this, ent);
+                    this.velocity.x = -this.velocity.x * (1 / friction);
+                    this.velocity.y = -this.velocity.y * (1 / friction);
+                    this.x -= difX * delta;
+                    this.y -= difY * delta;
+                }
+            }
             else if (ent.player && ent.alive) {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 if (this.rotation > atan) {
@@ -456,10 +478,10 @@ SlowDogg.prototype.update = function () {
                     }
                     else this.rotation += rotdif / 25;
                 }
-                var difX = Math.cos(this.rotation);
-                var difY = Math.sin(this.rotation);
-                var delta = this.radius + ent.radius - distance(this, ent);
                 if (this.collide(ent) && !ent.dash) {
+                    var difX = Math.cos(this.rotation);
+                    var difY = Math.sin(this.rotation);
+                    var delta = this.radius + ent.radius - distance(this, ent);
                     this.velocity.x = -this.velocity.x * (1 / friction);
                     this.velocity.y = -this.velocity.y * (1 / friction);
                     this.x -= difX * delta / 2;
