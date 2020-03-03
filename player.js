@@ -118,6 +118,7 @@ function Knife(game, rarity, player, ability) {
 
     if (ability == 0) this.ability = new SuperDash(game, player);
     else if (ability == 1) this.ability = new BlingStun(game, player);
+    else if (ability == 2) this.ability = new Lunge(game, player);
     else this.ability = false;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
@@ -140,6 +141,7 @@ function Bat(game, rarity, player, ability) {
 
     if (ability == 0) this.ability = new SuperDash(game, player);
     else if (ability == 1) this.ability = new BlingStun(game, player);
+    else if (ability == 2) this.ability = new FruitShot(game, player);
     else this.ability = false;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
@@ -163,6 +165,7 @@ function Gun(game, rarity, player, ability) {
 
     if (ability == 0) this.ability = new SuperDash(game, player);
     else if (ability == 1) this.ability = new BlingStun(game, player);
+    else if (ability == 2) this.ability = new Laser(game, player);
     else this.ability = false;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png');

@@ -1,12 +1,35 @@
-function SuperDash(game, player) {
-    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+function Ability(game, player) {
     this.player = player;
     this.cooldown = 0;
-    this.maxCD = 120;
-    Entity.call(this, game, 150, 35);
+    Entity.call(this, game, 175, 35);
 }
 
-SuperDash.prototype = new Entity();
+Ability.prototype = new Entity();
+Ability.prototype.constructor = Ability;
+
+Ability.prototype.update = function () {
+}
+
+Ability.prototype.draw = function (ctx) {
+    if (this.cooldown <= 0)
+        ctx.drawImage(this.icon, 240, 0, 60, 60, this.x, this.y, 40, 40);
+    else if (this.cooldown <= this.maxCD / 4)
+        ctx.drawImage(this.icon, 180, 0, 60, 60, this.x, this.y, 40, 40);
+    else if (this.cooldown <= this.maxCD / 2)
+        ctx.drawImage(this.icon, 120, 0, 60, 60, this.x, this.y, 40, 40);
+    else if (this.cooldown <= (this.maxCD * 3 / 4))
+        ctx.drawImage(this.icon, 60, 0, 60, 60, this.x, this.y, 40, 40);
+    else
+        ctx.drawImage(this.icon, 0, 0, 60, 60, this.x, this.y, 40, 40);
+}
+
+function SuperDash(game, player) {
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.maxCD = 120;
+    Ability.call(this, game, player);
+}
+
+SuperDash.prototype = new Ability();
 SuperDash.prototype.constructor = SuperDash;
 
 SuperDash.prototype.update = function () {
@@ -44,28 +67,13 @@ SuperDash.prototype.update = function () {
     }
 }
 
-SuperDash.prototype.draw = function (ctx) {
-    if (this.cooldown <= 0)
-        ctx.drawImage(this.icon, 240, 0, 60, 60, this.x, this.y, 40, 40);
-    else if (this.cooldown <= this.maxCD / 4)
-        ctx.drawImage(this.icon, 180, 0, 60, 60, this.x, this.y, 40, 40);
-    else if (this.cooldown <= this.maxCD / 2)
-        ctx.drawImage(this.icon, 120, 0, 60, 60, this.x, this.y, 40, 40);
-    else if (this.cooldown <= (this.maxCD * 3 / 4))
-        ctx.drawImage(this.icon, 60, 0, 60, 60, this.x, this.y, 40, 40);
-    else
-        ctx.drawImage(this.icon, 0, 0, 60, 60, this.x, this.y, 40, 40);
-}
-
 function BlingStun(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.player = player;
-    this.cooldown = 0;
     this.maxCD = 180;
-    Entity.call(this, game, 150, 35);
+    Ability.call(this, game, player);
 }
 
-BlingStun.prototype = new Entity();
+BlingStun.prototype = new Ability();
 BlingStun.prototype.constructor = BlingStun;
 
 BlingStun.prototype.update = function () {
@@ -110,15 +118,41 @@ BlingStun.prototype.update = function () {
     }
 }
 
-BlingStun.prototype.draw = function (ctx) {
-    if (this.cooldown <= 0)
-        ctx.drawImage(this.icon, 240, 0, 60, 60, this.x, this.y, 40, 40);
-    else if (this.cooldown <= this.maxCD / 4)
-        ctx.drawImage(this.icon, 180, 0, 60, 60, this.x, this.y, 40, 40);
-    else if (this.cooldown <= this.maxCD / 2)
-        ctx.drawImage(this.icon, 120, 0, 60, 60, this.x, this.y, 40, 40);
-    else if (this.cooldown <= (this.maxCD * 3 / 4))
-        ctx.drawImage(this.icon, 60, 0, 60, 60, this.x, this.y, 40, 40);
-    else
-        ctx.drawImage(this.icon, 0, 0, 60, 60, this.x, this.y, 40, 40);
+function Lunge(game, player) {
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.maxCD = 300;
+    Ability.call(this, game, player);
+}
+
+Lunge.prototype = new Ability();
+Lunge.prototype.constructor = Lunge;
+
+Lunge.prototype.update = function () {
+
+}
+
+function FruitShot(game, player) {
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.maxCD = 300;
+    Ability.call(this, game, player);
+}
+
+FruitShot.prototype = new Ability();
+FruitShot.prototype.constructor = FruitShot;
+
+FruitShot.prototype.update = function () {
+
+}
+
+function Laser(game, player) {
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.maxCD = 300;
+    Ability.call(this, game, player);
+}
+
+Laser.prototype = new Ability();
+Laser.prototype.constructor = Laser;
+
+Laser.prototype.update = function () {
+    
 }
