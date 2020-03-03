@@ -97,6 +97,7 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/street32.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street33.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street34.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street35.png');
+ASSET_MANAGER.queueDownload('./img/backgrounds/house00shadow.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house00.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house01.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/house02.png');
@@ -140,6 +141,7 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/arrow.png');
 
 // entities (player + enemies)
 ASSET_MANAGER.queueDownload('./img/entities/frump.png');
+ASSET_MANAGER.queueDownload('./img/entities/frump2.png');
 ASSET_MANAGER.queueDownload('./img/entities/UI.png');
 ASSET_MANAGER.queueDownload('./img/entities/health.png');
 ASSET_MANAGER.queueDownload('./img/entities/health_drop.png');

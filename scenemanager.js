@@ -314,9 +314,9 @@ SceneManager.prototype.update = function () {
                 this.menus.fade.active = true;
             }
             if (this.menus.fade.tofrom == 'black') {
+                this.changeBackground(this.menus.story1);
                 this.menus.fade.active = false;
                 this.menus.fade.tofrom = 'toBlack';
-                this.changeBackground(this.menus.story1);
             }
         }
         else if (this.activeBG === this.menus.story1 && this.game.click)

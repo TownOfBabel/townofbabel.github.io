@@ -200,7 +200,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[4] = new Background(game, ('./img/backgrounds/house05.png'),
         new Gun(game, Math.floor(Math.random() * 2)), new Door(game, 577, 710, 116, 10), 'house');
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
-        new Bat(game, 0), new Door(game, 1270, 176, 10, 96), 'house');
+        new Gun(game, 0, this.player, 1), new Door(game, 1270, 176, 10, 96), 'house');
 
     // house00 - Lil' Frump's House
     this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 210, 720));
@@ -220,6 +220,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[5].walls.push(new Wall(game, 1181, 447, 52, 200));
     this.levels[0].houses[5].walls.push(new Wall(game, 989, 457, 94, 192));
     this.levels[0].houses[5].walls.push(new Wall(game, 788, 427, 92, 248));
+    this.levels[0].houses[5].walls.push(new Roof(game, 0, 0, './img/backgrounds/house00shadow.png'));
     this.levels[0].houses[5].spawn = { x: 1240, y: 224 };
 
     // street00

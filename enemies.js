@@ -2,7 +2,7 @@ function HealthDrop(game, x, y, heal) {
     this.healOne = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 0, 40, 40, 0.2, 4, true, false);
     this.healTwo = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 40, 40, 40, 0.2, 4, true, false);
     this.healThree = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 80, 40, 40, 0.2, 4, true, false);
-    this.heal = heal;
+    this.heal = heal * 2;
     this.radius = 0;
     Entity.call(this, game, x, y);
 }
@@ -15,7 +15,7 @@ HealthDrop.prototype.update = function () {
         var ent = this.game.entities[i];
         if (ent.player) {
             if (this.collide(ent)) {
-                ent.health.current += (this.heal * 2);
+                ent.health.current += this.heal;
                 if (ent.health.current > ent.health.max)
                     ent.health.current = ent.health.max;
                 this.removeFromWorld = true;
@@ -67,7 +67,7 @@ Enemy.prototype.update = function () {
             this.game.addEntity(new HealthDrop(this.game, this.x, this.y, this.hpDrop));
         this.die = false;
     }
-    if (this.alive) {
+    if (this.alive && !this.die) {
         this.ctr++;
         if (this.atkCD > 0) this.atkCD--;
         if (this.slamCD > 0) this.slamCD--;
@@ -300,13 +300,13 @@ Enemy.prototype.hit = function (other, range) {
             }
         }
         else if (this.weapon.type == 'bat') {
-            var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / this.anim.atk.totalTime;
-            var batAngle = (this.rotation + Math.PI / 2) - (this.anim.atk.elapsedTime * moveAmnt);
+            var moveAmnt = (Math.atan(79 / 3) + Math.atan(68 / 33)) / this.anim.atk.totalTime;
+            var batAngle = (this.rotation + Math.atan(79 / 3)) - (this.anim.atk.elapsedTime * moveAmnt);
             if (batAngle > Math.PI) batAngle = batAngle - (Math.PI * 2);
             else if (batAngle < -Math.PI) batAngle = batAngle + (Math.PI * 2);
             acc = Math.abs(batAngle - atan2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
-            this.range = 105;
+            this.range = 102;
         }
         else if (this.weapon.type == 'bite') {
             var startTime = this.anim.atk.frameDuration * 2.75;
@@ -363,6 +363,7 @@ function SlowDogg(game, dogs) {
     this.maxSpeed = 65;
     this.range = 130;
     this.health = 250;
+    this.hpDrop = Math.floor(Math.random() * 2) + 3;
 
     this.atkCD = 0;
     this.shtCD = 0;
@@ -705,7 +706,7 @@ function Thug(game, weapon) {
     this.maxSpeed = 150;
     this.sight = 250;
     this.fov = Math.PI * 2 / 5;
-    this.hpDrop = 2;
+    this.hpDrop = Math.floor(Math.random() * 2) + 1;
     this.health = 100;
     this.initHP = 100;
     this.dmg = 1;
@@ -741,7 +742,7 @@ function Bodyguard(game) {
     this.range = 60;
     this.sight = 200;
     this.fov = Math.PI * 4 / 9;
-    this.hpDrop = 3;
+    this.hpDrop = Math.floor(Math.random() * 2) + 2;
     this.health = 140;
     this.initHP = 140;
     this.dmg = 3;

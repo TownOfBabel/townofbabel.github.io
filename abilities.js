@@ -1,7 +1,7 @@
 function Ability(game, player) {
     this.player = player;
     this.cooldown = 0;
-    Entity.call(this, game, 175, 35);
+    Entity.call(this, game, 150, 35);
 }
 
 Ability.prototype = new Entity();
@@ -69,7 +69,7 @@ SuperDash.prototype.update = function () {
 
 function BlingStun(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 180;
+    this.maxCD = 240;
     Ability.call(this, game, player);
 }
 
@@ -107,7 +107,7 @@ BlingStun.prototype.update = function () {
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
         if (ent.enemy) {
-            if (this.player.bling && this.player.hit(ent, 140) && ent.hitCD <= 0
+            if (this.player.bling && this.player.hit(ent, 150) && ent.hitCD <= 0
                 && this.cooldown <= 100 && this.cooldown > 88) {
                 ent.hurt = true;
                 ent.health -= 10;
@@ -120,7 +120,7 @@ BlingStun.prototype.update = function () {
 
 function Lunge(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 300;
+    this.maxCD = 390;
     Ability.call(this, game, player);
 }
 
@@ -133,7 +133,7 @@ Lunge.prototype.update = function () {
 
 function FruitShot(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 300;
+    this.maxCD = 360;
     Ability.call(this, game, player);
 }
 
@@ -146,7 +146,7 @@ FruitShot.prototype.update = function () {
 
 function Laser(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 300;
+    this.maxCD = 420;
     Ability.call(this, game, player);
 }
 
