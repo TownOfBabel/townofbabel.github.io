@@ -99,7 +99,7 @@ BlingStun.prototype.update = function () {
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
         if (ent.enemy) {
-            if (this.player.bling && this.player.hit(ent, 120) && ent.hitCD <= 0
+            if (this.player.bling && this.player.hit(ent, 140) && ent.hitCD <= 0
                 && this.cooldown <= 100 && this.cooldown > 88) {
                 ent.hurt = true;
                 ent.health -= 10;
