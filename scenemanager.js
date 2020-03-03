@@ -474,6 +474,10 @@ SceneManager.prototype.checkBounds = function () {
                         this.player.y = 720 - this.player.radius - 10;
                     }
                 }
+                else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                    this.changeBackground(this.activeBG.neighbors[2]);
+                    this.player.y = this.player.radius + 10;
+                }
             }
             else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
                 this.changeBackground(this.activeBG.neighbors[2]);
@@ -487,6 +491,10 @@ SceneManager.prototype.checkBounds = function () {
                         this.changeBackground(this.activeBG.neighbors[0]);
                         this.player.y = 720 - this.player.radius - 10;
                     }
+                }
+                else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                    this.changeBackground(this.activeBG.neighbors[2]);
+                    this.player.y = this.player.radius + 10;
                 }
             }
             else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
