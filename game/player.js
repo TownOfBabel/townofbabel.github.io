@@ -275,7 +275,6 @@ Frump.prototype.update = function () {
             if (this.dashCD > 0) this.dashCD--;
             if (this.atkCD > 0) this.atkCD--;
             if (this.hitCD > 0) this.hitCD--;
-            if (this.hitCD <= 0) this.hurt = false;
 
             // User control
             if (this.game.player.up) this.velocity.y -= this.acceleration;
