@@ -215,27 +215,32 @@ Entity.prototype.collide = function (other) {
                 this.side = 'bottom';
                 return distance(this, this.x, other.y + other.h) < this.radius;
             }
-            else return true;
+            else {
+                this.side = 'inside';
+                return true;
+            }
         }
     }
     else return distance(this, other) < this.radius + other.radius;
 }
 
 Entity.prototype.collideLeft = function () {
-    if (this.caged) return (this.x - this.radius) < 1150;
+    if (this.caged) return (this.x - this.radius) < 1075;
     else return (this.x - this.radius) < 0;
 }
 
 Entity.prototype.collideRight = function () {
-    return (this.x + this.radius) > 1280;
+    if (this.caged) return (this.x + this.radius) > 1235
+    else return (this.x + this.radius) > 1280;
 }
 
 Entity.prototype.collideTop = function () {
-    return (this.y - this.radius) < 0;
+    if (this.caged) return (this.y - this.radius) < 40;
+    else return (this.y - this.radius) < 0;
 }
 
 Entity.prototype.collideBottom = function () {
-    if (this.caged) return (this.y + this.radius) > 150;
+    if (this.caged) return (this.y + this.radius) > 200;
     else return (this.y + this.radius) > 720;
 }
 

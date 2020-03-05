@@ -2,7 +2,7 @@ function HealthDrop(game, x, y, heal) {
     this.healOne = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 0, 40, 40, 0.2, 4, true, false);
     this.healTwo = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 40, 40, 40, 0.2, 4, true, false);
     this.healThree = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 80, 40, 40, 0.2, 4, true, false);
-    this.heal = heal;
+    this.heal = heal * 2;
     this.radius = 0;
     Entity.call(this, game, x, y);
 }
@@ -15,7 +15,7 @@ HealthDrop.prototype.update = function () {
         var ent = this.game.entities[i];
         if (ent.player) {
             if (this.collide(ent)) {
-                ent.health.current += (this.heal * 2);
+                ent.health.current += this.heal;
                 if (ent.health.current > ent.health.max)
                     ent.health.current = ent.health.max;
                 this.removeFromWorld = true;
@@ -67,7 +67,7 @@ Enemy.prototype.update = function () {
             this.game.addEntity(new HealthDrop(this.game, this.x, this.y, this.hpDrop));
         this.die = false;
     }
-    if (this.alive) {
+    if (this.alive && !this.die) {
         this.ctr++;
         if (this.atkCD > 0) this.atkCD--;
         if (this.slamCD > 0) this.slamCD--;
@@ -104,13 +104,13 @@ Enemy.prototype.update = function () {
         if (this.caged) {
             if (this.collideLeft() || this.collideRight()) {
                 this.velocity.x = -this.velocity.x * (1 / friction);
-                if (this.collideLeft()) this.x = this.radius + 1150;
-                if (this.collideRight()) this.x = 1280 - this.radius;
+                if (this.collideLeft()) this.x = this.radius + 1075;
+                if (this.collideRight()) this.x = 1235 - this.radius;
             }
             if (this.collideTop() || this.collideBottom()) {
                 this.velocity.y = -this.velocity.y * (1 / friction);
-                if (this.collideTop()) this.y = this.radius;
-                if (this.collideBottom()) this.y = 150 - this.radius;
+                if (this.collideTop()) this.y = this.radius + 40;
+                if (this.collideBottom()) this.y = 200 - this.radius;
             }
         }
         else {
@@ -143,11 +143,23 @@ Enemy.prototype.update = function () {
                     }
                 }
             }
-            else if (ent.enemy && !ent.boss) {
-                var difX = Math.cos(this.rotation);
-                var difY = Math.sin(this.rotation);
-                var delta = this.radius + ent.radius - distance(this, ent);
+            else if (ent.column) {
                 if (this.collide(ent)) {
+                    var difX = Math.cos(this.rotation);
+                    var difY = Math.sin(this.rotation);
+                    var delta = this.radius + ent.radius - distance(this, ent);
+                    this.velocity.x = 0;
+                    this.velocity.y = 0;
+                    this.x -= difX * delta + 1;
+                    this.y -= difY * delta + 1;
+                }
+            }
+            else if (ent.enemy) {
+                if (ent.engage) this.engage = true;
+                if (!ent.boss && this.collide(ent)) {
+                    var difX = Math.cos(this.rotation);
+                    var difY = Math.sin(this.rotation);
+                    var delta = this.radius + ent.radius - distance(this, ent);
                     this.velocity.x = -this.velocity.x * (1 / friction);
                     this.velocity.y = -this.velocity.y * (1 / friction);
                     this.x -= difX * delta / 2;
@@ -181,7 +193,6 @@ Enemy.prototype.update = function () {
                         }
                         else this.rotation += rotdif / this.rotationLag;
                     }
-
                     var difX = Math.cos(this.rotation);
                     var difY = Math.sin(this.rotation);
                     var delta = this.radius + ent.radius - distance(this, ent);
@@ -228,20 +239,19 @@ Enemy.prototype.update = function () {
                 }
             }
         }
-
-        // Speed control
-        var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
-        if (speed > this.maxSpeed) {
-            var ratio = this.maxSpeed / speed;
-            this.velocity.x *= ratio;
-            this.velocity.y *= ratio;
-        }
-        this.x += this.velocity.x * this.game.clockTick;
-        this.y += this.velocity.y * this.game.clockTick;
-
-        this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
-        this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
     }
+    // Speed control
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+
+    this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
+    this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 }
 
 Enemy.prototype.draw = function (ctx) {
@@ -289,13 +299,13 @@ Enemy.prototype.hit = function (other, range) {
             }
         }
         else if (this.weapon.type == 'bat') {
-            var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / this.anim.atk.totalTime;
-            var batAngle = (this.rotation + Math.PI / 2) - (this.anim.atk.elapsedTime * moveAmnt);
+            var moveAmnt = (Math.atan(79 / 3) + Math.atan(68 / 33)) / this.anim.atk.totalTime;
+            var batAngle = (this.rotation + Math.atan(79 / 3)) - (this.anim.atk.elapsedTime * moveAmnt);
             if (batAngle > Math.PI) batAngle = batAngle - (Math.PI * 2);
             else if (batAngle < -Math.PI) batAngle = batAngle + (Math.PI * 2);
             acc = Math.abs(batAngle - atan2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
-            this.range = 105;
+            this.range = 102;
         }
         else if (this.weapon.type == 'bite') {
             var startTime = this.anim.atk.frameDuration * 2.75;
@@ -352,13 +362,16 @@ function SlowDogg(game, dogs) {
     this.maxSpeed = 65;
     this.range = 130;
     this.health = 250;
+    this.hpDrop = Math.floor(Math.random() * 2) + 3;
 
+    this.engage = true;
     this.atkCD = 0;
+    this.stunCD = 0;
     this.shtCD = 0;
     this.wslCD = 0;
     this.hitCD = 0;
 
-    Entity.call(this, game, 100, 100);
+    Entity.call(this, game, 150, 150);
 }
 
 SlowDogg.prototype = new Entity();
@@ -377,8 +390,9 @@ SlowDogg.prototype.update = function () {
         this.anim.die.elapsedTime = 0;
         this.die = false;
     }
-    if (this.alive) {
+    if (this.alive && !this.die) {
         if (this.atkCD > 0) this.atkCD--;
+        if (this.stunCD > 0) this.stunCD--;
         if (this.shtCD > 0) this.shtCD--;
         if (this.wslCD > 0) this.wslCD--;
         if (this.hitCD > 0) this.hitCD--;
@@ -390,8 +404,8 @@ SlowDogg.prototype.update = function () {
             this.hurt = false;
         }
         if (this.whistle || this.shoot) {
-            this.velocity.x *= (3 / 7);
-            this.velocity.y *= (3 / 7);
+            this.velocity.x *= (2 / 7);
+            this.velocity.y *= (2 / 7);
             if (this.anim.wsl.isDone()) {
                 this.anim.wsl.elapsedTime = 0;
                 this.whistle = false;
@@ -436,9 +450,24 @@ SlowDogg.prototype.update = function () {
                         if (this.side == 'top') this.y = ent.y - this.radius;
                         else this.y = ent.y + ent.h + this.radius;
                     }
+                    else if (this.side == 'inside') {
+                        this.x = 150;
+                        this.y = 150;
+                    }
                 }
             }
-            else if (ent.player && ent.alive) {
+            else if (ent.column) {
+                if (this.collide(ent)) {
+                    var difX = Math.cos(this.rotation);
+                    var difY = Math.sin(this.rotation);
+                    var delta = this.radius + ent.radius - distance(this, ent);
+                    this.velocity.x = -this.velocity.x * (1 / friction);
+                    this.velocity.y = -this.velocity.y * (1 / friction);
+                    this.x -= difX * delta + 1;
+                    this.y -= difY * delta + 1;
+                }
+            }
+            else if (ent.player && ent.alive && this.stunCD <= 0) {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 if (this.rotation > atan) {
                     var rotdif = this.rotation - atan;
@@ -459,7 +488,7 @@ SlowDogg.prototype.update = function () {
                 var difX = Math.cos(this.rotation);
                 var difY = Math.sin(this.rotation);
                 var delta = this.radius + ent.radius - distance(this, ent);
-                if (this.collide(ent) && !ent.dash) {
+                if (this.collide(ent) && !ent.dash && !ent.supDash) {
                     this.velocity.x = -this.velocity.x * (1 / friction);
                     this.velocity.y = -this.velocity.y * (1 / friction);
                     this.x -= difX * delta / 2;
@@ -492,8 +521,9 @@ SlowDogg.prototype.update = function () {
                     ent.hitCD = 20;
                 }
                 else if (this.shoot && this.shtCD == 100) {
-                    var difX = Math.cos(this.rotation) * 75;
-                    var difY = Math.sin(this.rotation) * 75;
+                    var gunRot = this.rotation + Math.atan(29 / 86);
+                    var difX = Math.cos(gunRot) * 90;
+                    var difY = Math.sin(gunRot) * 90;
                     this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 7, 1));
                     this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 21, 1));
                     this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 21, 1));
@@ -501,20 +531,19 @@ SlowDogg.prototype.update = function () {
                 }
             }
         }
-
-        // speed control
-        var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
-        if (speed > this.maxSpeed) {
-            var ratio = this.maxSpeed / speed;
-            this.velocity.x *= ratio;
-            this.velocity.y *= ratio;
-        }
-        this.x += this.velocity.x * this.game.clockTick;
-        this.y += this.velocity.y * this.game.clockTick;
-
-        this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
-        this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
     }
+    // speed control
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+
+    this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
+    this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 }
 
 SlowDogg.prototype.draw = function (ctx) {
@@ -549,7 +578,7 @@ SlowDogg.prototype.hit = function (other) {
         if (acc > Math.PI) acc = (Math.PI * 2) - acc;
     }
 
-    if (acc < 0.1) {
+    if (acc < 0.2) {
         if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
             return distance(this, other) < this.range + other.faces;
         else
@@ -680,10 +709,10 @@ function Thug(game, weapon) {
     this.sides = 38;
     this.rotationLag = 15;
     this.acceleration = 100;
-    this.maxSpeed = 150;
+    this.maxSpeed = 175;
     this.sight = 250;
     this.fov = Math.PI * 2 / 5;
-    this.hpDrop = 2;
+    this.hpDrop = Math.floor(Math.random() * 2) + 1;
     this.health = 100;
     this.initHP = 100;
     this.dmg = 1;
@@ -719,7 +748,7 @@ function Bodyguard(game) {
     this.range = 60;
     this.sight = 200;
     this.fov = Math.PI * 4 / 9;
-    this.hpDrop = 3;
+    this.hpDrop = Math.floor(Math.random() * 2) + 2;
     this.health = 140;
     this.initHP = 140;
     this.dmg = 3;

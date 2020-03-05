@@ -212,7 +212,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[5].walls.push(new Wall(game, 200, 430, 86, 60));
     this.levels[0].houses[5].walls.push(new Wall(game, 200, 483, 225, 256));
     this.levels[0].houses[5].walls.push(new Wall(game, 0, 693, 1280, 20));
-    this.levels[0].houses[5].walls.push(new Wall(game, 880, 203, 142, 142));
+    this.levels[0].houses[5].walls.push(new Column(game, 950, 270, 65));
     this.levels[0].houses[5].walls.push(new Wall(game, 809, 274, 53, 61));
     this.levels[0].houses[5].walls.push(new Wall(game, 1022, 227, 53, 61));
     this.levels[0].houses[5].walls.push(new Wall(game, 1250, 0, 30, 176));
@@ -220,6 +220,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[5].walls.push(new Wall(game, 1181, 447, 52, 200));
     this.levels[0].houses[5].walls.push(new Wall(game, 989, 457, 94, 192));
     this.levels[0].houses[5].walls.push(new Wall(game, 788, 427, 92, 248));
+    this.levels[0].houses[5].walls.push(new Roof(game, 0, 0, './img/backgrounds/house00shadow.png'));
     this.levels[0].houses[5].spawn = { x: 1240, y: 224 };
 
     // street00
@@ -300,7 +301,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[0].walls.push(new Wall(game, 341, 0, 37, 185));
     this.levels[0].houses[0].walls.push(new Wall(game, 654, 396, 37, 324));
     this.levels[0].houses[0].walls.push(new Wall(game, 690, 437, 95, 273));
-    this.levels[0].houses[0].walls.push(new Wall(game, 880, 157, 214, 214));
+    this.levels[0].houses[0].walls.push(new Column(game, 987, 264, 107));
     this.levels[0].houses[0].walls.push(new Wall(game, 1247, 0, 34, 720));
     this.levels[0].houses[0].spawn = { x: 40, y: 416 };
 
@@ -332,7 +333,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[3].walls.push(new Wall(game, 0, 0, 37, 720));
     this.levels[0].houses[3].walls.push(new Wall(game, 90, 0, 203, 90));
     this.levels[0].houses[3].walls.push(new Wall(game, 496, 0, 41, 283));
-    this.levels[0].houses[3].walls.push(new Wall(game, 762, 134, 152, 152));
+    this.levels[0].houses[3].walls.push(new Column(game, 838, 210, 76));
     this.levels[0].houses[3].walls.push(new Wall(game, 324, 482, 607, 41));
     this.levels[0].houses[3].walls.push(new Wall(game, 1247, 0, 34, 189));
     this.levels[0].houses[3].walls.push(new Wall(game, 1247, 302, 34, 418));
@@ -371,4 +372,26 @@ SceneManager.prototype.buildLevelOne = function (game) {
         this.levels[0].houses[4].enemies.push(dogs[i]);
     }
     this.levels[0].houses[4].enemies.push(new SlowDogg(game, dogs));
+}
+
+SceneManager.prototype.buildLevel = function (lvl) {
+    // connections
+    this.levels[lvl].streets[0].neighbors[0] = this.levels[lvl].streets[1];
+    this.levels[lvl].streets[0].neighbors[1] = this.levels[lvl].houses[0];
+    this.levels[lvl].houses[0].neighbors[3] = this.levels[lvl].streets[0];
+    for (var i = 1; i < 4; i++) {
+        this.levels[lvl].streets[i].neighbors[0] = this.levels[lvl].streets[(i + 1)];
+        this.levels[lvl].streets[i].neighbors[2] = this.levels[lvl].streets[(i - 1)];
+        if (i == 2) {
+            this.levels[lvl].streets[i].neighbors[1] = this.levels[lvl].houses[i];
+            this.levels[lvl].houses[i].neighbors[3] = this.levels[lvl].streets[i];
+        }
+        else {
+            this.levels[lvl].streets[i].neighbors[3] = this.levels[lvl].houses[i];
+            this.levels[lvl].houses[i].neighbors[1] = this.levels[lvl].streets[i];
+        }
+    }
+    this.levels[lvl].streets[4].neighbors[0] = this.levels[lvl].houses[4];
+    this.levels[lvl].streets[4].neighbors[2] = this.levels[lvl].streets[3];
+    this.levels[lvl].houses[4].neighbors[2] = this.levels[lvl].streets[4];
 }
