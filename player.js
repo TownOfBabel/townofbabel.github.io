@@ -363,8 +363,8 @@ Frump.prototype.update = function () {
         }
         else if (this.attacking) {
             if (this.weapon.type == 'gun') {
-                this.velocity.x *= 2 / 5;
-                this.velocity.y *= 2 / 5;
+                this.velocity.x /= 2;
+                this.velocity.y /= 2;
             }
             if (this.weapon.type == 'knife' && this.anim.knifeAtk.isDone()) {
                 this.anim.knifeAtk.elapsedTime = 0;
