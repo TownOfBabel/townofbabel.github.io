@@ -118,7 +118,8 @@ function Knife(game, rarity, player, ability) {
 
     if (ability == 0) this.ability = new SuperDash(game, player);
     else if (ability == 1) this.ability = new BlingStun(game, player);
-    else if (ability == 2) this.ability = new Lunge(game, player);
+    else if (ability == 2) this.ability = new BoomSpeaker(game, player);
+    else if (ability == 3) this.ability = new Lunge(game, player);
     else this.ability = false;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
@@ -141,7 +142,8 @@ function Bat(game, rarity, player, ability) {
 
     if (ability == 0) this.ability = new SuperDash(game, player);
     else if (ability == 1) this.ability = new BlingStun(game, player);
-    else if (ability == 2) this.ability = new FruitShot(game, player);
+    else if (ability == 2) this.ability = new BoomSpeaker(game, player);
+    else if (ability == 3) this.ability = new FruitShot(game, player);
     else this.ability = false;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
@@ -165,7 +167,8 @@ function Gun(game, rarity, player, ability) {
 
     if (ability == 0) this.ability = new SuperDash(game, player);
     else if (ability == 1) this.ability = new BlingStun(game, player);
-    else if (ability == 2) this.ability = new Laser(game, player);
+    else if (ability == 2) this.ability = new BoomSpeaker(game, player);
+    else if (ability == 3) this.ability = new Laser(game, player);
     else this.ability = false;
 
     this.static = ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png');
@@ -249,6 +252,8 @@ function Frump(game) {
     this.anim.gunAtk = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 600, 0, 300, 300, 0.25, 1, false, false);
     this.anim.supDash = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 0, 1200, 300, 300, 0.04, 7, false, false);
     this.anim.bling = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 0, 900, 300, 300, 0.15, 4, false, false);
+    this.anim.boom = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 300, 1900, 300, 300, 0.15, 4, false, false);
+    this.anim.lunge = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 0, 1500, 300, 400, 0.12, 5, false, false);
 
     // Properties
     this.player = true;
@@ -412,10 +417,10 @@ Frump.prototype.update = function () {
                     var difX = Math.cos(this.rotation);
                     var difY = Math.sin(this.rotation);
                     var delta = this.radius + ent.radius - distance(this, ent);
-                    this.velocity.x = -this.velocity.x * (1 / friction);
-                    this.velocity.y = -this.velocity.y * (1 / friction);
-                    this.x -= difX * delta;
-                    this.y -= difY * delta;
+                    this.velocity.x = 0;
+                    this.velocity.y = 0;
+                    this.x -= difX * delta + 1;
+                    this.y -= difY * delta + 1;
                 }
             }
             else if (ent.enemy && this.stunCD <= 0) {

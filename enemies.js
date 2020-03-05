@@ -104,13 +104,13 @@ Enemy.prototype.update = function () {
         if (this.caged) {
             if (this.collideLeft() || this.collideRight()) {
                 this.velocity.x = -this.velocity.x * (1 / friction);
-                if (this.collideLeft()) this.x = this.radius + 1150;
-                if (this.collideRight()) this.x = 1280 - this.radius;
+                if (this.collideLeft()) this.x = this.radius + 1075;
+                if (this.collideRight()) this.x = 1235 - this.radius;
             }
             if (this.collideTop() || this.collideBottom()) {
                 this.velocity.y = -this.velocity.y * (1 / friction);
-                if (this.collideTop()) this.y = this.radius;
-                if (this.collideBottom()) this.y = 150 - this.radius;
+                if (this.collideTop()) this.y = this.radius + 40;
+                if (this.collideBottom()) this.y = 200 - this.radius;
             }
         }
         else {
@@ -148,10 +148,10 @@ Enemy.prototype.update = function () {
                     var difX = Math.cos(this.rotation);
                     var difY = Math.sin(this.rotation);
                     var delta = this.radius + ent.radius - distance(this, ent);
-                    this.velocity.x = -this.velocity.x * (1 / friction);
-                    this.velocity.y = -this.velocity.y * (1 / friction);
-                    this.x -= difX * delta;
-                    this.y -= difY * delta;
+                    this.velocity.x = 0;
+                    this.velocity.y = 0;
+                    this.x -= difX * delta + 1;
+                    this.y -= difY * delta + 1;
                 }
             }
             else if (ent.enemy) {
@@ -193,11 +193,10 @@ Enemy.prototype.update = function () {
                         }
                         else this.rotation += rotdif / this.rotationLag;
                     }
-
+                    var difX = Math.cos(this.rotation);
+                    var difY = Math.sin(this.rotation);
+                    var delta = this.radius + ent.radius - distance(this, ent);
                     if (this.collide(ent) && !ent.dash && !ent.supDash) {
-                        var difX = Math.cos(this.rotation);
-                        var difY = Math.sin(this.rotation);
-                        var delta = this.radius + ent.radius - distance(this, ent);
                         this.velocity.x = -this.velocity.x * (1 / friction);
                         this.velocity.y = -this.velocity.y * (1 / friction);
                         this.x -= difX * delta / 2;
@@ -365,12 +364,14 @@ function SlowDogg(game, dogs) {
     this.health = 250;
     this.hpDrop = Math.floor(Math.random() * 2) + 3;
 
+    this.engage = true;
     this.atkCD = 0;
+    this.stunCD = 0;
     this.shtCD = 0;
     this.wslCD = 0;
     this.hitCD = 0;
 
-    Entity.call(this, game, 100, 100);
+    Entity.call(this, game, 150, 150);
 }
 
 SlowDogg.prototype = new Entity();
@@ -403,8 +404,8 @@ SlowDogg.prototype.update = function () {
             this.hurt = false;
         }
         if (this.whistle || this.shoot) {
-            this.velocity.x *= (3 / 7);
-            this.velocity.y *= (3 / 7);
+            this.velocity.x *= (2 / 7);
+            this.velocity.y *= (2 / 7);
             if (this.anim.wsl.isDone()) {
                 this.anim.wsl.elapsedTime = 0;
                 this.whistle = false;
@@ -449,6 +450,10 @@ SlowDogg.prototype.update = function () {
                         if (this.side == 'top') this.y = ent.y - this.radius;
                         else this.y = ent.y + ent.h + this.radius;
                     }
+                    else if (this.side == 'inside') {
+                        this.x = 150;
+                        this.y = 150;
+                    }
                 }
             }
             else if (ent.column) {
@@ -458,8 +463,8 @@ SlowDogg.prototype.update = function () {
                     var delta = this.radius + ent.radius - distance(this, ent);
                     this.velocity.x = -this.velocity.x * (1 / friction);
                     this.velocity.y = -this.velocity.y * (1 / friction);
-                    this.x -= difX * delta;
-                    this.y -= difY * delta;
+                    this.x -= difX * delta + 1;
+                    this.y -= difY * delta + 1;
                 }
             }
             else if (ent.player && ent.alive && this.stunCD <= 0) {
@@ -480,10 +485,10 @@ SlowDogg.prototype.update = function () {
                     }
                     else this.rotation += rotdif / 25;
                 }
-                if (this.collide(ent) && !ent.dash) {
-                    var difX = Math.cos(this.rotation);
-                    var difY = Math.sin(this.rotation);
-                    var delta = this.radius + ent.radius - distance(this, ent);
+                var difX = Math.cos(this.rotation);
+                var difY = Math.sin(this.rotation);
+                var delta = this.radius + ent.radius - distance(this, ent);
+                if (this.collide(ent) && !ent.dash && !ent.supDash) {
                     this.velocity.x = -this.velocity.x * (1 / friction);
                     this.velocity.y = -this.velocity.y * (1 / friction);
                     this.x -= difX * delta / 2;
@@ -516,8 +521,9 @@ SlowDogg.prototype.update = function () {
                     ent.hitCD = 20;
                 }
                 else if (this.shoot && this.shtCD == 100) {
-                    var difX = Math.cos(this.rotation) * 75;
-                    var difY = Math.sin(this.rotation) * 75;
+                    var gunRot = this.rotation + Math.atan(29 / 86);
+                    var difX = Math.cos(gunRot) * 90;
+                    var difY = Math.sin(gunRot) * 90;
                     this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 7, 1));
                     this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation + Math.PI / 21, 1));
                     this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation - Math.PI / 21, 1));
@@ -572,7 +578,7 @@ SlowDogg.prototype.hit = function (other) {
         if (acc > Math.PI) acc = (Math.PI * 2) - acc;
     }
 
-    if (acc < 0.1) {
+    if (acc < 0.2) {
         if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
             return distance(this, other) < this.range + other.faces;
         else

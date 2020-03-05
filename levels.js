@@ -200,7 +200,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[4] = new Background(game, ('./img/backgrounds/house05.png'),
         new Gun(game, Math.floor(Math.random() * 2)), new Door(game, 577, 710, 116, 10), 'house');
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
-        new Gun(game, 0, this.player, 1), new Door(game, 1270, 176, 10, 96), 'house');
+        new Bat(game, 0), new Door(game, 1270, 176, 10, 96), 'house');
 
     // house00 - Lil' Frump's House
     this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 210, 720));
@@ -212,7 +212,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[5].walls.push(new Wall(game, 200, 430, 86, 60));
     this.levels[0].houses[5].walls.push(new Wall(game, 200, 483, 225, 256));
     this.levels[0].houses[5].walls.push(new Wall(game, 0, 693, 1280, 20));
-    this.levels[0].houses[5].walls.push(new Wall(game, 880, 203, 142, 142));
+    this.levels[0].houses[5].walls.push(new Column(game, 950, 270, 65));
     this.levels[0].houses[5].walls.push(new Wall(game, 809, 274, 53, 61));
     this.levels[0].houses[5].walls.push(new Wall(game, 1022, 227, 53, 61));
     this.levels[0].houses[5].walls.push(new Wall(game, 1250, 0, 30, 176));
@@ -301,7 +301,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[0].walls.push(new Wall(game, 341, 0, 37, 185));
     this.levels[0].houses[0].walls.push(new Wall(game, 654, 396, 37, 324));
     this.levels[0].houses[0].walls.push(new Wall(game, 690, 437, 95, 273));
-    this.levels[0].houses[0].walls.push(new Wall(game, 880, 157, 214, 214));
+    this.levels[0].houses[0].walls.push(new Column(game, 987, 264, 107));
     this.levels[0].houses[0].walls.push(new Wall(game, 1247, 0, 34, 720));
     this.levels[0].houses[0].spawn = { x: 40, y: 416 };
 
@@ -333,7 +333,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[3].walls.push(new Wall(game, 0, 0, 37, 720));
     this.levels[0].houses[3].walls.push(new Wall(game, 90, 0, 203, 90));
     this.levels[0].houses[3].walls.push(new Wall(game, 496, 0, 41, 283));
-    this.levels[0].houses[3].walls.push(new Wall(game, 762, 134, 152, 152));
+    this.levels[0].houses[3].walls.push(new Column(game, 838, 210, 76));
     this.levels[0].houses[3].walls.push(new Wall(game, 324, 482, 607, 41));
     this.levels[0].houses[3].walls.push(new Wall(game, 1247, 0, 34, 189));
     this.levels[0].houses[3].walls.push(new Wall(game, 1247, 302, 34, 418));

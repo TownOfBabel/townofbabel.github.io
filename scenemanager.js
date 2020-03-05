@@ -162,7 +162,8 @@ Wall.prototype.draw = function (ctx) {
 
 function Column(game, x, y, radius, image) {
     this.column = true;
-    this.image = ASSET_MANAGER.getAsset(image);
+    if (image === undefined) this.image = false;
+    else this.image = ASSET_MANAGER.getAsset(image);
     this.radius = radius;
     Entity.call(this, game, x, y);
 }
@@ -174,7 +175,8 @@ Column.prototype.update = function () {
 }
 
 Column.prototype.draw = function (ctx) {
-    ctx.drawImage(this.image, this.x, this.y);
+    if (this.image)
+        ctx.drawImage(this.image, this.x, this.y);
 }
 
 function Door(game, x, y, w, h) {
