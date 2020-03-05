@@ -129,36 +129,12 @@ Enemy.prototype.update = function () {
         // Wall and Player/Enemy collisions
         for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
-            if (ent.wall) {
-                if (this.collide(ent)) {
-                    if (this.side == 'left' || this.side == 'right') {
-                        this.velocity.x = -this.velocity.x * (1 / friction);
-                        if (this.side == 'left') this.x = ent.x - this.radius;
-                        else this.x = ent.x + ent.w + this.radius;
-                    }
-                    else if (this.side == 'top' || this.side == 'bottom') {
-                        this.velocity.y = -this.velocity.y * (1 / friction);
-                        if (this.side == 'top') this.y = ent.y - this.radius;
-                        else this.y = ent.y + ent.h + this.radius;
-                    }
-                }
-            }
-            else if (ent.column) {
-                if (this.collide(ent)) {
-                    var difX = Math.cos(this.rotation);
-                    var difY = Math.sin(this.rotation);
-                    var delta = this.radius + ent.radius - distance(this, ent);
-                    this.velocity.x = 0;
-                    this.velocity.y = 0;
-                    this.x -= difX * delta + 1;
-                    this.y -= difY * delta + 1;
-                }
-            }
-            else if (ent.enemy) {
+            if (ent.enemy) {
                 if (ent.engage) this.engage = true;
                 if (!ent.boss && this.collide(ent)) {
-                    var difX = Math.cos(this.rotation);
-                    var difY = Math.sin(this.rotation);
+                    var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
+                    var difX = Math.cos(atan);
+                    var difY = Math.sin(atan);
                     var delta = this.radius + ent.radius - distance(this, ent);
                     this.velocity.x = -this.velocity.x * (1 / friction);
                     this.velocity.y = -this.velocity.y * (1 / friction);
@@ -172,7 +148,6 @@ Enemy.prototype.update = function () {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 var rotationDif = Math.abs(this.rotation - atan);
                 if (rotationDif > Math.PI) rotationDif = (Math.PI * 2) - rotationDif;
-
                 if ((distance(this, ent) < this.sight && rotationDif <= this.fov)
                     || distance(this, ent) < (this.range + ent.radius + 50) || this.engage) {
                     this.engage = true;
@@ -193,8 +168,8 @@ Enemy.prototype.update = function () {
                         }
                         else this.rotation += rotdif / this.rotationLag;
                     }
-                    var difX = Math.cos(this.rotation);
-                    var difY = Math.sin(this.rotation);
+                    var difX = Math.cos(atan);
+                    var difY = Math.sin(atan);
                     var delta = this.radius + ent.radius - distance(this, ent);
                     if (this.collide(ent) && !ent.dash && !ent.supDash) {
                         this.velocity.x = -this.velocity.x * (1 / friction);
@@ -438,36 +413,8 @@ SlowDogg.prototype.update = function () {
         // entity collisions
         for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
-            if (ent.wall) {
-                if (this.collide(ent)) {
-                    if (this.side == 'left' || this.side == 'right') {
-                        this.velocity.x = -this.velocity.x * (1 / friction);
-                        if (this.side == 'left') this.x = ent.x - this.radius;
-                        else this.x = ent.x + ent.w + this.radius;
-                    }
-                    else if (this.side == 'top' || this.side == 'bottom') {
-                        this.velocity.y = -this.velocity.y * (1 / friction);
-                        if (this.side == 'top') this.y = ent.y - this.radius;
-                        else this.y = ent.y + ent.h + this.radius;
-                    }
-                    else if (this.side == 'inside') {
-                        this.x = 150;
-                        this.y = 150;
-                    }
                 }
-            }
-            else if (ent.column) {
-                if (this.collide(ent)) {
-                    var difX = Math.cos(this.rotation);
-                    var difY = Math.sin(this.rotation);
-                    var delta = this.radius + ent.radius - distance(this, ent);
-                    this.velocity.x = -this.velocity.x * (1 / friction);
-                    this.velocity.y = -this.velocity.y * (1 / friction);
-                    this.x -= difX * delta + 1;
-                    this.y -= difY * delta + 1;
-                }
-            }
-            else if (ent.player && ent.alive && this.stunCD <= 0) {
+            if (ent.player && ent.alive && this.stunCD <= 0) {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 if (this.rotation > atan) {
                     var rotdif = this.rotation - atan;
@@ -485,8 +432,8 @@ SlowDogg.prototype.update = function () {
                     }
                     else this.rotation += rotdif / 25;
                 }
-                var difX = Math.cos(this.rotation);
-                var difY = Math.sin(this.rotation);
+                var difX = Math.cos(atan);
+                var difY = Math.sin(atan);
                 var delta = this.radius + ent.radius - distance(this, ent);
                 if (this.collide(ent) && !ent.dash && !ent.supDash) {
                     this.velocity.x = -this.velocity.x * (1 / friction);

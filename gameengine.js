@@ -215,10 +215,8 @@ Entity.prototype.collide = function (other) {
                 this.side = 'bottom';
                 return distance(this, this.x, other.y + other.h) < this.radius;
             }
-            else {
-                this.side = 'inside';
+            else
                 return true;
-            }
         }
     }
     else return distance(this, other) < this.radius + other.radius;

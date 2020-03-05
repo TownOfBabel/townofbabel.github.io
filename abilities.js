@@ -1,4 +1,5 @@
 function Ability(game, player) {
+    this.ability = true;
     this.player = player;
     this.cooldown = 0;
     Entity.call(this, game, 150, 35);
@@ -21,6 +22,18 @@ Ability.prototype.draw = function (ctx) {
         ctx.drawImage(this.icon, 60, 0, 60, 60, this.x, this.y, 40, 40);
     else
         ctx.drawImage(this.icon, 0, 0, 60, 60, this.x, this.y, 40, 40);
+}
+
+function DashIcon(game, player) {
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.maxCD = 90;
+    Ability.call(this, game, player);
+}
+
+DashIcon.prototype = new Ability();
+DashIcon.prototype.constructor = DashIcon;
+
+DashIcon.prototype.update = function () {
 }
 
 function SuperDash(game, player) {
