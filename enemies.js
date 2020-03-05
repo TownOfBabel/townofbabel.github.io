@@ -413,7 +413,6 @@ SlowDogg.prototype.update = function () {
         // entity collisions
         for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
-                }
             if (ent.player && ent.alive && this.stunCD <= 0) {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 if (this.rotation > atan) {
