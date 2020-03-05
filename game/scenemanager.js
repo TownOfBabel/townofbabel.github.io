@@ -107,174 +107,12 @@ SelectDif.prototype.draw = function (ctx) {
         ctx.drawImage(this.none, 0, 0);
 }
 
-function Background(game, image, weapon, door, type) {
-    this.image = ASSET_MANAGER.getAsset(image);
-    this.drop = weapon;
-    this.walls = [];
-    this.enemies = [];
-    this.neighbors = [];
-    this.door = door;
-    this.spawn = {};
-    this.type = type;
-    Entity.call(this, game, 0, 0);
-}
-
-Background.prototype = new Entity();
-Background.prototype.constructor = Background;
-
-Background.prototype.update = function () {
-}
-
-Background.prototype.draw = function (ctx) {
-    ctx.drawImage(this.image, 0, 0);
-}
-
-function Roof(game, x, y, image) {
-    this.image = ASSET_MANAGER.getAsset(image);
-    Entity.call(this, game, x, y);
-}
-
-Roof.prototype = new Entity();
-Roof.prototype.constructor = Roof;
-
-Roof.prototype.update = function () {
-}
-
-Roof.prototype.draw = function (ctx) {
-    ctx.drawImage(this.image, this.x, this.y);
-}
-
-function Wall(game, x, y, w, h) {
-    this.wall = true;
-    this.w = w;
-    this.h = h;
-    Entity.call(this, game, x, y);
-}
-
-Wall.prototype = new Entity();
-Wall.prototype.constructor = Wall;
-
-Wall.prototype.update = function () {
-}
-
-Wall.prototype.draw = function (ctx) {
-}
-
-function Column(game, x, y, radius, image) {
-    this.column = true;
-    if (image === undefined) this.image = false;
-    else this.image = ASSET_MANAGER.getAsset(image);
-    this.radius = radius;
-    Entity.call(this, game, x, y);
-}
-
-Column.prototype = new Entity();
-Column.prototype.constructor = Column;
-
-Column.prototype.update = function () {
-}
-
-Column.prototype.draw = function (ctx) {
-    if (this.image)
-        ctx.drawImage(this.image, this.x, this.y);
-}
-
-function Door(game, x, y, w, h) {
-    this.door = true;
-    this.w = w;
-    this.h = h;
-    Entity.call(this, game, x, y);
-}
-
-Door.prototype = new Entity();
-Door.prototype.constructor = Door;
-
-Door.prototype.update = function () {
-}
-
-Door.prototype.draw = function (ctx) {
-}
-
-function Arrow(game, manager) {
-    this.image = new Animation(ASSET_MANAGER.getAsset('./img/backgrounds/arrow.png'), 0, 0, 50, 50, 0.25, 4, true, false);
-    this.manager = manager;
-    this.rotation = 0;
-    Entity.call(this, game, 640, 360);
-}
-
-Arrow.prototype = new Entity();
-Arrow.prototype.constructor = Arrow;
-
-Arrow.prototype.update = function () {
-    var displayBG = this.manager.activeBG;
-    if (displayBG.type == 'street') {
-        if (displayBG.neighbors[1]) {
-            if (displayBG.neighbors[1].enemies.length > 0) {
-                this.x = displayBG.spawn.x - 50;
-                this.y = displayBG.spawn.y;
-                this.rotation = 0;
-            }
-            else {
-                this.x = 640;
-                this.y = 60;
-                this.rotation = -Math.PI / 2;
-            }
-        }
-        else if (displayBG.neighbors[3]) {
-            if (displayBG.neighbors[3].enemies.length > 0) {
-                this.x = displayBG.spawn.x + 50;
-                this.y = displayBG.spawn.y;
-                this.rotation = Math.PI;
-            }
-            else {
-                this.x = 640;
-                this.y = 60;
-                this.rotation = -Math.PI / 2;
-            }
-        }
-    }
-    else if (displayBG === this.manager.levels[this.manager.level.current].streets[4]) {
-        if (displayBG.neighbors[0].enemies.length > 0) {
-            this.x = displayBG.spawn.x;
-            this.y = displayBG.spawn.y + 50;
-            this.rotation = -Math.PI / 2;
-        }
-        else {
-            this.x = 1220;
-            this.y = 360;
-            this.rotation = 0;
-        }
-    }
-    else if (displayBG === this.manager.levels[this.manager.level.current].houses[1]
-        || displayBG === this.manager.levels[this.manager.level.current].houses[3]
-        || displayBG === this.manager.levels[this.manager.level.current].houses[5]) {
-        this.x = displayBG.spawn.x - 50;
-        this.y = displayBG.spawn.y;
-        this.rotation = 0;
-    }
-    else if (displayBG === this.manager.levels[this.manager.level.current].houses[0]
-        || displayBG === this.manager.levels[this.manager.level.current].houses[2]) {
-        this.x = displayBG.spawn.x + 50;
-        this.y = displayBG.spawn.y;
-        this.rotation = Math.PI;
-    }
-    else {
-        this.x = displayBG.spawn.x;
-        this.y = displayBG.spawn.y - 50;
-        this.rotation = Math.PI / 2;
-    }
-}
-
-Arrow.prototype.draw = function (ctx) {
-    if (this.manager.activeBG.enemies.length == 0)
-        this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
-}
-
 function getTrans(weapon) {
     return (71.4 - (weapon.scale * 71.4)) / 2;
 }
 
 function SceneManager(game) {
+    this.manager = true;
     this.game = game;
     this.difficulty = 0;
     this.levels = [];
@@ -443,17 +281,17 @@ SceneManager.prototype.updateBackground = function () {
     if (!this.activeBG.menu) {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.game.addEntity(this.activeBG.enemies[i]);
+        this.game.addEntity(this.activeBG.door);
+        this.game.addEntity(this.arrow);
         this.game.addEntity(this.player);
         for (var i = 0; i < this.activeBG.walls.length; i++)
             this.game.addEntity(this.activeBG.walls[i]);
-        this.game.addEntity(this.activeBG.door);
         this.game.addEntity(this.player.UI);
+        this.game.addEntity(this.activeBG.drop);
+        this.game.addEntity(this.player.weapon);
         this.game.addEntity(this.player.dashInd);
         if (this.player.weapon.ability)
             this.game.addEntity(this.player.weapon.ability);
-        this.game.addEntity(this.player.weapon);
-        this.game.addEntity(this.activeBG.drop);
-        this.game.addEntity(this.arrow);
         this.game.addEntity(this.player.health);
     }
     if (this.level.clear)
