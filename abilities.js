@@ -97,7 +97,7 @@ BlingStun.prototype.update = function () {
             }
         }
         this.player.bling = true;
-        this.cooldown = 118;
+        this.cooldown = 109;
     }
     if (this.player.bling && this.player.anim.bling.isDone()) {
         this.player.anim.bling.elapsedTime = 0;
@@ -108,14 +108,27 @@ BlingStun.prototype.update = function () {
         var ent = this.game.entities[i];
         if (ent.enemy) {
             if (this.player.bling && this.player.hit(ent, 150) && ent.hitCD <= 0
-                && this.cooldown <= 100 && this.cooldown > 88) {
+                && this.cooldown <= 100 && this.cooldown > 82) {
                 ent.hurt = true;
                 ent.health -= 10;
-                ent.hitCD = 12;
+                ent.hitCD = 18;
                 ent.stunCD = 60;
             }
         }
     }
+}
+
+function BoomSpeaker(game, player) {
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.maxCD = 330;
+    Ability.call(this, game, player);
+}
+
+BoomSpeaker.prototype = new Ability();
+BoomSpeaker.prototype.constructor = BoomSpeaker;
+
+BoomSpeaker.prototype.update = function () {
+
 }
 
 function Lunge(game, player) {

@@ -154,8 +154,9 @@ Enemy.prototype.update = function () {
                     this.y -= difY * delta;
                 }
             }
-            else if (ent.enemy && !ent.boss) {
-                if (this.collide(ent)) {
+            else if (ent.enemy) {
+                if (ent.engage) this.engage = true;
+                if (!ent.boss && this.collide(ent)) {
                     var difX = Math.cos(this.rotation);
                     var difY = Math.sin(this.rotation);
                     var delta = this.radius + ent.radius - distance(this, ent);
@@ -239,20 +240,19 @@ Enemy.prototype.update = function () {
                 }
             }
         }
-
-        // Speed control
-        var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
-        if (speed > this.maxSpeed) {
-            var ratio = this.maxSpeed / speed;
-            this.velocity.x *= ratio;
-            this.velocity.y *= ratio;
-        }
-        this.x += this.velocity.x * this.game.clockTick;
-        this.y += this.velocity.y * this.game.clockTick;
-
-        this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
-        this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
     }
+    // Speed control
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+
+    this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
+    this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 }
 
 Enemy.prototype.draw = function (ctx) {
@@ -389,8 +389,9 @@ SlowDogg.prototype.update = function () {
         this.anim.die.elapsedTime = 0;
         this.die = false;
     }
-    if (this.alive) {
+    if (this.alive && !this.die) {
         if (this.atkCD > 0) this.atkCD--;
+        if (this.stunCD > 0) this.stunCD--;
         if (this.shtCD > 0) this.shtCD--;
         if (this.wslCD > 0) this.wslCD--;
         if (this.hitCD > 0) this.hitCD--;
@@ -461,7 +462,7 @@ SlowDogg.prototype.update = function () {
                     this.y -= difY * delta;
                 }
             }
-            else if (ent.player && ent.alive) {
+            else if (ent.player && ent.alive && this.stunCD <= 0) {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 if (this.rotation > atan) {
                     var rotdif = this.rotation - atan;
@@ -524,20 +525,19 @@ SlowDogg.prototype.update = function () {
                 }
             }
         }
-
-        // speed control
-        var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
-        if (speed > this.maxSpeed) {
-            var ratio = this.maxSpeed / speed;
-            this.velocity.x *= ratio;
-            this.velocity.y *= ratio;
-        }
-        this.x += this.velocity.x * this.game.clockTick;
-        this.y += this.velocity.y * this.game.clockTick;
-
-        this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
-        this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
     }
+    // speed control
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+
+    this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
+    this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 }
 
 SlowDogg.prototype.draw = function (ctx) {
@@ -703,7 +703,7 @@ function Thug(game, weapon) {
     this.sides = 38;
     this.rotationLag = 15;
     this.acceleration = 100;
-    this.maxSpeed = 150;
+    this.maxSpeed = 175;
     this.sight = 250;
     this.fov = Math.PI * 2 / 5;
     this.hpDrop = Math.floor(Math.random() * 2) + 1;
