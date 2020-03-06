@@ -234,7 +234,7 @@ function Frump(game) {
     this.player = true;
     this.alive = true;
     this.UI = new InfoUI(game);
-    this.dashInd = new DashIcon(game, this);
+    this.dashInd = new Dash(game, this);
     this.radius = 24;
     this.faces = 33;
     this.sides = 38;
@@ -247,7 +247,6 @@ function Frump(game) {
     this.damage = 20;
     this.health = new Health(game, 20);
     this.dash = false;
-    this.dashCD = 0;
     this.atkCD = 0;
     this.hitCD = 0;
     this.stunCD = 0;
@@ -272,7 +271,6 @@ Frump.prototype.update = function () {
         if (this.stunCD <= 0) {
             // Player faces mouse pointer
             this.rotation = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x - this.x);
-            if (this.dashCD > 0) this.dashCD--;
             if (this.atkCD > 0) this.atkCD--;
             if (this.hitCD > 0) this.hitCD--;
 
@@ -282,29 +280,8 @@ Frump.prototype.update = function () {
             if (this.game.player.left) this.velocity.x -= this.acceleration;
             if (this.game.player.right) this.velocity.x += this.acceleration;
 
-            // Dash ability
-            if (this.game.player.space && this.dashCD <= 0 && this.stunCD <= 0) {
-                if (this.attacking) {
-                    this.attacking = false;
-                    if (this.weapon.type == 'knife') {
-                        this.anim.knifeAtk.elapsedTime = 0;
-                        this.atkCD = 9;
-                    }
-                    else if (this.weapon.type == 'bat') {
-                        this.anim.batAtk.elapsedTime = 0;
-                        this.atkCD = 18;
-                    }
-                }
-                this.dash = true;
-                this.radius = 10;
-                this.dashCD = 90;
-                this.hitCD = 20;
-                this.acceleration = 300;
-                this.maxSpeed = 750;
-            }
-
             // Check for attack + update range
-            if (!this.dash && !this.supDash && this.game.click && this.atkCD <= 0 && this.stunCD <= 0) {
+            if (!this.dashing && !this.supDash && this.game.click && this.atkCD <= 0 && this.stunCD <= 0) {
                 this.attacking = true;
                 if (this.weapon.type == 'knife') {
                     this.atkCD = 105;
@@ -429,7 +406,7 @@ Frump.prototype.update = function () {
 Frump.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-    else if (this.dash) this.anim.dash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.dashing) this.anim.dash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.supDash) this.anim.supDash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.bling) this.anim.bling.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.boom) this.anim.boom.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);

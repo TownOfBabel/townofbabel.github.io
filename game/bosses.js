@@ -28,6 +28,7 @@ function SlowDogg(game, dogs) {
     this.engage = true;
     this.atkCD = 0;
     this.stunCD = 0;
+    this.knockBack = 0;
     this.shtCD = 0;
     this.wslCD = 0;
     this.hitCD = 0;
@@ -54,6 +55,7 @@ SlowDogg.prototype.update = function () {
     if (this.alive && !this.die) {
         if (this.atkCD > 0) this.atkCD--;
         if (this.stunCD > 0) this.stunCD--;
+        if (this.knockBack > 0) this.knockBack--;
         if (this.shtCD > 0) this.shtCD--;
         if (this.wslCD > 0) this.wslCD--;
         if (this.hitCD > 0) this.hitCD--;
@@ -128,8 +130,14 @@ SlowDogg.prototype.update = function () {
                     ent.y += difY * delta / 2;
                 }
                 else {
-                    this.velocity.x += difX * this.acceleration;
-                    this.velocity.y += difY * this.acceleration;
+                    if (this.knockBack <= 0) {
+                        this.velocity.x += Math.cos(this.rotation) * this.acceleration;
+                        this.velocity.y += Math.sin(this.rotation) * this.acceleration;
+                    }
+                    else {
+                        this.velocity.x -= difX * this.acceleration * 4;
+                        this.velocity.y -= difY * this.acceleration * 4;
+                    }
                 }
                 var dist = distance(this, ent);
                 if (this.wslCD <= 0 && this.dogs.length > 0) {

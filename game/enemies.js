@@ -43,6 +43,7 @@ function Enemy(game) {
     this.atkCD = 0;
     this.slamCD = 0;
     this.stunCD = 0;
+    this.knockBack = 0;
     this.hitCD = 0;
     this.ctr = 0;
 
@@ -72,8 +73,8 @@ Enemy.prototype.update = function () {
         if (this.atkCD > 0) this.atkCD--;
         if (this.slamCD > 0) this.slamCD--;
         if (this.stunCD > 0) this.stunCD--;
+        if (this.knockBack > 0) this.knockBack--;
         if (this.hitCD > 0) this.hitCD--;
-        if (this.hitCD <= 0) this.hurt = false;
         if (this.hurt) this.engage = true;
 
         // Update animations
@@ -180,8 +181,16 @@ Enemy.prototype.update = function () {
                         ent.y += difY * delta / 2;
                     }
                     else {
-                        this.velocity.x += difX * this.acceleration;
-                        this.velocity.y += difY * this.acceleration;
+                        if (this.knockBack <= 0) {
+                            this.velocity.x += Math.cos(this.rotation) * this.acceleration;
+                            this.velocity.y += Math.sin(this.rotation) * this.acceleration;
+                            this.maxSpeed = this.mSpeed_init;
+                        }
+                        else {
+                            this.velocity.x -= difX * this.acceleration * 5;
+                            this.velocity.y -= difY * this.acceleration * 5;
+                            this.maxSpeed *= 1.3;
+                        }
                     }
                     // Attack calculations
                     if (this.weapon.type == 'swing' && distance(this, ent) < 140 && this.slamCD <= 0) {
@@ -299,7 +308,7 @@ Enemy.prototype.hit = function (other, range) {
             this.range = 60;
         }
 
-        if (acc < 0.15) {
+        if (acc < 0.2) {
             if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
                 return distance(this, other) < this.range + other.faces;
             else
@@ -326,8 +335,9 @@ function Dog(game) {
     this.faces = 74;
     this.sides = 18;
     this.rotationLag = 10;
-    this.acceleration = 200;
-    this.maxSpeed = 200;
+    this.acceleration = 210;
+    this.maxSpeed = 210;
+    this.mSpeed_init = 200;
     this.weapon = {};
     this.weapon.type = 'bite';
     this.begLag = 109;
@@ -384,6 +394,7 @@ function Thug(game, weapon) {
     this.rotationLag = 15;
     this.acceleration = 100;
     this.maxSpeed = 175;
+    this.mSpeed_init = 175;
     this.sight = 250;
     this.fov = Math.PI * 2 / 5;
     this.hpDrop = Math.floor(Math.random() * 2) + 1;
