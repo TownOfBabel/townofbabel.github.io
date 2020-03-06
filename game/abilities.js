@@ -37,7 +37,8 @@ Dash.prototype.constructor = Dash;
 Dash.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
-    if (this.game.player.space && this.cooldown <= 0 && this.player.stunCD <= 0) {
+    if (this.game.player.space && this.cooldown <= 0 && this.player.stunCD <= 0
+        && !this.player.lunge && !this.player.fruit && !this.player.laser) {
         if (this.player.attacking) {
             this.player.attacking = false;
             if (this.player.weapon.type == 'knife') {
@@ -91,8 +92,7 @@ SuperDash.prototype.update = function () {
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD;
     }
-    if (this.game.shift && this.cooldown <= 0
-        && this.player.stunCD <= 0 && !this.player.dash) {
+    if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
         if (this.player.attacking) {
             this.player.attacking = false;
             if (this.player.weapon.type == 'knife') {
@@ -147,8 +147,7 @@ BlingStun.prototype.update = function () {
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD;
     }
-    if (this.game.shift && this.cooldown <= 0
-        && this.player.stunCD <= 0 && !this.player.dash) {
+    if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
         if (this.player.attacking) {
             this.player.attacking = false;
             if (this.player.weapon.type == 'knife') {
@@ -206,8 +205,7 @@ BoomSpeaker.prototype.update = function () {
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD;
     }
-    if (this.game.shift && this.cooldown <= 0
-        && this.player.stunCD <= 0 && !this.player.dash) {
+    if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
         if (this.player.attacking) {
             this.player.attacking = false;
             if (this.player.weapon.type == 'knife') {
@@ -276,28 +274,11 @@ Lunge.prototype.constructor = Lunge;
 Lunge.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
-    if (this.game.player.dash && this.player.lunge) {
-        this.player.boom = false;
-        this.player.anim.boom.elapsedTime = 0;
-        this.cooldown = this.maxCD;
-        this.iconCD = this.maxCD;
-    }
-    if (this.game.shift && this.cooldown <= 0
-        && this.player.stunCD <= 0 && !this.player.dash) {
+    if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
         if (this.player.attacking) {
             this.player.attacking = false;
-            if (this.player.weapon.type == 'knife') {
-                this.player.anim.knifeAtk.elapsedTime = 0;
-                this.player.atkCD = 9;
-            }
-            else if (this.player.weapon.type == 'bat') {
-                this.player.anim.batAtk.elapsedTime = 0;
-                this.player.atkCD = 18;
-            }
-            else if (this.player.weapon.type == 'gun') {
-                this.player.anim.gunAtk.elapsedTime = 0;
-                this.player.atkCD = 30;
-            }
+            this.player.anim.knifeAtk.elapsedTime = 0;
+            this.player.atkCD = 9;
         }
         this.player.lunge = true;
         this.player.hitCD = this.player.anim.lunge.totalTime * 60;
@@ -366,9 +347,59 @@ Lunge.prototype.hit = function (other) {
     else return false;
 }
 
+function Apple(game, x, y, rot, dmg) {
+    this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/apple.png'), 0, 0, 22, 24, 1, 1, true, false);
+    this.velocity = {};
+    this.velocity.x = Math.cos(rot) * 99999;
+    this.velocity.y = Math.sin(rot) * 99999;
+    this.maxSpeed = 600;
+    this.damage = dmg;
+    this.rotation = rot;
+    this.radius = 11;
+    Entity.call(this, game, x, y);
+}
+
+Apple.prototype = new Entity();
+Apple.prototype.constructor = Apple;
+
+Apple.prototype.update = function () {
+    if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
+        this.removeFromWorld = true;
+
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (this.collide(ent)) {
+            if (ent.enemy) {
+                ent.hurt = true;
+                ent.health -= this.damage;
+                ent.hitCD = 6;
+                this.removeFromWorld = true;
+            }
+            else if (ent.wall || ent.column)
+                this.removeFromWorld = true;
+        }
+    }
+
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+}
+
+Apple.prototype.draw = function (ctx) {
+    this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+}
+
 function FruitShot(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 360;
+    this.maxCD = 30;
+    this.hit = false;
+    this.mouse = {};
+    this.spawnDist = Math.sqrt(Math.pow(127, 2) + Math.pow(26, 2));
     Ability.call(this, game, player, 150, 35);
 }
 
@@ -376,7 +407,40 @@ FruitShot.prototype = new Ability();
 FruitShot.prototype.constructor = FruitShot;
 
 FruitShot.prototype.update = function () {
-
+    if (this.iconCD > 0) this.iconCD--;
+    if (this.cooldown > 0) this.cooldown--;
+    if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
+        if (this.player.attacking) {
+            this.player.attacking = false;
+            this.player.anim.batAtk.elapsedTime = 0;
+            this.player.atkCD = 18;
+        }
+        this.player.fruit = true;
+        this.mouse.x = this.game.mouse.x;
+        this.mouse.y = this.game.mouse.y;
+        this.player.storedRot = this.player.rotation;
+        this.cooldown = this.maxCD;
+        this.iconCD = this.maxCD * 2;
+    }
+    if (this.player.fruit) {
+        if (this.player.anim.fruit.elapsedTime > (this.player.anim.fruit.totalTime * 4 / 7) && !this.hit) {
+            this.hit = true;
+            var appleRot = this.player.rotation + Math.atan(127 / 26);
+            var difX = Math.cos(appleRot) * 125;
+            var difY = Math.sin(appleRot) * 125;
+            var spawnX = this.player.x + difX;
+            var spawnY = this.player.y + difY;
+            var spawnRot = Math.atan2(this.mouse.y - spawnY, this.mouse.x - spawnX);
+            this.game.addEntity(new Apple(this.game, spawnX, spawnY, spawnRot, this.player.damage * 3));
+        }
+        if (this.player.anim.fruit.isDone()) {
+            this.player.anim.fruit.elapsedTime = 0;
+            this.player.fruit = false;
+            this.hit = false;
+            this.cooldown = this.maxCD;
+            this.iconCD = this.maxCD;
+        }
+    }
 }
 
 function Laser(game, player) {

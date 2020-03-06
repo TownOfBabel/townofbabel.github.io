@@ -165,7 +165,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
             new Knife(game, 1), new Door(game, 0, 376, 10, 112), 'street');
     } else {
         this.levels[0].streets[5] = new Background(game, ('./img/backgrounds/street00.png'),
-            new Knife(game, 0), new Door(game, 0, 376, 10, 112), 'street');
+            new Knife(game, 0, this.player, 3), new Door(game, 0, 376, 10, 112), 'street');
     }
 
     // creating houses
@@ -200,7 +200,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[4] = new Background(game, ('./img/backgrounds/house05.png'),
         new Gun(game, Math.floor(Math.random() * 2)), new Door(game, 577, 710, 116, 10), 'house');
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
-        new Knife(game, 0, this.player, 3), new Door(game, 1270, 176, 10, 96), 'house');
+        new Bat(game, 0, this.player, 3), new Door(game, 1270, 176, 10, 96), 'house');
 
     // house00 - Lil' Frump's House
     this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 210, 720));
