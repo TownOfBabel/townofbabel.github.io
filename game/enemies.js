@@ -172,7 +172,7 @@ Enemy.prototype.update = function () {
                     var difX = Math.cos(atan);
                     var difY = Math.sin(atan);
                     var delta = this.radius + ent.radius - distance(this, ent);
-                    if (this.collide(ent) && !ent.dash && !ent.supDash) {
+                    if (this.collide(ent) && !ent.dash && !ent.supDash && !ent.lunge) {
                         this.velocity.x = -this.velocity.x * (1 / friction);
                         this.velocity.y = -this.velocity.y * (1 / friction);
                         this.x -= difX * delta / 2;

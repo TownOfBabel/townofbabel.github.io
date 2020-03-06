@@ -37,12 +37,6 @@ Dash.prototype.constructor = Dash;
 Dash.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
-    if (this.game.player.dash && this.player.supDash) {
-        this.player.supDash = false;
-        this.player.anim.supDash.elapsedTime = 0;
-        this.cooldown = this.maxCD;
-        this.iconCD = this.maxCD;
-    }
     if (this.game.player.space && this.cooldown <= 0 && this.player.stunCD <= 0) {
         if (this.player.attacking) {
             this.player.attacking = false;
@@ -61,6 +55,9 @@ Dash.prototype.update = function () {
         }
         this.player.dashing = true;
         this.player.hitCD = 20;
+        var pointy = this.player.y + this.player.velocity.y;
+        var pointx = this.player.x + this.player.velocity.x;
+        this.player.storedRot = Math.atan2(pointy - this.player.y, pointx - this.player.x);
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD * 2;
         this.player.acceleration = 300;
@@ -114,6 +111,9 @@ SuperDash.prototype.update = function () {
         this.player.supDash = true;
         this.player.radius = 10;
         this.player.hitCD = 30;
+        var pointy = this.player.y + this.player.velocity.y;
+        var pointx = this.player.x + this.player.velocity.x;
+        this.player.storedRot = Math.atan2(pointy - this.player.y, pointx - this.player.x);
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD * 2;
         this.player.acceleration = 500;
@@ -145,6 +145,7 @@ BlingStun.prototype.update = function () {
         this.player.bling = false;
         this.player.anim.bling.elapsedTime = 0;
         this.cooldown = this.maxCD;
+        this.iconCD = this.maxCD;
     }
     if (this.game.shift && this.cooldown <= 0
         && this.player.stunCD <= 0 && !this.player.dash) {
@@ -203,6 +204,7 @@ BoomSpeaker.prototype.update = function () {
         this.player.boom = false;
         this.player.anim.boom.elapsedTime = 0;
         this.cooldown = this.maxCD;
+        this.iconCD = this.maxCD;
     }
     if (this.game.shift && this.cooldown <= 0
         && this.player.stunCD <= 0 && !this.player.dash) {
@@ -264,7 +266,7 @@ BoomSpeaker.prototype.update = function () {
 
 function Lunge(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 390;
+    this.maxCD = 30;
     Ability.call(this, game, player, 150, 35);
 }
 
@@ -272,7 +274,96 @@ Lunge.prototype = new Ability();
 Lunge.prototype.constructor = Lunge;
 
 Lunge.prototype.update = function () {
+    if (this.iconCD > 0) this.iconCD--;
+    if (this.cooldown > 0) this.cooldown--;
+    if (this.game.player.dash && this.player.lunge) {
+        this.player.boom = false;
+        this.player.anim.boom.elapsedTime = 0;
+        this.cooldown = this.maxCD;
+        this.iconCD = this.maxCD;
+    }
+    if (this.game.shift && this.cooldown <= 0
+        && this.player.stunCD <= 0 && !this.player.dash) {
+        if (this.player.attacking) {
+            this.player.attacking = false;
+            if (this.player.weapon.type == 'knife') {
+                this.player.anim.knifeAtk.elapsedTime = 0;
+                this.player.atkCD = 9;
+            }
+            else if (this.player.weapon.type == 'bat') {
+                this.player.anim.batAtk.elapsedTime = 0;
+                this.player.atkCD = 18;
+            }
+            else if (this.player.weapon.type == 'gun') {
+                this.player.anim.gunAtk.elapsedTime = 0;
+                this.player.atkCD = 30;
+            }
+        }
+        this.player.lunge = true;
+        this.player.hitCD = this.player.anim.lunge.totalTime * 60;
+        this.player.storedRot = this.player.rotation;
+        this.player.acceleration = 225;
+        this.player.maxSpeed = 800;
+        this.cooldown = this.maxCD;
+        this.iconCD = this.maxCD * 2;
+    }
+    if (this.player.lunge) {
+        if (this.player.anim.lunge.elapsedTime > (this.player.anim.lunge.totalTime * 3 / 4)) {
+            this.player.maxSpeed = 5;
+        }
+        if (this.player.anim.lunge.isDone()) {
+            this.player.anim.lunge.elapsedTime = 0;
+            this.player.lunge = false;
+            this.player.acceleration = 100;
+            this.cooldown = this.maxCD;
+            this.iconCD = this.maxCD;
+        }
+    }
+    if (this.cooldown < (this.maxCD - 15) && this.player.maxSpeed == 5) {
+        this.player.maxSpeed = 250;
+    }
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (ent.enemy) {
+            if (this.player.lunge && this.hit(ent) && ent.hitCD <= 0) {
+                ent.hurt = true;
+                ent.health -= this.player.weapon.damage * 2;
+                ent.hitCD = (this.player.anim.lunge.totalTime - this.player.anim.lunge.elapsedTime) * 60;
+            }
+        }
+    }
+}
 
+Lunge.prototype.hit = function (other) {
+    var atan2 = Math.atan2(other.y - this.player.y, other.x - this.player.x);
+    var orien = Math.abs(this.player.rotation - other.rotation);
+    if (orien > Math.PI) orien = (Math.PI * 2) - orien;
+    var acc = 1;
+    if (this.player.anim.lunge.currentFrame() == 0) {
+        var angle = this.player.rotation + Math.atan(42 / 64);
+        acc = Math.abs(angle - atan2);
+        if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+        this.range = 76;
+    }
+    else if (this.player.anim.lunge.currentFrame() == 1 || this.player.anim.lunge.currentFrame() == 2) {
+        var angle = this.player.rotation + Math.atan(44 / 144);
+        acc = Math.abs(angle - atan2);
+        if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+        this.range = 150;
+    }
+    else if (this.player.anim.lunge.currentFrame() == 3) {
+        var angle = this.player.rotation + Math.atan(38 / 58);
+        acc = Math.abs(angle - atan2);
+        if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+        this.range = 70;
+    }
+    if (acc < Math.PI / 5) {
+        if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
+            return distance(this.player, other) < this.range + other.faces;
+        else
+            return distance(this.player, other) < this.range + other.sides;
+    }
+    else return false;
 }
 
 function FruitShot(game, player) {
@@ -298,5 +389,5 @@ Laser.prototype = new Ability();
 Laser.prototype.constructor = Laser;
 
 Laser.prototype.update = function () {
-    
+
 }

@@ -214,7 +214,7 @@ function Frump(game) {
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 0, 200, 200, 0.1, 8, true, false);
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 400, 200, 200, 200, 0.15, 4, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1300, 200, 200, 0.15, 1, false, false);
-    this.anim.dash = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1600, 200, 200, 0.04, 5, false, false);
+    this.anim.dash = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1600, 200, 200, 0.05, 5, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 200, 1300, 200, 300, 0.2, 5, false, false);
     this.anim.knifeIdle = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 600, 200, 200, 0.4, 2, true, false);
     this.anim.knifeMove = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 400, 200, 200, 0.1, 8, true, false);
@@ -228,13 +228,14 @@ function Frump(game) {
     this.anim.supDash = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 0, 1200, 300, 300, 0.04, 7, false, false);
     this.anim.bling = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 0, 900, 300, 300, 0.15, 4, false, false);
     this.anim.boom = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 300, 1900, 300, 300, 0.15, 4, false, false);
-    this.anim.lunge = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 0, 1500, 300, 400, 0.12, 5, false, false);
+    this.anim.lunge = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 0, 1500, 300, 400, 0.075, 4, false, false);
 
     // Properties
     this.player = true;
     this.alive = true;
     this.UI = new InfoUI(game);
     this.dashInd = new Dash(game, this);
+    this.storedRot = 0;
     this.radius = 24;
     this.faces = 33;
     this.sides = 38;
@@ -246,7 +247,7 @@ function Frump(game) {
     this.range = 70;
     this.damage = 20;
     this.health = new Health(game, 20);
-    this.dash = false;
+    this.dashing = false;
     this.atkCD = 0;
     this.hitCD = 0;
     this.stunCD = 0;
@@ -274,11 +275,18 @@ Frump.prototype.update = function () {
             if (this.atkCD > 0) this.atkCD--;
             if (this.hitCD > 0) this.hitCD--;
 
-            // User control
-            if (this.game.player.up) this.velocity.y -= this.acceleration;
-            if (this.game.player.down) this.velocity.y += this.acceleration;
-            if (this.game.player.left) this.velocity.x -= this.acceleration;
-            if (this.game.player.right) this.velocity.x += this.acceleration;
+            // Movement control
+            if (this.dashing || this.supDash || this.lunge) {
+                this.velocity.x += Math.cos(this.storedRot) * this.acceleration;
+                this.velocity.y += Math.sin(this.storedRot) * this.acceleration;
+                if (this.lunge) this.rotation = this.storedRot;
+            }
+            else if (!this.bling && !this.boom) {
+                if (this.game.player.up) this.velocity.y -= this.acceleration;
+                if (this.game.player.down) this.velocity.y += this.acceleration;
+                if (this.game.player.left) this.velocity.x -= this.acceleration;
+                if (this.game.player.right) this.velocity.x += this.acceleration;
+            }
 
             // Check for attack + update range
             if (!this.dashing && !this.supDash && this.game.click && this.atkCD <= 0 && this.stunCD <= 0) {
@@ -328,14 +336,6 @@ Frump.prototype.update = function () {
         if (this.hurt && this.anim.hit.isDone()) {
             this.anim.hit.elapsedTime = 0;
             this.hurt = false;
-        }
-        if (this.dash && this.anim.dash.isDone()) {
-            this.anim.dash.elapsedTime = 0;
-            this.dash = false;
-            this.radius = 24;
-            this.dashCD = 60;
-            this.acceleration = 100;
-            this.maxSpeed = 250;
         }
         else if (this.attacking) {
             if (this.weapon.type == 'gun') {
@@ -410,6 +410,7 @@ Frump.prototype.draw = function (ctx) {
     else if (this.supDash) this.anim.supDash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.bling) this.anim.bling.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.boom) this.anim.boom.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.lunge) this.anim.lunge.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.attacking) {
         if (this.weapon.type == 'knife') this.anim.knifeAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else if (this.weapon.type == 'bat') this.anim.batAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
