@@ -3,7 +3,7 @@ function SlowDogg(game, dogs) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 200, 0, 200, 200, 0.2, 3, true, false);
-    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 0, 600, 400, 300, 0.15, 4, false, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 0, 600, 400, 300, 0.125, 4, false, false);
     this.anim.sht = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 0, 200, 200, 200, 0.1, 8, false, false);
     this.anim.wsl = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 0, 400, 200, 200, 0.1, 3, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 1400, 0, 200, 200, 0.15, 1, false, false);
@@ -21,6 +21,7 @@ function SlowDogg(game, dogs) {
     this.acceleration = 50;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 65;
+    this.mSpeed_init = 65;
     this.range = 130;
     this.health = 250;
     this.hpDrop = Math.floor(Math.random() * 2) + 3;
@@ -79,10 +80,12 @@ SlowDogg.prototype.update = function () {
                 this.shtCD = 90;
             }
         }
-        if (this.attack && this.anim.atk.isDone()) {
-            this.anim.atk.elapsedTime = 0;
-            this.attack = false;
-            this.atkCD = 60;
+        if (this.attack) {
+            if (this.anim.atk.isDone() || this.stunCD > 0) {
+                this.anim.atk.elapsedTime = 0;
+                this.attack = false;
+                this.atkCD = 60;
+            }
         }
 
         // boundary collisions
@@ -121,7 +124,7 @@ SlowDogg.prototype.update = function () {
                 var difX = Math.cos(atan);
                 var difY = Math.sin(atan);
                 var delta = this.radius + ent.radius - distance(this, ent);
-                if (this.collide(ent) && !ent.dash && !ent.supDash) {
+                if (this.collide(ent) && !ent.dash && !ent.supDash && !ent.lunge) {
                     this.velocity.x = -this.velocity.x * (1 / friction);
                     this.velocity.y = -this.velocity.y * (1 / friction);
                     this.x -= difX * delta / 2;
@@ -133,10 +136,12 @@ SlowDogg.prototype.update = function () {
                     if (this.knockBack <= 0) {
                         this.velocity.x += Math.cos(this.rotation) * this.acceleration;
                         this.velocity.y += Math.sin(this.rotation) * this.acceleration;
+                        this.maxSpeed = this.mSpeed_init;
                     }
                     else {
-                        this.velocity.x -= difX * this.acceleration * 4;
-                        this.velocity.y -= difY * this.acceleration * 4;
+                        this.velocity.x -= difX * this.acceleration * 6;
+                        this.velocity.y -= difY * this.acceleration * 6;
+                        this.maxSpeed *= 1.4;
                     }
                 }
                 var dist = distance(this, ent);
@@ -217,7 +222,7 @@ SlowDogg.prototype.hit = function (other) {
         if (acc > Math.PI) acc = (Math.PI * 2) - acc;
     }
 
-    if (acc < 0.2) {
+    if (acc < 0.25) {
         if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
             return distance(this, other) < this.range + other.faces;
         else

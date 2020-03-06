@@ -54,15 +54,37 @@ function calcDmg(weapon) {
     }
 }
 
-function Weapon(game, rarity) {
+function Weapon(game, player, type, rarity, ability) {
     this.hidden = true;
-    this.type = 'unarmed';
-    this.rarity = rarity;
     this.floating = true;
-    this.range = 55;
+    if (type == 0) {
+        this.type = 'knife';
+        this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
+        this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
+        if (ability == 3) this.ability = new Lunge(game, player);
+        this.scale = 1;
+    } else if (type == 1) {
+        this.type = 'bat';
+        this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
+        this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
+        if (ability == 3) this.ability = new FruitShot(game, player);
+        this.scale = 0.7;
+    } else if (type == 2) {
+        this.type = 'gun';
+        this.static = ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png');
+        this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
+        if (ability == 3) this.ability = new Laser(game, player);
+        this.scale = 0.85;
+    } else this.type = 'unarmed';
+    this.rarity = rarity;
+    if (ability == 0) this.ability = new SuperDash(game, player);
+    else if (ability == 1) this.ability = new BlingStun(game, player);
+    else if (ability == 2) this.ability = new BoomSpeaker(game, player);
+    else if (ability == 3) { }
+    else this.ability = false;
+    this.radius = 10;
     calcDmg(this);
-    this.radius = 0;
-    this.scale = 1;
+    if (type == 2) this.damage /= 2;
 
     Entity.call(this, game, 640, 360);
 }
@@ -71,7 +93,6 @@ Weapon.prototype = new Entity();
 Weapon.prototype.constructor = Weapon;
 
 Weapon.prototype.update = function () {
-
 }
 
 Weapon.prototype.draw = function (ctx) {
@@ -82,81 +103,8 @@ Weapon.prototype.draw = function (ctx) {
         ctx.drawImage(this.static, 0, 0, 100, 100, this.x, this.y, 71.4 * this.scale, 71.4 * this.scale);
 }
 
-function Knife(game, rarity, player, ability) {
-    this.hidden = true;
-    this.type = 'knife';
-    this.rarity = rarity;
-    this.floating = true;
-    this.range = 90;
-    calcDmg(this);
-    this.scale = 1;
-
-    if (ability == 0) this.ability = new SuperDash(game, player);
-    else if (ability == 1) this.ability = new BlingStun(game, player);
-    else if (ability == 2) this.ability = new BoomSpeaker(game, player);
-    else if (ability == 3) this.ability = new Lunge(game, player);
-    else this.ability = false;
-
-    this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
-
-    Entity.call(this, game, 640, 360);
-}
-
-Knife.prototype = new Weapon();
-Knife.prototype.constructor = Knife;
-
-function Bat(game, rarity, player, ability) {
-    this.hidden = true;
-    this.type = 'bat';
-    this.rarity = rarity;
-    this.floating = true;
-    this.range = 110;
-    calcDmg(this);
-    this.scale = 0.7;
-
-    if (ability == 0) this.ability = new SuperDash(game, player);
-    else if (ability == 1) this.ability = new BlingStun(game, player);
-    else if (ability == 2) this.ability = new BoomSpeaker(game, player);
-    else if (ability == 3) this.ability = new FruitShot(game, player);
-    else this.ability = false;
-
-    this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
-
-    Entity.call(this, game, 640, 360);
-}
-
-Bat.prototype = new Weapon();
-Bat.prototype.constructor = Bat;
-
-function Gun(game, rarity, player, ability) {
-    this.hidden = true;
-    this.type = 'gun';
-    this.rarity = rarity;
-    this.floating = true;
-    this.range = 250;
-    calcDmg(this);
-    this.damage /= 2.0;
-    this.scale = 0.85;
-
-    if (ability == 0) this.ability = new SuperDash(game, player);
-    else if (ability == 1) this.ability = new BlingStun(game, player);
-    else if (ability == 2) this.ability = new BoomSpeaker(game, player);
-    else if (ability == 3) this.ability = new Laser(game, player);
-    else this.ability = false;
-
-    this.static = ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png');
-    this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
-
-    Entity.call(this, game, 640, 360);
-}
-
-Gun.prototype = new Weapon();
-Gun.prototype.constructor = Gun;
-
 function Bullet(game, x, y, rot, dmg) {
-    this.image = ASSET_MANAGER.getAsset('./img/weapons/bullet_alt.png');
+    this.image = ASSET_MANAGER.getAsset('./img/weapons/bullet.png');
     this.velocity = {};
     this.velocity.x = Math.cos(rot) * 99999;
     this.velocity.y = Math.sin(rot) * 99999;
@@ -243,7 +191,7 @@ function Frump(game) {
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 250;
-    this.weapon = new Knife(game, 0);
+    this.weapon = new Weapon(game, this, 0, 0);
     this.bullets = 6;
     this.range = 70;
     this.damage = 20;
@@ -374,10 +322,12 @@ Frump.prototype.update = function () {
         for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
             if (ent.enemy && this.stunCD <= 0) {
-                if (this.attacking && this.weapon.type != 'gun' && ent.hitCD <= 0 && this.hit(ent)) {
-                    ent.hurt = true;
-                    ent.health -= this.weapon.damage;
-                    ent.hitCD = this.hitDur;
+                if (this.attacking && this.weapon.type != 'gun') {
+                    if (ent.hitCD <= 0 && this.hit(ent)) {
+                        ent.hurt = true;
+                        ent.health -= this.weapon.damage;
+                        ent.hitCD = this.hitDur;
+                    }
                 }
             }
         }
@@ -474,7 +424,7 @@ Frump.prototype.hit = function (other, range) {
             else if (batAngle < -Math.PI) batAngle = batAngle + (Math.PI * 2);
             acc = Math.abs(batAngle - atan2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
-            this.range = 105;
+            this.range = 110;
         }
 
         if ((this.weapon.type == 'knife' && acc < 0.2)

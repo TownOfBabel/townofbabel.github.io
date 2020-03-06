@@ -189,7 +189,7 @@ BlingStun.prototype.update = function () {
 
 function BoomSpeaker(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 330;
+    this.maxCD = 275;
     Ability.call(this, game, player, 150, 35);
 }
 
@@ -264,7 +264,7 @@ BoomSpeaker.prototype.update = function () {
 
 function Lunge(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 30;
+    this.maxCD = 290;
     Ability.call(this, game, player, 150, 35);
 }
 
@@ -396,7 +396,7 @@ Apple.prototype.draw = function (ctx) {
 
 function FruitShot(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 30;
+    this.maxCD = 290;
     this.hit = false;
     this.mouse = {};
     this.spawnDist = Math.sqrt(Math.pow(127, 2) + Math.pow(26, 2));
@@ -445,7 +445,7 @@ FruitShot.prototype.update = function () {
 
 function Laser(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 420;
+    this.maxCD = 320;
     Ability.call(this, game, player, 150, 35);
 }
 

@@ -91,13 +91,15 @@ Enemy.prototype.update = function () {
                 this.slamCD = 180;
             }
         }
-        if (this.attacking && this.anim.atk.isDone()) {
-            this.anim.atk.elapsedTime = 0;
-            this.attacking = false;
-            this.atkCD = this.endLag;
-            if (this.weapon.type == 'bite') {
-                this.acceleration = 200;
-                this.maxSpeed = 200;
+        if (this.attacking) {
+            if (this.anim.atk.isDone() || this.stunCD > 0) {
+                this.anim.atk.elapsedTime = 0;
+                this.attacking = false;
+                this.atkCD = this.endLag;
+                if (this.weapon.type == 'bite') {
+                    this.acceleration = 200;
+                    this.maxSpeed = 200;
+                }
             }
         }
 
