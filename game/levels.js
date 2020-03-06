@@ -312,7 +312,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
         new Door(game, 577, 710, 116, 10), 'house');
     // house 00
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
-        new Weapon(game, this.player, 1, 0), new Door(game, 1270, 176, 10, 96), 'house');
+        new Weapon(game, this.player, 2, 0, Math.floor(Math.random() * 2)), new Door(game, 1270, 176, 10, 96), 'house');
 
     // house00 - Lil' Frump's House
     this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 210, 720));
