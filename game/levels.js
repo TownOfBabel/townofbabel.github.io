@@ -308,7 +308,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     }
     // house 05
     this.levels[0].houses[4] = new Background(game, ('./img/backgrounds/house05.png'),
-        new Weapon(game, this.player, 2, Math.floor(Math.random() * 2), Math.floor(Math.random() * 4)),
+        new Weapon(game, this.player, 2, Math.floor(Math.random() * 2), Math.floor(Math.random() * 3)),
         new Door(game, 577, 710, 116, 10), 'house');
     // house 00
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
@@ -470,13 +470,13 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[5].neighbors[1] = this.levels[0].streets[5];
     this.levels[0].streets[5].neighbors[3] = this.levels[0].houses[5];
 
-    // genEnemies(game, this.levels[0].streets[5], 2);
-    // for (var i = 0; i < 5; i++)
-    //     genEnemies(game, this.levels[0].streets[i], 2);
-    // genEnemies(game, this.levels[0].houses[0], 4);
-    // genEnemies(game, this.levels[0].houses[1], 4);
-    // genEnemies(game, this.levels[0].houses[2], 5);
-    // genEnemies(game, this.levels[0].houses[3], 5);
+    genEnemies(game, this.levels[0].streets[5], 2);
+    for (var i = 0; i < 5; i++)
+        genEnemies(game, this.levels[0].streets[i], 2);
+    genEnemies(game, this.levels[0].houses[0], 4);
+    genEnemies(game, this.levels[0].houses[1], 4);
+    genEnemies(game, this.levels[0].houses[2], 5);
+    genEnemies(game, this.levels[0].houses[3], 5);
     var dogs = [new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game)];
     for (var i = 0; i < dogs.length; i++) {
         dogs[i].caged = true;
