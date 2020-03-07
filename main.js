@@ -169,6 +169,7 @@ ASSET_MANAGER.queueDownload('./img/weapons/bullet.png');
 ASSET_MANAGER.queueDownload('./img/weapons/bullet_alt.png');
 ASSET_MANAGER.queueDownload('./img/weapons/laser.png');
 ASSET_MANAGER.queueDownload('./img/weapons/apple.png');
+ASSET_MANAGER.queueDownload('./img/weapons/popup.png');
 
 ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 

@@ -54,9 +54,31 @@ function calcDmg(weapon) {
     }
 }
 
+function Popup(game, weapon) {
+    this.image = ASSET_MANAGER.getAsset('./img/weapons/popup.png');
+    this.weapon = weapon;
+    Entity.call(this, game, 0, 0);
+}
+
+Popup.prototype = new Entity();
+Popup.prototype.constructor = Popup;
+
+Popup.prototype.update = function () {
+    if (!this.weapon.floating) this.removeFromWorld = true;
+    if (!this.weapon.hover) this.removeFromWorld = true;
+}
+
+Popup.prototype.draw = function (ctx) {
+    if (this.weapon.rarity == 0) ctx.drawImage(this.image, 0, 0, 240, 80, this.weapon.x - 90, this.weapon.y - 90, 180, 60);
+    else if (this.weapon.rarity == 1) ctx.drawImage(this.image, 240, 0, 240, 80, this.weapon.x - 90, this.weapon.y - 35, 180, 60);
+    else if (this.weapon.rarity == 2) ctx.drawImage(this.image, 480, 0, 240, 80, this.weapon.x - 90, this.weapon.y - 35, 180, 60);
+    else ctx.drawImage(this.image, 720, 0, 240, 80, this.weapon.x - 90, this.weapon.y - 35, 180, 60);
+}
+
 function Weapon(game, player, type, rarity, ability) {
     this.hidden = true;
     this.floating = true;
+    this.hover = false;
     if (type == 0) {
         this.type = 'knife';
         this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
@@ -93,12 +115,18 @@ Weapon.prototype = new Entity();
 Weapon.prototype.constructor = Weapon;
 
 Weapon.prototype.update = function () {
+    if (distance(this, this.game.mouse) < 40 && !this.hover && !this.hidden) {
+        this.hover = true;
+        this.game.addEntity(new Popup(this.game, this));
+    }
+    else if (distance(this, this.game.mouse) > 40 && this.hover)
+        this.hover = false;
 }
 
 Weapon.prototype.draw = function (ctx) {
     if (this.hidden) { }
     else if (this.floating)
-        this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, this.scale);
+        this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     else
         ctx.drawImage(this.static, 0, 0, 100, 100, this.x, this.y, 71.4 * this.scale, 71.4 * this.scale);
 }
