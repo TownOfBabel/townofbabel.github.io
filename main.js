@@ -151,6 +151,8 @@ ASSET_MANAGER.queueDownload('./img/entities/thug_bat.png');
 ASSET_MANAGER.queueDownload('./img/entities/thug_knife.png');
 ASSET_MANAGER.queueDownload('./img/entities/bodyguard.png');
 ASSET_MANAGER.queueDownload('./img/entities/slow_dogg.png');
+ASSET_MANAGER.queueDownload('./img/entities/big_guy.png');
+ASSET_MANAGER.queueDownload('./img/entities/ninja_guy.png');
 
 // weapons
 ASSET_MANAGER.queueDownload('./img/weapons/bat00.png');

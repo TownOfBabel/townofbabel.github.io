@@ -507,6 +507,8 @@ SceneManager.prototype.buildLevelOne = function (game) {
     }
     this.levels[0].houses[4].enemies.push(new SlowDogg(game, dogs));
 
+    // this.levels[0].streets[5].enemies.push(new BigGuy(game));
+
     console.log('loading complete!');
 }
 
