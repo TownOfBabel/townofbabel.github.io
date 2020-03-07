@@ -109,17 +109,17 @@ SlowDogg.prototype.update = function () {
                     var rotdif = this.rotation - atan;
                     if (rotdif > Math.PI) {
                         rotdif = Math.PI * 2 - rotdif;
-                        this.rotation += rotdif / 25;
+                        this.rotation += rotdif / 20;
                     }
-                    else this.rotation -= rotdif / 25;
+                    else this.rotation -= rotdif / 20;
                 }
                 else {
                     var rotdif = atan - this.rotation;
                     if (rotdif > Math.PI) {
                         rotdif = Math.PI * 2 - rotdif;
-                        this.rotation -= rotdif / 25;
+                        this.rotation -= rotdif / 20;
                     }
-                    else this.rotation += rotdif / 25;
+                    else this.rotation += rotdif / 20;
                 }
                 var difX = Math.cos(atan);
                 var difY = Math.sin(atan);

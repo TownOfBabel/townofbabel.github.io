@@ -50,7 +50,7 @@ function calcDmg(weapon) {
             weapon.damage = 60;
             break;
         default:
-            weapon.damage = 1;
+            weapon.damage = 10;
     }
 }
 
@@ -134,8 +134,9 @@ Weapon.prototype.draw = function (ctx) {
 function Bullet(game, x, y, rot, dmg) {
     this.image = ASSET_MANAGER.getAsset('./img/weapons/bullet.png');
     this.velocity = {};
-    this.velocity.x = Math.cos(rot) * 99999;
-    this.velocity.y = Math.sin(rot) * 99999;
+    var newRot = rot + Math.random() * 0.1 - 0.05;
+    this.velocity.x = Math.cos(newRot) * 99999;
+    this.velocity.y = Math.sin(newRot) * 99999;
     this.maxSpeed = 1000;
     this.damage = dmg;
     this.radius = 4;
@@ -206,6 +207,7 @@ function Frump(game) {
     this.anim.boom = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 300, 1900, 300, 300, 0.15, 4, false, false);
     this.anim.lunge = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 0, 1500, 300, 400, 0.075, 4, false, false);
     this.anim.fruit = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 0, 600, 300, 300, 0.12, 7, false, false);
+    this.anim.laser = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump2.png'), 900, 0, 300, 300, 0.1, 3, false, false);
 
     // Properties
     this.player = true;
@@ -218,7 +220,7 @@ function Frump(game) {
     this.sides = 38;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 250;
+    this.maxSpeed = 235;
     this.weapon = new Weapon(game, this, 0, 0);
     this.bullets = 6;
     this.range = 70;
@@ -391,17 +393,18 @@ Frump.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.dashing) this.anim.dash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-    else if (this.supDash) this.anim.supDash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-    else if (this.bling) this.anim.bling.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-    else if (this.boom) this.anim.boom.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-    else if (this.lunge) this.anim.lunge.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-    else if (this.fruit) this.anim.fruit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.attacking) {
         if (this.weapon.type == 'knife') this.anim.knifeAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else if (this.weapon.type == 'bat') this.anim.batAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else if (this.weapon.type == 'gun') this.anim.gunAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else this.anim.atk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     }
+    else if (this.supDash) this.anim.supDash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.bling) this.anim.bling.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.boom) this.anim.boom.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.lunge) this.anim.lunge.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.fruit) this.anim.fruit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.laser) this.anim.laser.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else {
         if (this.velocity.x > -10 && this.velocity.x < 10 && this.velocity.y > -10 && this.velocity.y < 10) {
             if (this.weapon.type == 'knife') this.anim.knifeIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);

@@ -264,7 +264,7 @@ BoomSpeaker.prototype.update = function () {
 
 function Lunge(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 290;
+    this.maxCD = 210;
     Ability.call(this, game, player, 150, 35);
 }
 
@@ -350,8 +350,9 @@ Lunge.prototype.hit = function (other) {
 function Apple(game, x, y, rot, dmg) {
     this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/apple.png'), 0, 0, 22, 24, 1, 1, true, false);
     this.velocity = {};
-    this.velocity.x = Math.cos(rot) * 99999;
-    this.velocity.y = Math.sin(rot) * 99999;
+    var newRot = rot + Math.random() * 0.12 - 0.06;
+    this.velocity.x = Math.cos(newRot) * 99999;
+    this.velocity.y = Math.sin(newRot) * 99999;
     this.maxSpeed = 600;
     this.damage = dmg;
     this.rotation = rot;
@@ -396,7 +397,7 @@ Apple.prototype.draw = function (ctx) {
 
 function FruitShot(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 290;
+    this.maxCD = 210;
     this.hit = false;
     this.mouse = {};
     this.spawnDist = Math.sqrt(Math.pow(127, 2) + Math.pow(26, 2));
@@ -431,7 +432,7 @@ FruitShot.prototype.update = function () {
             var spawnX = this.player.x + difX;
             var spawnY = this.player.y + difY;
             var spawnRot = Math.atan2(this.mouse.y - spawnY, this.mouse.x - spawnX);
-            this.game.addEntity(new Apple(this.game, spawnX, spawnY, spawnRot, this.player.damage * 3));
+            this.game.addEntity(new Apple(this.game, spawnX, spawnY, spawnRot, this.player.weapon.damage * 3));
         }
         if (this.player.anim.fruit.isDone()) {
             this.player.anim.fruit.elapsedTime = 0;
@@ -443,9 +444,58 @@ FruitShot.prototype.update = function () {
     }
 }
 
+function LaserProj(game, x, y, rot, dmg) {
+    this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/laser.png'), 0, 0, 12, 38, 0.1, 4, true, false);
+    this.velocity = {};
+    this.velocity.x = Math.cos(rot) * 99999;
+    this.velocity.y = Math.sin(rot) * 99999;
+    this.maxSpeed = 800;
+    this.damage = dmg;
+    this.rotation = rot;
+    this.radius = 8;
+    this.hitMax = 3;
+    Entity.call(this, game, x, y);
+}
+
+LaserProj.prototype = new Entity();
+LaserProj.prototype.constructor = LaserProj;
+
+LaserProj.prototype.update = function () {
+    if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
+        this.removeFromWorld = true;
+
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (this.collide(ent)) {
+            if (ent.enemy && ent.hitCD <= 0) {
+                ent.hurt = true;
+                ent.health -= this.damage;
+                ent.hitCD = 12;
+                this.hitMax--;
+                if (this.hitMax < 1) this.removeFromWorld = true;
+            }
+            else if (ent.wall || ent.column)
+                this.removeFromWorld = true;
+        }
+    }
+
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+}
+
+LaserProj.prototype.draw = function (ctx) {
+    this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+}
+
 function Laser(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
-    this.maxCD = 320;
+    this.maxCD = 240;
     Ability.call(this, game, player, 150, 35);
 }
 
@@ -453,5 +503,33 @@ Laser.prototype = new Ability();
 Laser.prototype.constructor = Laser;
 
 Laser.prototype.update = function () {
-
+    if (this.iconCD > 0) this.iconCD--;
+    if (this.cooldown > 0) this.cooldown--;
+    if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
+        if (this.player.attacking) {
+            this.player.attacking = false;
+            this.player.anim.gunAtk.elapsedTime = 0;
+        }
+        this.player.laser = true;
+        this.cooldown = this.maxCD;
+        this.iconCD = this.maxCD * 2;
+    }
+    if (this.player.laser) {
+        if (this.player.anim.laser.elapsedTime > (this.player.anim.laser.totalTime * 2 / 3) && !this.hit) {
+            this.hit = true;
+            var laserRot = this.player.rotation + Math.atan(13 / 127);
+            var difX = Math.cos(laserRot) * 127.7;
+            var difY = Math.sin(laserRot) * 127.7;
+            var spawnX = this.player.x + difX;
+            var spawnY = this.player.y + difY;
+            this.game.addEntity(new LaserProj(this.game, spawnX, spawnY, this.player.rotation, this.player.weapon.damage * 2));
+        }
+        if (this.player.anim.laser.isDone()) {
+            this.player.anim.laser.elapsedTime = 0;
+            this.player.laser = false;
+            this.hit = false;
+            this.cooldown = this.maxCD;
+            this.iconCD = this.maxCD;
+        }
+    }
 }
