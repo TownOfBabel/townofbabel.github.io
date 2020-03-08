@@ -284,6 +284,8 @@ Frump.prototype.update = function () {
                 if (this.game.player.right) this.velocity.x += this.acceleration;
             }
 
+            if (this.game.player.reload && !this.reload && this.bullets < 6) this.reload = true;
+
             // Check for attack + update range
             if (!this.dashing && !this.supDash && this.game.click && this.atkCD <= 0 && this.stunCD <= 0) {
                 if (this.weapon.type == 'knife') {
