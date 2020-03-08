@@ -143,6 +143,12 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/arrow.png');
 ASSET_MANAGER.queueDownload('./img/entities/frump.png');
 ASSET_MANAGER.queueDownload('./img/entities/frump2.png');
 ASSET_MANAGER.queueDownload('./img/entities/UI.png');
+ASSET_MANAGER.queueDownload('./img/entities/super_dash.png');
+ASSET_MANAGER.queueDownload('./img/entities/fruit_bat.png');
+ASSET_MANAGER.queueDownload('./img/entities/laser_icon.png');
+ASSET_MANAGER.queueDownload('./img/entities/lunge.png');
+ASSET_MANAGER.queueDownload('./img/entities/bling.png');
+ASSET_MANAGER.queueDownload('./img/entities/boombox.png');
 ASSET_MANAGER.queueDownload('./img/entities/health.png');
 ASSET_MANAGER.queueDownload('./img/entities/health_drop.png');
 ASSET_MANAGER.queueDownload('./img/entities/dash.png');
@@ -151,6 +157,8 @@ ASSET_MANAGER.queueDownload('./img/entities/thug_bat.png');
 ASSET_MANAGER.queueDownload('./img/entities/thug_knife.png');
 ASSET_MANAGER.queueDownload('./img/entities/bodyguard.png');
 ASSET_MANAGER.queueDownload('./img/entities/slow_dogg.png');
+ASSET_MANAGER.queueDownload('./img/entities/big_guy.png');
+ASSET_MANAGER.queueDownload('./img/entities/ninja_guy.png');
 
 // weapons
 ASSET_MANAGER.queueDownload('./img/weapons/bat00.png');
@@ -167,8 +175,10 @@ ASSET_MANAGER.queueDownload('./img/weapons/gun20.png');
 ASSET_MANAGER.queueDownload('./img/weapons/gun30.png');
 ASSET_MANAGER.queueDownload('./img/weapons/bullet.png');
 ASSET_MANAGER.queueDownload('./img/weapons/bullet_alt.png');
+ASSET_MANAGER.queueDownload('./img/weapons/shuriken.png');
 ASSET_MANAGER.queueDownload('./img/weapons/laser.png');
 ASSET_MANAGER.queueDownload('./img/weapons/apple.png');
+ASSET_MANAGER.queueDownload('./img/weapons/popup.png');
 
 ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 

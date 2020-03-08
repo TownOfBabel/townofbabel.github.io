@@ -3,7 +3,7 @@ function HealthDrop(game, x, y, heal) {
     this.healTwo = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 40, 40, 40, 0.2, 4, true, false);
     this.healThree = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 80, 40, 40, 0.2, 4, true, false);
     this.heal = heal * 2;
-    this.radius = 0;
+    this.radius = 10;
     Entity.call(this, game, x, y);
 }
 
@@ -199,7 +199,7 @@ Enemy.prototype.update = function () {
                         this.slamming = true;
                         this.slamCD = 150;
                     }
-                    else if (distance(this, ent) < (this.range + ent.radius / 2) && this.atkCD <= 0) {
+                    else if (distance(this, ent) < (this.range + ent.radius) && this.atkCD <= 0) {
                         this.attacking = true;
                         this.atkCD = this.begLag;
                     }
