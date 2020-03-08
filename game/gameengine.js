@@ -79,6 +79,7 @@ GameEngine.prototype.startInput = function () {
         if (e.keyCode == '65') that.player.left = true;
         if (e.keyCode == '68') that.player.right = true;
         if (e.keyCode == '69') that.player.interact = true;
+        if (e.keyCode == '82') that.player.reload = true;
         e.preventDefault();
     }, false);
 
@@ -142,6 +143,7 @@ GameEngine.prototype.loop = function () {
     this.shift = null;
     this.enter = null;
     this.player.space = null;
+    this.player.reload = null;
 }
 
 function distance(a, b, c) {
