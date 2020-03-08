@@ -75,7 +75,7 @@ Dash.prototype.update = function () {
 }
 
 function SuperDash(game, player) {
-    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/super_dash.png');
     this.maxCD = 120;
     Ability.call(this, game, player, 150, 35);
 }
@@ -130,7 +130,7 @@ SuperDash.prototype.update = function () {
 }
 
 function BlingStun(game, player) {
-    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/bling.png');
     this.maxCD = 240;
     Ability.call(this, game, player, 150, 35);
 }
@@ -188,7 +188,7 @@ BlingStun.prototype.update = function () {
 }
 
 function BoomSpeaker(game, player) {
-    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/boombox.png');
     this.maxCD = 275;
     Ability.call(this, game, player, 150, 35);
 }
@@ -246,7 +246,7 @@ BoomSpeaker.prototype.update = function () {
                 if (this.player.hit(ent, 130) && ent.hitCD <= 0) {
                     ent.hurt = true;
                     ent.health -= 15;
-                    ent.hitCD = 18;
+                    ent.hitCD = 27;
                     ent.knockBack = 13;
                 }
             }
@@ -255,7 +255,7 @@ BoomSpeaker.prototype.update = function () {
                     ent.hurt = true;
                     ent.health -= 15;
                     ent.hitCD = 9;
-                    ent.knockBack = 11;
+                    ent.knockBack = 9;
                 }
             }
         }
@@ -263,7 +263,7 @@ BoomSpeaker.prototype.update = function () {
 }
 
 function Lunge(game, player) {
-    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/lunge.png');
     this.maxCD = 210;
     Ability.call(this, game, player, 150, 35);
 }
@@ -290,7 +290,7 @@ Lunge.prototype.update = function () {
     }
     if (this.player.lunge) {
         if (this.player.anim.lunge.elapsedTime > (this.player.anim.lunge.totalTime * 3 / 4)) {
-            this.player.maxSpeed = 5;
+            this.player.maxSpeed = 100;
         }
         if (this.player.anim.lunge.isDone()) {
             this.player.anim.lunge.elapsedTime = 0;
@@ -300,7 +300,7 @@ Lunge.prototype.update = function () {
             this.iconCD = this.maxCD;
         }
     }
-    if (this.cooldown < (this.maxCD - 15) && this.player.maxSpeed == 5) {
+    if (this.cooldown < (this.maxCD - 15) && this.player.maxSpeed == 100) {
         this.player.maxSpeed = 250;
     }
     for (var i = 0; i < this.game.entities.length; i++) {
@@ -338,7 +338,7 @@ Lunge.prototype.hit = function (other) {
         if (acc > Math.PI) acc = (Math.PI * 2) - acc;
         this.range = 70;
     }
-    if (acc < Math.PI / 5) {
+    if (acc < 0.5) {
         if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
             return distance(this.player, other) < this.range + other.faces;
         else
@@ -396,7 +396,7 @@ Apple.prototype.draw = function (ctx) {
 }
 
 function FruitShot(game, player) {
-    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/fruit_bat.png');
     this.maxCD = 210;
     this.hit = false;
     this.mouse = {};
@@ -494,7 +494,7 @@ LaserProj.prototype.draw = function (ctx) {
 }
 
 function Laser(game, player) {
-    this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.icon = ASSET_MANAGER.getAsset('./img/entities/laser_icon.png');
     this.maxCD = 240;
     Ability.call(this, game, player, 150, 35);
 }

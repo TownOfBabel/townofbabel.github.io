@@ -199,7 +199,7 @@ Enemy.prototype.update = function () {
                         this.slamming = true;
                         this.slamCD = 150;
                     }
-                    else if (distance(this, ent) < (this.range + ent.radius / 2) && this.atkCD <= 0) {
+                    else if (distance(this, ent) < (this.range + ent.radius) && this.atkCD <= 0) {
                         this.attacking = true;
                         this.atkCD = this.begLag;
                     }

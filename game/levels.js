@@ -241,18 +241,18 @@ SceneManager.prototype.buildLevelOne = function (game) {
     if (Math.floor(Math.random() * 20) == 0) {
         if (Math.floor(Math.random() * 3) == 0)
             this.levels[0].streets[5] = new Background(game, ('./img/backgrounds/street00.png'),
-                new Weapon(game, this.player, Math.floor(Math.random() * 2), 1, Math.floor(Math.random() * 4)),
+                new Weapon(game, this.player, Math.floor(Math.random() * 3), 1, Math.floor(Math.random() * 4)),
                 new Door(game, 0, 376, 10, 112), 'street');
         else this.levels[0].streets[5] = new Background(game, ('./img/backgrounds/street00.png'),
-            new Weapon(game, this.player, Math.floor(Math.random() * 2), 1),
+            new Weapon(game, this.player, Math.floor(Math.random() * 3), 1),
             new Door(game, 0, 376, 10, 112), 'street');
     } else {
         if (Math.floor(Math.random() * 4) == 0)
             this.levels[0].streets[5] = new Background(game, ('./img/backgrounds/street00.png'),
-                new Weapon(game, this.player, Math.floor(Math.random() * 2), 0, Math.floor(Math.random() * 4)),
+                new Weapon(game, this.player, Math.floor(Math.random() * 3), 0, Math.floor(Math.random() * 4)),
                 new Door(game, 0, 376, 10, 112), 'street');
         else this.levels[0].streets[5] = new Background(game, ('./img/backgrounds/street00.png'),
-            new Weapon(game, this.player, Math.floor(Math.random() * 2), 0),
+            new Weapon(game, this.player, Math.floor(Math.random() * 3), 0),
             new Door(game, 0, 376, 10, 112), 'street');
     }
 
@@ -334,7 +334,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
         new Door(game, 577, 710, 116, 10), 'house');
     // house 00
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
-        new Weapon(game, this.player, 2, 0, Math.floor(Math.random() * 4)), new Door(game, 1270, 176, 10, 96), 'house');
+        new Weapon(game, this.player, 1, 0), new Door(game, 1270, 176, 10, 96), 'house');
 
     // house00 - Lil' Frump's House
     this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 210, 720));
