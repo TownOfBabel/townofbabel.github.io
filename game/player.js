@@ -232,7 +232,7 @@ function Frump(game) {
     this.sides = 38;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 750;
+    this.maxSpeed = 235;
     this.weapon = new Weapon(game, this, 0, 0);
     this.bullets = 6;
     this.range = 70;

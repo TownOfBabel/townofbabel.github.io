@@ -845,6 +845,8 @@ SceneManager.prototype.buildLevelThree = function (game) {
     this.levels[2].streets[5].neighbors[0] = this.levels[2].houses[4];
     this.levels[2].houses[4].neighbors[2] = this.levels[2].streets[5];
 
+    this.levels[0].streets[0].enemies.push(new Police(game));
+
     console.log('loading complete!');
 }
 
