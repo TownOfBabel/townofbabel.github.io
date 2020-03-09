@@ -1,4 +1,4 @@
-function Background(game, image, weapon, door, type, walls, spawn) {
+function Background(game, image, weapon, door, type, walls, spawn, spawns) {
     this.source = image;
     this.image = ASSET_MANAGER.getAsset(image);
     this.drop = weapon;
@@ -9,6 +9,8 @@ function Background(game, image, weapon, door, type, walls, spawn) {
     this.door = door;
     if (spawn === undefined) this.spawn = { x: 640, y: 360 };
     else this.spawn = spawn;
+    if (spawns === undefined) this.spawns = [{ x: 640, y: 200}];
+    else this.spawns = spawns;
     this.type = type;
     Entity.call(this, game, 0, 0);
 }

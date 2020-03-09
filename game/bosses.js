@@ -107,26 +107,26 @@ SlowDogg.prototype.update = function () {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 if (this.rotation > atan) {
                     var rotdif = this.rotation - atan;
+                    while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                     if (rotdif > Math.PI) {
                         rotdif = Math.PI * 2 - rotdif;
                         this.rotation += rotdif / 22;
-                    }
-                    else this.rotation -= rotdif / 22;
+                    } else this.rotation -= rotdif / 22;
                 }
                 else {
                     var rotdif = atan - this.rotation;
+                    while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                     if (rotdif > Math.PI) {
                         rotdif = Math.PI * 2 - rotdif;
                         this.rotation -= rotdif / 22;
-                    }
-                    else this.rotation += rotdif / 22;
+                    } else this.rotation += rotdif / 22;
                 }
                 var difX = Math.cos(atan);
                 var difY = Math.sin(atan);
                 var delta = this.radius + ent.radius - distance(this, ent);
                 if (this.collide(ent) && !ent.dash && !ent.supDash && !ent.lunge) {
-                    this.velocity.x = -this.velocity.x * (1 / friction);
-                    this.velocity.y = -this.velocity.y * (1 / friction);
+                    this.velocity.x = -this.velocity.x / friction;
+                    this.velocity.y = -this.velocity.y / friction;
                     this.x -= difX * delta / 2;
                     this.y -= difY * delta / 2;
                     ent.x += difX * delta / 2;
@@ -321,27 +321,27 @@ BigGuy.prototype.update = function () {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 if (this.rotation > atan) {
                     var rotdif = this.rotation - atan;
+                    while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                     if (rotdif > Math.PI) {
                         rotdif = Math.PI * 2 - rotdif;
                         this.rotation += rotdif / 18;
-                    }
-                    else this.rotation -= rotdif / 18;
+                    } else this.rotation -= rotdif / 18;
                 }
                 else {
                     var rotdif = atan - this.rotation;
+                    while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                     if (rotdif > Math.PI) {
                         rotdif = Math.PI * 2 - rotdif;
                         this.rotation -= rotdif / 18;
-                    }
-                    else this.rotation += rotdif / 18;
+                    } else this.rotation += rotdif / 18;
                 }
                 var dist = distance(this, ent);
                 var difX = Math.cos(atan);
                 var difY = Math.sin(atan);
                 var delta = this.radius + ent.radius - dist;
                 if (this.collide(ent) && !ent.dash && !ent.supDash && !ent.lunge) {
-                    this.velocity.x = -this.velocity.x * (1 / friction);
-                    this.velocity.y = -this.velocity.y * (1 / friction);
+                    this.velocity.x = -this.velocity.x / friction;
+                    this.velocity.y = -this.velocity.y / friction;
                     this.x -= difX * delta / 2;
                     this.y -= difY * delta / 2;
                     ent.x += difX * delta / 2;
@@ -537,27 +537,27 @@ NinjaGuy.prototype.update = function () {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 if (this.rotation > atan) {
                     var rotdif = this.rotation - atan;
+                    while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                     if (rotdif > Math.PI) {
                         rotdif = Math.PI * 2 - rotdif;
                         this.rotation += rotdif / 18;
-                    }
-                    else this.rotation -= rotdif / 18;
+                    } else this.rotation -= rotdif / 18;
                 }
                 else {
                     var rotdif = atan - this.rotation;
+                    while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                     if (rotdif > Math.PI) {
                         rotdif = Math.PI * 2 - rotdif;
                         this.rotation -= rotdif / 18;
-                    }
-                    else this.rotation += rotdif / 18;
+                    } else this.rotation += rotdif / 18;
                 }
                 var dist = distance(this, ent);
                 var difX = Math.cos(atan);
                 var difY = Math.sin(atan);
                 var delta = this.radius + ent.radius - dist;
                 if (this.collide(ent) && !ent.dash && !ent.supDash && !ent.lunge) {
-                    this.velocity.x = -this.velocity.x * (1 / friction);
-                    this.velocity.y = -this.velocity.y * (1 / friction);
+                    this.velocity.x = -this.velocity.x / friction;
+                    this.velocity.y = -this.velocity.y / friction;
                     this.x -= difX * delta / 2;
                     this.y -= difY * delta / 2;
                     ent.x += difX * delta / 2;

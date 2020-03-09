@@ -85,7 +85,7 @@ Popup.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, this.startX, this.startY, 150, 50, this.x, this.y, 150, 50);
 }
 
-function Weapon(game, player, type, rarity, ability) {
+function Weapon(game, player, type, rarity, ability, spawn) {
     this.hidden = true;
     this.floating = true;
     this.hover = false;
@@ -118,8 +118,8 @@ function Weapon(game, player, type, rarity, ability) {
     this.radius = 10;
     calcDmg(this);
     if (type == 2) this.damage /= 2;
-
-    Entity.call(this, game, 640, 360);
+    if (spawn === undefined) Entity.call(this, game, 640, 360);
+    else Entity.call(this, game, spawn.x, spawn.y);
 }
 
 Weapon.prototype = new Entity();
@@ -232,7 +232,7 @@ function Frump(game) {
     this.sides = 38;
     this.acceleration = 100;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 235;
+    this.maxSpeed = 245;
     this.weapon = new Weapon(game, this, 0, 0);
     this.bullets = 6;
     this.range = 70;

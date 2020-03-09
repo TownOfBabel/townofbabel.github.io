@@ -68,7 +68,7 @@ Dash.prototype.update = function () {
         this.player.anim.dash.elapsedTime = 0;
         this.player.dashing = false;
         this.player.acceleration = 100;
-        this.player.maxSpeed = 235;
+        this.player.maxSpeed = 245;
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD;
     }
@@ -123,7 +123,7 @@ SuperDash.prototype.update = function () {
         this.player.anim.supDash.elapsedTime = 0;
         this.player.supDash = false;
         this.player.acceleration = 100;
-        this.player.maxSpeed = 250;
+        this.player.maxSpeed = 245;
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD;
     }
@@ -301,7 +301,7 @@ Lunge.prototype.update = function () {
         }
     }
     if (this.cooldown < (this.maxCD - 15) && this.player.maxSpeed == 100) {
-        this.player.maxSpeed = 250;
+        this.player.maxSpeed = 245;
     }
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
