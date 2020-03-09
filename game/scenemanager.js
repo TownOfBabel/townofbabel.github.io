@@ -282,7 +282,6 @@ SceneManager.prototype.updateBackground = function () {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.game.addEntity(this.activeBG.enemies[i]);
         this.game.addEntity(this.activeBG.door);
-        this.game.addEntity(this.arrow);
         this.game.addEntity(this.player);
         for (var i = 0; i < this.activeBG.walls.length; i++)
             this.game.addEntity(this.activeBG.walls[i]);
@@ -293,6 +292,7 @@ SceneManager.prototype.updateBackground = function () {
         if (this.player.weapon.ability)
             this.game.addEntity(this.player.weapon.ability);
         this.game.addEntity(this.player.health);
+        this.game.addEntity(this.arrow);
     }
     if (this.level.clear)
         this.game.addEntity(this.menus.cont);
@@ -307,10 +307,33 @@ SceneManager.prototype.startGame = function () {
 }
 
 SceneManager.prototype.checkBounds = function () {
-    if (this.player.collide(this.activeBG.door) && this.activeBG.enemies.length == 0) {
-        if (this.activeBG.door.x == 0)
+    if (this.activeBG === this.levels[this.level.current].streets[5] && this.player.collideRight()) {
+        if (this.activeBG.neighbors[0].enemies.length == 0 && this.activeBG.enemies.length == 0
+            && this.activeBG.neighbors[1]) {
+            this.level.current++;
+            this.player.x = 640;
+            this.player.y = 640;
+            var temp = this.player.velocity.x;
+            this.player.velocity.x = this.player.velocity.y;
+            this.player.velocity.y = -temp;
+            this.changeBackground(this.activeBG.neighbors[1]);
+        }
+    }
+    else if (this.activeBG === this.levels[this.level.current].streets[0] && this.player.collideBottom()) {
+        if (this.activeBG.enemies.length == 0 && this.activeBG.neighbors[2]) {
+            this.level.current--;
+            this.player.x = 1210;
+            this.player.y = 580;
+            var temp = this.player.velocity.x;
+            this.player.velocity.x = -this.player.velocity.y;
+            this.player.velocity.y = temp;
+            this.changeBackground(this.activeBG.neighbors[2]);
+        }
+    }
+    else if (this.player.collide(this.activeBG.door) && this.activeBG.enemies.length == 0) {
+        if (this.activeBG.door.x == 4 || this.activeBG.door.x == 0)
             this.changeBackground(this.activeBG.neighbors[3])
-        else if (this.activeBG.door.x == 1270)
+        else if (this.activeBG.door.x == 1254 || this.activeBG.door.x == 1270)
             this.changeBackground(this.activeBG.neighbors[1])
         else if (this.activeBG.door.y == 0)
             this.changeBackground(this.activeBG.neighbors[0])
@@ -319,9 +342,18 @@ SceneManager.prototype.checkBounds = function () {
         this.player.x = this.activeBG.spawn.x;
         this.player.y = this.activeBG.spawn.y;
     }
-    else if ((this.player.collideTop() || this.player.collideBottom())
-        && this.activeBG.type == 'street' && this.activeBG.enemies.length == 0) {
-        if (this.activeBG.neighbors[1]) {
+    else if ((this.player.collideTop() || this.player.collideBottom()) && this.activeBG.enemies.length == 0) {
+        if (this.activeBG.type == 'house') {
+            if (this.player.collideTop() && this.activeBG.neighbors[0]) {
+                this.changeBackground(this.activeBG.neighbors[0]);
+                this.player.y = 710 - this.player.radius;
+            }
+            else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+                this.changeBackground(this.activeBG.neighbors[2]);
+                this.player.y = this.player.radius + 10;
+            }
+        }
+        else if (this.activeBG.neighbors[1]) {
             if (this.activeBG.neighbors[1].enemies.length == 0) {
                 if (this.player.collideTop() && this.activeBG.neighbors[0]) {
                     if (this.activeBG.neighbors[0].type == 'street') {
@@ -357,10 +389,16 @@ SceneManager.prototype.checkBounds = function () {
                 this.player.y = this.player.radius + 10;
             }
         }
-        else if (this.activeBG === this.levels[this.level.current].streets[4]) {
-            if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
-                this.changeBackground(this.activeBG.neighbors[2]);
+        else if (this.player.collideTop() && this.activeBG.neighbors[0]) {
+            if (this.activeBG.neighbors[0].type == 'street') {
+                this.changeBackground(this.activeBG.neighbors[0]);
+                this.player.y = 710 - this.player.radius;
+            }
+        }
+        else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+            if (this.activeBG.neighbors[2].type == 'street') {
                 this.player.y = this.player.radius + 10;
+                this.changeBackground(this.activeBG.neighbors[2]);
             }
         }
     }

@@ -1,11 +1,14 @@
-function Background(game, image, weapon, door, type) {
+function Background(game, image, weapon, door, type, walls, spawn) {
+    this.source = image;
     this.image = ASSET_MANAGER.getAsset(image);
     this.drop = weapon;
-    this.walls = [];
+    if (walls === undefined) this.walls = [];
+    else this.walls = walls;
     this.enemies = [];
     this.neighbors = [];
     this.door = door;
-    this.spawn = {};
+    if (spawn === undefined) this.spawn = { x: 640, y: 360 };
+    else this.spawn = spawn;
     this.type = type;
     Entity.call(this, game, 0, 0);
 }
@@ -62,8 +65,6 @@ Wall.prototype.update = function () {
                 }
                 else if (this.side == 'topleft' || this.side == 'topright'
                     || this.side == 'bottomleft' || this.side == 'bottomright') {
-                    ent.velocity.x = -ent.velocity.x / friction;
-                    ent.velocity.y = -ent.velocity.y / friction;
                     if (this.side == 'topleft') {
                         var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                         ent.x = this.x + ent.radius * Math.cos(atan);
@@ -83,7 +84,7 @@ Wall.prototype.update = function () {
                         var atan = Math.atan2(ent.y - (this.y + this.h), ent.x - (this.x + this.w));
                         ent.x = this.x + this.w + ent.radius * Math.cos(atan);
                         ent.y = this.y + this.h + ent.radius * Math.sin(atan);
-                    } 
+                    }
                 }
                 else {
                     if (this.w < this.h) {
@@ -174,8 +175,6 @@ Column.prototype.update = function () {
                 var difX = Math.cos(atan);
                 var difY = Math.sin(atan);
                 var delta = this.radius + ent.radius - distance(this, ent);
-                ent.velocity.x = -ent.velocity.x / friction;
-                ent.velocity.y = -ent.velocity.y / friction;
                 ent.x -= delta * difX;
                 ent.y -= delta * difY;
             }

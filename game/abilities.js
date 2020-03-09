@@ -68,7 +68,7 @@ Dash.prototype.update = function () {
         this.player.anim.dash.elapsedTime = 0;
         this.player.dashing = false;
         this.player.acceleration = 100;
-        this.player.maxSpeed = 250;
+        this.player.maxSpeed = 235;
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD;
     }
@@ -238,16 +238,16 @@ BoomSpeaker.prototype.update = function () {
                 if (this.player.hit(ent, 90) && ent.hitCD <= 0) {
                     ent.hurt = true;
                     ent.health -= 15;
-                    ent.hitCD = 27;
-                    ent.knockBack = 15;
+                    ent.hitCD = 30;
+                    ent.knockBack = 20;
                 }
             }
             else if (this.player.boom && this.cooldown > 82) {
                 if (this.player.hit(ent, 130) && ent.hitCD <= 0) {
                     ent.hurt = true;
                     ent.health -= 15;
-                    ent.hitCD = 27;
-                    ent.knockBack = 13;
+                    ent.hitCD = 24;
+                    ent.knockBack = 15;
                 }
             }
             else if (this.player.boom && this.cooldown > 73) {
@@ -255,7 +255,7 @@ BoomSpeaker.prototype.update = function () {
                     ent.hurt = true;
                     ent.health -= 15;
                     ent.hitCD = 9;
-                    ent.knockBack = 9;
+                    ent.knockBack = 10;
                 }
             }
         }
