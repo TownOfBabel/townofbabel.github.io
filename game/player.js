@@ -85,7 +85,7 @@ Popup.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, this.startX, this.startY, 150, 50, this.x, this.y, 150, 50);
 }
 
-function Weapon(game, player, type, rarity, ability) {
+function Weapon(game, player, type, rarity, ability, spawn) {
     this.hidden = true;
     this.floating = true;
     this.hover = false;
@@ -93,33 +93,33 @@ function Weapon(game, player, type, rarity, ability) {
         this.type = 'knife';
         this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
         this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
-        if (ability == 3) this.ability = new Lunge(game, player);
+        if (ability >= 3) this.ability = new Lunge(game, player);
         this.scale = 1;
     } else if (type == 1) {
         this.type = 'bat';
         this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
         this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
-        if (ability == 3) this.ability = new FruitShot(game, player);
+        if (ability >= 3) this.ability = new FruitShot(game, player);
         this.scale = 0.7;
     } else if (type == 2) {
         this.type = 'gun';
         this.static = ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png');
         this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/gun' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
-        if (ability == 3) this.ability = new Laser(game, player);
+        if (ability >= 3) this.ability = new Laser(game, player);
         this.scale = 0.85;
     } else this.type = 'unarmed';
     this.rarity = rarity;
     if (ability == 0) this.ability = new SuperDash(game, player);
     else if (ability == 1) this.ability = new BlingStun(game, player);
     else if (ability == 2) this.ability = new BoomSpeaker(game, player);
-    else if (ability == 3) { }
+    else if (ability >= 3) { }
     else this.ability = false;
     this.abilityNum = ability;
     this.radius = 10;
     calcDmg(this);
     if (type == 2) this.damage /= 2;
-
-    Entity.call(this, game, 640, 360);
+    if (spawn === undefined) Entity.call(this, game, 640, 360);
+    else Entity.call(this, game, spawn.x, spawn.y);
 }
 
 Weapon.prototype = new Entity();
@@ -230,9 +230,9 @@ function Frump(game) {
     this.radius = 24;
     this.faces = 33;
     this.sides = 38;
-    this.acceleration = 100;
+    this.acceleration = 200;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 235;
+    this.maxSpeed = 245;
     this.weapon = new Weapon(game, this, 0, 0);
     this.bullets = 6;
     this.range = 70;

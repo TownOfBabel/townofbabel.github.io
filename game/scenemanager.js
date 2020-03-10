@@ -119,6 +119,7 @@ function SceneManager(game) {
     this.level = { current: 0, clear: false };
     this.player = new Frump(game);
     this.arrow = new Arrow(game, this);
+    this.bosses = [0, 1, 2];
 
     this.menus = {};
     this.menus.title = new TitleScreen(game);
@@ -128,6 +129,7 @@ function SceneManager(game) {
     this.menus.story1 = new Menu(game, './img/menus/story1.png');
     this.menus.story2 = new Menu(game, './img/menus/story2.png');
     this.menus.cont = new Menu(game, './img/menus/continued.png');
+    this.menus.intro = [];
     this.menus.fade = new Fade(game, 'toBlack');
 
     this.activeBG = this.menus.title;
@@ -191,10 +193,10 @@ SceneManager.prototype.update = function () {
             for (var i = this.activeBG.enemies.length - 1; i >= 0; --i) {
                 var ent = this.activeBG.enemies[i];
                 if (!ent.alive && !ent.die) {
-                    if (ent.boss) {
-                        this.bossDead = true;
-                        this.game.addEntity(this.menus.win);
-                    }
+                    // if (ent.boss) {
+                    //     this.bossDead = true;
+                    //     this.game.addEntity(this.menus.win);
+                    // }
                     ent.removeFromWorld = true;
                     this.activeBG.enemies.splice(i, 1);
                 }
@@ -215,7 +217,7 @@ SceneManager.prototype.update = function () {
         }
         if (!this.activeBG.menu) {
             if (this.activeBG.enemies.length == 0) {
-                this.updateLevel = true;
+                this.activeBG.drop.hidden = false;
                 if (this.game.player.interact) this.swapHeld++;
                 else this.swapHeld = 0;
                 if (this.swapHeld > 15 && distance(this.player, this.activeBG.drop) < 100) {
@@ -241,10 +243,6 @@ SceneManager.prototype.update = function () {
                     else if (this.player.weapon.type == 'bat')
                         this.player.faces = 28;
                 }
-            }
-            if (this.updateLevel) {
-                this.activeBG.drop.hidden = false;
-                this.updateLevel = false;
             }
             this.checkBounds();
         }
@@ -282,7 +280,6 @@ SceneManager.prototype.updateBackground = function () {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.game.addEntity(this.activeBG.enemies[i]);
         this.game.addEntity(this.activeBG.door);
-        this.game.addEntity(this.arrow);
         this.game.addEntity(this.player);
         for (var i = 0; i < this.activeBG.walls.length; i++)
             this.game.addEntity(this.activeBG.walls[i]);
@@ -293,6 +290,7 @@ SceneManager.prototype.updateBackground = function () {
         if (this.player.weapon.ability)
             this.game.addEntity(this.player.weapon.ability);
         this.game.addEntity(this.player.health);
+        this.game.addEntity(this.arrow);
     }
     if (this.level.clear)
         this.game.addEntity(this.menus.cont);
@@ -307,10 +305,33 @@ SceneManager.prototype.startGame = function () {
 }
 
 SceneManager.prototype.checkBounds = function () {
-    if (this.player.collide(this.activeBG.door) && this.activeBG.enemies.length == 0) {
-        if (this.activeBG.door.x == 0)
+    if (this.activeBG === this.levels[this.level.current].streets[5] && this.player.collideRight()) {
+        if (this.activeBG.neighbors[0].enemies.length == 0 && this.activeBG.enemies.length == 0
+            && this.activeBG.neighbors[1]) {
+            this.level.current++;
+            this.player.x = 640;
+            this.player.y = 640;
+            var temp = this.player.velocity.x;
+            this.player.velocity.x = this.player.velocity.y;
+            this.player.velocity.y = -temp;
+            this.changeBackground(this.activeBG.neighbors[1]);
+        }
+    }
+    else if (this.activeBG === this.levels[this.level.current].streets[0] && this.player.collideBottom()) {
+        if (this.activeBG.enemies.length == 0 && this.activeBG.neighbors[2]) {
+            this.level.current--;
+            this.player.x = 1210;
+            this.player.y = 580;
+            var temp = this.player.velocity.x;
+            this.player.velocity.x = -this.player.velocity.y;
+            this.player.velocity.y = temp;
+            this.changeBackground(this.activeBG.neighbors[2]);
+        }
+    }
+    else if (this.player.collide(this.activeBG.door) && this.activeBG.enemies.length == 0) {
+        if (this.activeBG.door.x == 4 || this.activeBG.door.x == 0)
             this.changeBackground(this.activeBG.neighbors[3])
-        else if (this.activeBG.door.x == 1270)
+        else if (this.activeBG.door.x == 1254 || this.activeBG.door.x == 1270)
             this.changeBackground(this.activeBG.neighbors[1])
         else if (this.activeBG.door.y == 0)
             this.changeBackground(this.activeBG.neighbors[0])
@@ -319,46 +340,25 @@ SceneManager.prototype.checkBounds = function () {
         this.player.x = this.activeBG.spawn.x;
         this.player.y = this.activeBG.spawn.y;
     }
-    else if ((this.player.collideTop() || this.player.collideBottom())
-        && this.activeBG.type == 'street' && this.activeBG.enemies.length == 0) {
-        if (this.activeBG.neighbors[1]) {
-            if (this.activeBG.neighbors[1].enemies.length == 0) {
-                if (this.player.collideTop() && this.activeBG.neighbors[0]) {
-                    if (this.activeBG.neighbors[0].type == 'street') {
-                        this.changeBackground(this.activeBG.neighbors[0]);
-                        this.player.y = 720 - this.player.radius - 10;
-                    }
-                }
-                else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
-                    this.changeBackground(this.activeBG.neighbors[2]);
-                    this.player.y = this.player.radius + 10;
-                }
+    else if ((this.player.collideTop() || this.player.collideBottom()) && this.activeBG.enemies.length == 0) {
+        if (this.activeBG.type == 'house') {
+            if (this.player.collideTop() && this.activeBG.neighbors[0]) {
+                this.changeBackground(this.activeBG.neighbors[0]);
+                this.player.y = 710 - this.player.radius;
             }
             else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
                 this.changeBackground(this.activeBG.neighbors[2]);
                 this.player.y = this.player.radius + 10;
             }
         }
-        else if (this.activeBG.neighbors[3]) {
-            if (this.activeBG.neighbors[3].enemies.length == 0) {
-                if (this.player.collideTop() && this.activeBG.neighbors[0]) {
-                    if (this.activeBG.neighbors[0].type == 'street') {
-                        this.changeBackground(this.activeBG.neighbors[0]);
-                        this.player.y = 720 - this.player.radius - 10;
-                    }
-                }
-                else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
-                    this.changeBackground(this.activeBG.neighbors[2]);
-                    this.player.y = this.player.radius + 10;
-                }
-            }
-            else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
-                this.changeBackground(this.activeBG.neighbors[2]);
-                this.player.y = this.player.radius + 10;
+        else if (this.player.collideTop() && this.activeBG.neighbors[0]) {
+            if (this.activeBG.neighbors[0].type == 'street') {
+                this.changeBackground(this.activeBG.neighbors[0]);
+                this.player.y = 710 - this.player.radius;
             }
         }
-        else if (this.activeBG === this.levels[this.level.current].streets[4]) {
-            if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+        else if (this.player.collideBottom() && this.activeBG.neighbors[2]) {
+            if (this.activeBG.neighbors[2].type == 'street') {
                 this.changeBackground(this.activeBG.neighbors[2]);
                 this.player.y = this.player.radius + 10;
             }

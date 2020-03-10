@@ -1,11 +1,16 @@
-function Background(game, image, weapon, door, type) {
+function Background(game, image, weapon, door, type, walls, spawn, spawns) {
+    this.source = image;
     this.image = ASSET_MANAGER.getAsset(image);
     this.drop = weapon;
-    this.walls = [];
+    if (walls === undefined) this.walls = [];
+    else this.walls = walls;
     this.enemies = [];
     this.neighbors = [];
     this.door = door;
-    this.spawn = {};
+    if (spawn === undefined) this.spawn = { x: 640, y: 360 };
+    else this.spawn = spawn;
+    if (spawns === undefined) this.spawns = [{ x: 640, y: 200}];
+    else this.spawns = spawns;
     this.type = type;
     Entity.call(this, game, 0, 0);
 }
@@ -62,8 +67,6 @@ Wall.prototype.update = function () {
                 }
                 else if (this.side == 'topleft' || this.side == 'topright'
                     || this.side == 'bottomleft' || this.side == 'bottomright') {
-                    ent.velocity.x = -ent.velocity.x / friction;
-                    ent.velocity.y = -ent.velocity.y / friction;
                     if (this.side == 'topleft') {
                         var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                         ent.x = this.x + ent.radius * Math.cos(atan);
@@ -83,7 +86,7 @@ Wall.prototype.update = function () {
                         var atan = Math.atan2(ent.y - (this.y + this.h), ent.x - (this.x + this.w));
                         ent.x = this.x + this.w + ent.radius * Math.cos(atan);
                         ent.y = this.y + this.h + ent.radius * Math.sin(atan);
-                    } 
+                    }
                 }
                 else {
                     if (this.w < this.h) {
@@ -174,8 +177,6 @@ Column.prototype.update = function () {
                 var difX = Math.cos(atan);
                 var difY = Math.sin(atan);
                 var delta = this.radius + ent.radius - distance(this, ent);
-                ent.velocity.x = -ent.velocity.x / friction;
-                ent.velocity.y = -ent.velocity.y / friction;
                 ent.x -= delta * difX;
                 ent.y -= delta * difY;
             }
@@ -217,60 +218,35 @@ Arrow.prototype.constructor = Arrow;
 Arrow.prototype.update = function () {
     var displayBG = this.manager.activeBG;
     if (displayBG.type == 'street') {
-        if (displayBG.neighbors[1]) {
-            if (displayBG.neighbors[1].enemies.length > 0) {
-                this.x = displayBG.spawn.x - 50;
-                this.y = displayBG.spawn.y;
+        if (displayBG === this.manager.levels[this.manager.level.current].streets[5]) {
+            if (displayBG.neighbors[0].enemies.length == 0) {
+                this.x = 1200;
+                this.y = 500;
                 this.rotation = 0;
             }
             else {
-                this.x = 640;
-                this.y = 60;
+                this.x = displayBG.spawn.x;
+                this.y = displayBG.spawn.y + 50;
                 this.rotation = -Math.PI / 2;
             }
-        }
-        else if (displayBG.neighbors[3]) {
-            if (displayBG.neighbors[3].enemies.length > 0) {
-                this.x = displayBG.spawn.x + 50;
-                this.y = displayBG.spawn.y;
-                this.rotation = Math.PI;
-            }
-            else {
-                this.x = 640;
-                this.y = 60;
-                this.rotation = -Math.PI / 2;
-            }
-        }
-    }
-    else if (displayBG === this.manager.levels[this.manager.level.current].streets[4]) {
-        if (displayBG.neighbors[0].enemies.length > 0) {
-            this.x = displayBG.spawn.x;
-            this.y = displayBG.spawn.y + 50;
-            this.rotation = -Math.PI / 2;
         }
         else {
-            this.x = 1220;
-            this.y = 360;
-            this.rotation = 0;
+            this.x = 640;
+            this.y = 100;
+            this.rotation = -Math.PI / 2;
         }
     }
-    else if (displayBG === this.manager.levels[this.manager.level.current].houses[1]
-        || displayBG === this.manager.levels[this.manager.level.current].houses[3]
-        || displayBG === this.manager.levels[this.manager.level.current].houses[5]) {
-        this.x = displayBG.spawn.x - 50;
-        this.y = displayBG.spawn.y;
-        this.rotation = 0;
-    }
-    else if (displayBG === this.manager.levels[this.manager.level.current].houses[0]
-        || displayBG === this.manager.levels[this.manager.level.current].houses[2]) {
-        this.x = displayBG.spawn.x + 50;
-        this.y = displayBG.spawn.y;
-        this.rotation = Math.PI;
-    }
     else {
-        this.x = displayBG.spawn.x;
-        this.y = displayBG.spawn.y - 50;
-        this.rotation = Math.PI / 2;
+        if (displayBG.spawn.x < 640) {
+            this.x = displayBG.spawn.x + 50;
+            this.y = displayBG.spawn.y;
+            this.rotation = Math.PI;
+        }
+        else {
+            this.x = displayBG.spawn.x - 50;
+            this.y = displayBG.spawn.y;
+            this.rotation = 0;
+        }
     }
 }
 
