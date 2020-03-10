@@ -162,9 +162,9 @@ SceneManager.prototype.buildLevelOne = function (game) {
         }
     }
     // house 04
-    this.levels[0].houses[4] = this.buildBossRoom(0, 1);
+    // this.levels[0].houses[4] = this.buildBossRoom(0, 1);
     // this.levels[0].houses[4].enemies.push(new BigGuy(game));
-    // this.fillBossRoom(0);
+    this.fillBossRoom(0);
     // house 00
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
         new Weapon(game, this.player, 1, 0, null, { x: 1100, y: 380 }),
@@ -284,16 +284,16 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].streets[5].neighbors[0] = this.levels[0].houses[4];
     this.levels[0].houses[4].neighbors[2] = this.levels[0].streets[5];
 
-    // generateEnemies(game, this.levels[0].streets[0], 2);
-    // generateEnemies(game, this.levels[0].streets[1], 2);
-    // generateEnemies(game, this.levels[0].streets[2], 2);
-    // generateEnemies(game, this.levels[0].streets[3], 2);
-    // generateEnemies(game, this.levels[0].streets[4], 2);
-    // generateEnemies(game, this.levels[0].streets[5], 2);
-    // generateEnemies(game, this.levels[0].houses[0], 4);
-    // generateEnemies(game, this.levels[0].houses[1], 4);
-    // generateEnemies(game, this.levels[0].houses[2], 5);
-    // generateEnemies(game, this.levels[0].houses[3], 5);
+    generateEnemies(game, this.levels[0].streets[0], 2);
+    generateEnemies(game, this.levels[0].streets[1], 2);
+    generateEnemies(game, this.levels[0].streets[2], 2);
+    generateEnemies(game, this.levels[0].streets[3], 2);
+    generateEnemies(game, this.levels[0].streets[4], 2);
+    generateEnemies(game, this.levels[0].streets[5], 2);
+    generateEnemies(game, this.levels[0].houses[0], 4);
+    generateEnemies(game, this.levels[0].houses[1], 4);
+    generateEnemies(game, this.levels[0].houses[2], 5);
+    generateEnemies(game, this.levels[0].houses[3], 5);
 
     console.log('loading complete!');
     this.buildLevelTwo(game);
@@ -574,16 +574,16 @@ SceneManager.prototype.buildLevelTwo = function (game) {
     this.levels[1].streets[5].neighbors[0] = this.levels[1].houses[4];
     this.levels[1].houses[4].neighbors[2] = this.levels[1].streets[5];
 
-    // generateEnemies(game, this.levels[1].streets[0], 3);
-    // generateEnemies(game, this.levels[1].streets[1], 3);
-    // generateEnemies(game, this.levels[1].streets[2], 3);
-    // generateEnemies(game, this.levels[1].streets[3], 3);
-    // generateEnemies(game, this.levels[1].streets[4], 3);
-    // generateEnemies(game, this.levels[1].streets[5], 3);
-    // generateEnemies(game, this.levels[1].houses[0], 6);
-    // generateEnemies(game, this.levels[1].houses[1], 6);
-    // generateEnemies(game, this.levels[1].houses[2], 7);
-    // generateEnemies(game, this.levels[1].houses[3], 7);
+    generateEnemies(game, this.levels[1].streets[0], 3);
+    generateEnemies(game, this.levels[1].streets[1], 3);
+    generateEnemies(game, this.levels[1].streets[2], 3);
+    generateEnemies(game, this.levels[1].streets[3], 3);
+    generateEnemies(game, this.levels[1].streets[4], 3);
+    generateEnemies(game, this.levels[1].streets[5], 3);
+    generateEnemies(game, this.levels[1].houses[0], 6);
+    generateEnemies(game, this.levels[1].houses[1], 6);
+    generateEnemies(game, this.levels[1].houses[2], 7);
+    generateEnemies(game, this.levels[1].houses[3], 7);
 
     console.log('loading complete!');
     this.buildLevelThree(game);
