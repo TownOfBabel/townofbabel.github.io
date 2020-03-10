@@ -218,60 +218,35 @@ Arrow.prototype.constructor = Arrow;
 Arrow.prototype.update = function () {
     var displayBG = this.manager.activeBG;
     if (displayBG.type == 'street') {
-        if (displayBG.neighbors[1]) {
-            if (displayBG.neighbors[1].enemies.length > 0) {
-                this.x = displayBG.spawn.x - 50;
-                this.y = displayBG.spawn.y;
+        if (displayBG === this.manager.levels[this.manager.level.current].streets[5]) {
+            if (displayBG.neighbors[0].enemies.length == 0) {
+                this.x = 1200;
+                this.y = 500;
                 this.rotation = 0;
             }
             else {
-                this.x = 640;
-                this.y = 60;
+                this.x = displayBG.spawn.x;
+                this.y = displayBG.spawn.y + 50;
                 this.rotation = -Math.PI / 2;
             }
-        }
-        else if (displayBG.neighbors[3]) {
-            if (displayBG.neighbors[3].enemies.length > 0) {
-                this.x = displayBG.spawn.x + 50;
-                this.y = displayBG.spawn.y;
-                this.rotation = Math.PI;
-            }
-            else {
-                this.x = 640;
-                this.y = 60;
-                this.rotation = -Math.PI / 2;
-            }
-        }
-    }
-    else if (displayBG === this.manager.levels[this.manager.level.current].streets[4]) {
-        if (displayBG.neighbors[0].enemies.length > 0) {
-            this.x = displayBG.spawn.x;
-            this.y = displayBG.spawn.y + 50;
-            this.rotation = -Math.PI / 2;
         }
         else {
-            this.x = 1220;
-            this.y = 360;
-            this.rotation = 0;
+            this.x = 640;
+            this.y = 100;
+            this.rotation = -Math.PI / 2;
         }
     }
-    else if (displayBG === this.manager.levels[this.manager.level.current].houses[1]
-        || displayBG === this.manager.levels[this.manager.level.current].houses[3]
-        || displayBG === this.manager.levels[this.manager.level.current].houses[5]) {
-        this.x = displayBG.spawn.x - 50;
-        this.y = displayBG.spawn.y;
-        this.rotation = 0;
-    }
-    else if (displayBG === this.manager.levels[this.manager.level.current].houses[0]
-        || displayBG === this.manager.levels[this.manager.level.current].houses[2]) {
-        this.x = displayBG.spawn.x + 50;
-        this.y = displayBG.spawn.y;
-        this.rotation = Math.PI;
-    }
     else {
-        this.x = displayBG.spawn.x;
-        this.y = displayBG.spawn.y - 50;
-        this.rotation = Math.PI / 2;
+        if (displayBG.spawn.x < 640) {
+            this.x = displayBG.spawn.x + 50;
+            this.y = displayBG.spawn.y;
+            this.rotation = Math.PI;
+        }
+        else {
+            this.x = displayBG.spawn.x - 50;
+            this.y = displayBG.spawn.y;
+            this.rotation = 0;
+        }
     }
 }
 

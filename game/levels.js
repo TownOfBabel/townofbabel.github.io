@@ -46,18 +46,18 @@ SceneManager.prototype.buildLevelOne = function (game) {
     if (Math.random() * 100 < 5) {
         if (Math.random() * 100 < 25)
             this.levels[0].streets[0] = new Background(game, ('./img/backgrounds/street00.png'),
-                new Weapon(game, this.player, Math.floor(Math.random() * 3), 1, Math.floor(Math.random() * 4)),
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 1, Math.floor(Math.random() * 4)),
                 new Door(game, 0, 376, 10, 112), 'street');
         else this.levels[0].streets[0] = new Background(game, ('./img/backgrounds/street00.png'),
-            new Weapon(game, this.player, Math.floor(Math.random() * 3), 1),
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 1),
             new Door(game, 0, 376, 10, 112), 'street');
     } else {
         if (Math.random() * 100 < 15)
             this.levels[0].streets[0] = new Background(game, ('./img/backgrounds/street00.png'),
-                new Weapon(game, this.player, Math.floor(Math.random() * 3), 0, Math.floor(Math.random() * 4)),
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 0, Math.floor(Math.random() * 4)),
                 new Door(game, 0, 376, 10, 112), 'street');
         else this.levels[0].streets[0] = new Background(game, ('./img/backgrounds/street00.png'),
-            new Weapon(game, this.player, Math.floor(Math.random() * 3), 0),
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 0),
             new Door(game, 0, 376, 10, 112), 'street');
     }
     // street 01
@@ -161,11 +161,13 @@ SceneManager.prototype.buildLevelOne = function (game) {
             prevHouse = parseInt(this.levels[0].houses[i].source.substring(24, 25));
         }
     }
-    // house 05
-    this.levels[0].houses[4] = this.buildBossRoom(0, 0);
+    // house 04
+    // this.levels[0].houses[4] = this.buildBossRoom(0, 1);
+    // this.levels[0].houses[4].enemies.push(new BigGuy(game));
+    this.fillBossRoom(0);
     // house 00
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
-        new Weapon(game, this.player, 1, 0, 2, { x: 1100, y: 380 }),
+        new Weapon(game, this.player, 1, 0, null, { x: 1100, y: 380 }),
         new Door(game, 1270, 176, 10, 96), 'house');
 
     // house00 - Lil' Frump's House
@@ -282,26 +284,16 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].streets[5].neighbors[0] = this.levels[0].houses[4];
     this.levels[0].houses[4].neighbors[2] = this.levels[0].streets[5];
 
-    // var dogs = [new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game)];
-    // for (var i = 0; i < dogs.length; i++) {
-    //     dogs[i].caged = true;
-    //     dogs[i].engage = true;
-    //     this.levels[0].houses[4].enemies.push(dogs[i]);
-    // }
-    // this.levels[0].houses[4].enemies.push(new SlowDogg(game, dogs));
-    // generateEnemies(game, this.levels[0].streets[0], 2);
-    // generateEnemies(game, this.levels[0].streets[1], 2);
-    // generateEnemies(game, this.levels[0].streets[2], 2);
-    // generateEnemies(game, this.levels[0].streets[3], 2);
-    // generateEnemies(game, this.levels[0].streets[4], 2);
-    // generateEnemies(game, this.levels[0].streets[5], 2);
-    // generateEnemies(game, this.levels[0].houses[0], 4);
-    // generateEnemies(game, this.levels[0].houses[1], 4);
-    // generateEnemies(game, this.levels[0].houses[2], 5);
-    // generateEnemies(game, this.levels[0].houses[3], 5);
-    this.levels[0].streets[0].enemies.push(new NinjaGuy(game));
-
-    // this.levels[0].streets[5].enemies.push(new BigGuy(game));
+    generateEnemies(game, this.levels[0].streets[0], 2);
+    generateEnemies(game, this.levels[0].streets[1], 2);
+    generateEnemies(game, this.levels[0].streets[2], 2);
+    generateEnemies(game, this.levels[0].streets[3], 2);
+    generateEnemies(game, this.levels[0].streets[4], 2);
+    generateEnemies(game, this.levels[0].streets[5], 2);
+    generateEnemies(game, this.levels[0].houses[0], 4);
+    generateEnemies(game, this.levels[0].houses[1], 4);
+    generateEnemies(game, this.levels[0].houses[2], 5);
+    generateEnemies(game, this.levels[0].houses[3], 5);
 
     console.log('loading complete!');
     this.buildLevelTwo(game);
@@ -475,7 +467,8 @@ SceneManager.prototype.buildLevelTwo = function (game) {
             new Weapon(game, this.player, Math.floor(Math.random() * 3), 1),
             new Door(game, 1254, 416, 22, 116), 'street', [], { x: 1200, y: 474 });
     }
-    this.levels[1].houses[4] = this.buildBossRoom(1, 1);
+    // this.levels[1].houses[4] = this.buildBossRoom(1, 1);
+    this.fillBossRoom(1);
 
     // walls + roofs
     // street 0
@@ -594,6 +587,38 @@ SceneManager.prototype.buildLevelTwo = function (game) {
 
     console.log('loading complete!');
     this.buildLevelThree(game);
+}
+
+SceneManager.prototype.fillBossRoom = function (lvl) {
+    var index = Math.floor(Math.random() * this.bosses.length);
+    var select = this.bosses[index];
+    this.bosses.splice(index, 1);
+    if (select == 0) {
+        this.levels[lvl].houses[4] = this.buildBossRoom(0, 0);
+        var dogs = [new Dog(this.game, 1163, 115),
+            new Dog(this.game, 1163, 115),
+            new Dog(this.game, 1163, 115),
+            new Dog(this.game, 1163, 115),
+            new Dog(this.game, 1163, 115),
+            new Dog(this.game, 1163, 115)];
+        for (var i = 0; i < dogs.length; i++) {
+            dogs[i].caged = true;
+            dogs[i].engage = true;
+            this.levels[lvl].houses[4].enemies.push(dogs[i]);
+        }
+        this.levels[lvl].houses[4].enemies.push(new SlowDogg(this.game, dogs));
+    } else if (select == 1) {
+        this.levels[lvl].houses[4] = this.buildBossRoom(lvl, 1);
+        this.levels[lvl].houses[4].enemies.push(new BigGuy(this.game));
+    } else if (select == 2) {
+        this.levels[lvl].houses[4] = this.buildBossRoom(lvl, 2);
+        this.levels[lvl].houses[4].enemies.push(new NinjaGuy(this.game));
+        // this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 0, 1050, 500));
+        // this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 0, 1050, 500));
+        // this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 0, 1050, 500));
+    } else {
+        this.levels[lvl].houses[4] = this.buildBossRoom(lvl, 3);
+    }
 }
 
 SceneManager.prototype.buildLevelThree = function (game) {
@@ -719,7 +744,8 @@ SceneManager.prototype.buildLevelThree = function (game) {
     this.levels[2].houses[2] = this.buildGarden(2, gardens[roll2]);
     gardens.splice(roll2, 1);
     this.levels[2].houses[3] = this.buildHouse(2, 1, parseInt(this.levels[2].houses[1].source.substring(24, 25)));
-    this.levels[2].houses[4] = this.buildBossRoom(2, 2);
+    // this.levels[2].houses[4] = this.buildBossRoom(2, 2);
+    this.fillBossRoom(2);
 
     // walls + roofs
     // street 0
@@ -777,6 +803,17 @@ SceneManager.prototype.buildLevelThree = function (game) {
     this.levels[2].streets[5].neighbors[2] = this.levels[2].streets[4];
     this.levels[2].streets[5].neighbors[0] = this.levels[2].houses[4];
     this.levels[2].houses[4].neighbors[2] = this.levels[2].streets[5];
+
+    generateEnemies(game, this.levels[2].streets[0], 4);
+    generateEnemies(game, this.levels[2].streets[1], 4);
+    generateEnemies(game, this.levels[2].streets[2], 4);
+    generateEnemies(game, this.levels[2].streets[3], 4);
+    generateEnemies(game, this.levels[2].streets[4], 4);
+    generateEnemies(game, this.levels[2].streets[5], 4);
+    generateEnemies(game, this.levels[2].houses[0], 8);
+    generateEnemies(game, this.levels[2].houses[1], 8);
+    generateEnemies(game, this.levels[2].houses[2], 9);
+    generateEnemies(game, this.levels[2].houses[3], 9);
 
     console.log('loading complete!');
 }
@@ -874,7 +911,7 @@ SceneManager.prototype.buildHouse = function (lvl, side, prev) {
             walls[6] = new Wall(this.game, 906, 0, 30, 180);
             walls[7] = new Wall(this.game, 592, 400, 30, 320);
             walls[8] = new Wall(this.game, 489, 441, 93, 249);
-            walls[9] = new Wall(this.game, 292, 262, 102);
+            walls[9] = new Column(this.game, 292, 262, 102);
             door = new Door(this.game, 1254, 358, 22, 116);
             spawn = { x: 1200, y: 416 };
             spawns = [{ x: 550, y: 200 }, { x: 300, y: 560 }, { x: 1010, y: 550 }];
