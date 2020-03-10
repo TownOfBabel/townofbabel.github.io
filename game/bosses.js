@@ -379,7 +379,6 @@ BigGuy.prototype.update = function () {
                             this.velocity.x += difX * this.acceleration;
                             this.velocity.y += difY * this.acceleration;
                         }
-                        console.log(this.velocity.x + ' ' + this.velocity.y);
                     }
                 }
                 if (this.slmCD <= 0 && dist < 200 && !this.jab) {

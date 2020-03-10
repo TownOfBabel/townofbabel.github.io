@@ -230,11 +230,21 @@ Arrow.prototype.update = function () {
                 this.rotation = -Math.PI / 2;
             }
         }
+        else if (displayBG === this.manager.levels[1].streets[2]) {
+            this.x = displayBG.spawn.x + 50;
+            this.y = displayBG.spawn.y;
+            this.rotation = Math.PI;
+        }
         else {
             this.x = 640;
             this.y = 100;
             this.rotation = -Math.PI / 2;
         }
+    }
+    else if (displayBG === this.manager.levels[1].houses[1] || displayBG === this.manager.levels[1].houses[2]) {
+        this.x = 575;
+        this.y = 100;
+        this.rotation = -Math.PI / 2;
     }
     else {
         if (displayBG.spawn.x < 640) {
