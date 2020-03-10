@@ -128,6 +128,7 @@ function SceneManager(game) {
     this.menus.story1 = new Menu(game, './img/menus/story1.png');
     this.menus.story2 = new Menu(game, './img/menus/story2.png');
     this.menus.cont = new Menu(game, './img/menus/continued.png');
+    this.menus.intro = [];
     this.menus.fade = new Fade(game, 'toBlack');
 
     this.activeBG = this.menus.title;
@@ -215,7 +216,7 @@ SceneManager.prototype.update = function () {
         }
         if (!this.activeBG.menu) {
             if (this.activeBG.enemies.length == 0) {
-                this.updateLevel = true;
+                this.activeBG.drop.hidden = false;
                 if (this.game.player.interact) this.swapHeld++;
                 else this.swapHeld = 0;
                 if (this.swapHeld > 15 && distance(this.player, this.activeBG.drop) < 100) {
@@ -241,10 +242,6 @@ SceneManager.prototype.update = function () {
                     else if (this.player.weapon.type == 'bat')
                         this.player.faces = 28;
                 }
-            }
-            if (this.updateLevel) {
-                this.activeBG.drop.hidden = false;
-                this.updateLevel = false;
             }
             this.checkBounds();
         }

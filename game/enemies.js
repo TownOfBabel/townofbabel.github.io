@@ -135,7 +135,8 @@ Enemy.prototype.update = function () {
         for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
             if (ent.enemy) {
-                if (ent.engage) this.engage = true;
+                if (ent.engage && distance(this, ent) < this.sight)
+                    this.engage = true;
                 if (!ent.boss && this.collide(ent)) {
                     var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                     var difX = Math.cos(atan);
@@ -184,8 +185,8 @@ Enemy.prototype.update = function () {
                     }
                     else {
                         if (this.knockBack > 0) {
-                            this.velocity -= difX * this.acceleration * 5;
-                            this.velocity -= difY * this.acceleration * 5;
+                            this.velocity.x -= Math.cos(atan) * this.acceleration * 5;
+                            this.velocity.y -= Math.sin(atan) * this.acceleration * 5;
                             this.maxSpeed *= 1.3;
                         } else {
                             this.velocity.x += Math.cos(this.rotation) * this.acceleration;
@@ -456,10 +457,6 @@ function Police(game, x, y) {
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 800, 0, 200, 200, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 800, 0, 200, 200, 0.5, 1, false, false);
 
-    this.alive = true;
-    this.enemy = true;
-    this.rotation = Math.random() * (Math.PI * 2) - Math.PI;
-    this.velocity = { x: 0, y: 0 };
     this.weapon = {};
     this.weapon.type = 'gun';
     this.radius = 24;
@@ -480,15 +477,10 @@ function Police(game, x, y) {
     this.lrCD = 0;
     this.left = false;
 
-    this.atkCD = 0;
-    this.stunCD = 0;
-    this.knockBack = 0;
-    this.hitCD = 0;
-
     Enemy.call(this, game, (x + Math.random() * 150 - 75), (y + Math.random() * 150 - 75));
 }
 
-Police.prototype = new Entity();
+Police.prototype = new Enemy();
 Police.prototype.constructor = Police;
 
 Police.prototype.update = function () {
@@ -601,7 +593,7 @@ Police.prototype.update = function () {
                         if (this.knockBack > 0) {
                             this.velocity.x -= difX * this.acceleration * 5;
                             this.velocity.y -= difY * this.acceleration * 5;
-                            this.maxSpeed *= 1.3;
+                            this.maxSpeed *= 1.2;
                         }
                         else {
                             if (this.left) {
@@ -612,9 +604,9 @@ Police.prototype.update = function () {
                                 this.velocity.y += Math.sin(right) * this.acceleration;
                             }
                             if (dist < this.range) {
-                                this.velocity.x -= difX * this.acceleration;
-                                this.velocity.y -= difY * this.acceleration;
-                            } else {
+                                this.velocity.x -= difX * this.acceleration * 0.6;
+                                this.velocity.y -= difY * this.acceleration * 0.6;
+                            } else if (dist > this.range + 20) {
                                 this.velocity.x += difX * this.acceleration;
                                 this.velocity.y += difY * this.acceleration;
                             }

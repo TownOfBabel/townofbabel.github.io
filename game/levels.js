@@ -165,7 +165,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].houses[4] = this.buildBossRoom(0, 0);
     // house 00
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
-        new Weapon(game, this.player, 1, 0, null, { x: 1100, y: 380 }),
+        new Weapon(game, this.player, 1, 0, 2, { x: 1100, y: 380 }),
         new Door(game, 1270, 176, 10, 96), 'house');
 
     // house00 - Lil' Frump's House
@@ -282,13 +282,6 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].streets[5].neighbors[0] = this.levels[0].houses[4];
     this.levels[0].houses[4].neighbors[2] = this.levels[0].streets[5];
 
-    // genEnemies(game, this.levels[0].streets[5], 2);
-    // for (var i = 0; i < 5; i++)
-    //     genEnemies(game, this.levels[0].streets[i], 2);
-    // genEnemies(game, this.levels[0].houses[0], 4);
-    // genEnemies(game, this.levels[0].houses[1], 4);
-    // genEnemies(game, this.levels[0].houses[2], 5);
-    // genEnemies(game, this.levels[0].houses[3], 5);
     // var dogs = [new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game), new Dog(game)];
     // for (var i = 0; i < dogs.length; i++) {
     //     dogs[i].caged = true;
@@ -296,16 +289,17 @@ SceneManager.prototype.buildLevelOne = function (game) {
     //     this.levels[0].houses[4].enemies.push(dogs[i]);
     // }
     // this.levels[0].houses[4].enemies.push(new SlowDogg(game, dogs));
-    generateEnemies(game, this.levels[0].streets[0], 2);
-    generateEnemies(game, this.levels[0].streets[1], 2);
-    generateEnemies(game, this.levels[0].streets[2], 2);
-    generateEnemies(game, this.levels[0].streets[3], 2);
-    generateEnemies(game, this.levels[0].streets[4], 2);
-    generateEnemies(game, this.levels[0].streets[5], 2);
-    generateEnemies(game, this.levels[0].houses[0], 4);
-    generateEnemies(game, this.levels[0].houses[1], 4);
-    generateEnemies(game, this.levels[0].houses[2], 5);
-    generateEnemies(game, this.levels[0].houses[3], 5);
+    // generateEnemies(game, this.levels[0].streets[0], 2);
+    // generateEnemies(game, this.levels[0].streets[1], 2);
+    // generateEnemies(game, this.levels[0].streets[2], 2);
+    // generateEnemies(game, this.levels[0].streets[3], 2);
+    // generateEnemies(game, this.levels[0].streets[4], 2);
+    // generateEnemies(game, this.levels[0].streets[5], 2);
+    // generateEnemies(game, this.levels[0].houses[0], 4);
+    // generateEnemies(game, this.levels[0].houses[1], 4);
+    // generateEnemies(game, this.levels[0].houses[2], 5);
+    // generateEnemies(game, this.levels[0].houses[3], 5);
+    this.levels[0].streets[0].enemies.push(new NinjaGuy(game));
 
     // this.levels[0].streets[5].enemies.push(new BigGuy(game));
 
@@ -586,6 +580,17 @@ SceneManager.prototype.buildLevelTwo = function (game) {
     this.levels[1].streets[5].neighbors[2] = this.levels[1].streets[4];
     this.levels[1].streets[5].neighbors[0] = this.levels[1].houses[4];
     this.levels[1].houses[4].neighbors[2] = this.levels[1].streets[5];
+
+    generateEnemies(game, this.levels[1].streets[0], 3);
+    generateEnemies(game, this.levels[1].streets[1], 3);
+    generateEnemies(game, this.levels[1].streets[2], 3);
+    generateEnemies(game, this.levels[1].streets[3], 3);
+    generateEnemies(game, this.levels[1].streets[4], 3);
+    generateEnemies(game, this.levels[1].streets[5], 3);
+    generateEnemies(game, this.levels[1].houses[0], 6);
+    generateEnemies(game, this.levels[1].houses[1], 6);
+    generateEnemies(game, this.levels[1].houses[2], 7);
+    generateEnemies(game, this.levels[1].houses[3], 7);
 
     console.log('loading complete!');
     this.buildLevelThree(game);

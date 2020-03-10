@@ -239,7 +239,7 @@ BoomSpeaker.prototype.update = function () {
                     ent.hurt = true;
                     ent.health -= 15;
                     ent.hitCD = 30;
-                    ent.knockBack = 20;
+                    ent.knockBack = 11;
                 }
             }
             else if (this.player.boom && this.cooldown > 82) {
@@ -247,7 +247,7 @@ BoomSpeaker.prototype.update = function () {
                     ent.hurt = true;
                     ent.health -= 15;
                     ent.hitCD = 24;
-                    ent.knockBack = 15;
+                    ent.knockBack = 9;
                 }
             }
             else if (this.player.boom && this.cooldown > 73) {
@@ -255,7 +255,7 @@ BoomSpeaker.prototype.update = function () {
                     ent.hurt = true;
                     ent.health -= 15;
                     ent.hitCD = 9;
-                    ent.knockBack = 10;
+                    ent.knockBack = 7;
                 }
             }
         }
