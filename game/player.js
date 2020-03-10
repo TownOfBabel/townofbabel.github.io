@@ -452,18 +452,21 @@ Frump.prototype.hit = function (other, range) {
             if (this.anim.knifeAtk.currentFrame() == 0) {
                 var knifeAngle = this.rotation + Math.atan(21 / 56);
                 acc = Math.abs(knifeAngle - atan2);
+                while (acc > Math.PI * 2) acc -= Math.PI * 2;
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 60;
             }
             else if (this.anim.knifeAtk.currentFrame() == 1 || this.anim.knifeAtk.currentFrame == 3) {
                 var knifeAngle = this.rotation + Math.atan(13 / 68);
                 acc = Math.abs(knifeAngle - atan2);
+                while (acc > Math.PI * 2) acc -= Math.PI * 2;
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 70;
             }
             else if (this.anim.knifeAtk.currentFrame() == 2) {
                 var knifeAngle = this.rotation + Math.atan(3 / 88);
                 acc = Math.abs(knifeAngle - atan2);
+                while (acc > Math.PI * 2) acc -= Math.PI * 2;
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 90;
             }
@@ -471,8 +474,7 @@ Frump.prototype.hit = function (other, range) {
         else if (this.weapon.type == 'bat') {
             var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / this.anim.batAtk.totalTime;
             var batAngle = (this.rotation + Math.PI / 2) - (this.anim.batAtk.elapsedTime * moveAmnt);
-            if (batAngle > Math.PI) batAngle = batAngle - (Math.PI * 2);
-            else if (batAngle < -Math.PI) batAngle = batAngle + (Math.PI * 2);
+            while (acc > Math.PI * 2) acc -= Math.PI * 2;
             acc = Math.abs(batAngle - atan2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 110;

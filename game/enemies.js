@@ -216,10 +216,10 @@ Enemy.prototype.update = function () {
                         ent.hitCD = 9;
                         ent.stunCD = 45;
                     }
-                    if (this.attacking && ent.hitCD <= 0 && this.hit(ent)) {
+                    else if (this.attacking && ent.hitCD <= 0 && this.hit(ent)) {
                         ent.hurt = true;
                         ent.health.current -= this.dmg;
-                        ent.hitCD = this.hitDur;
+                        ent.hitCD = 18;
                     }
                 }
             }
@@ -269,18 +269,21 @@ Enemy.prototype.hit = function (other, range) {
             if (this.anim.atk.currentFrame() == 0) {
                 var knifeAngle = this.rotation + Math.atan(21 / 56);
                 acc = Math.abs(knifeAngle - atan2);
+                while (acc > Math.PI * 2) acc -= Math.PI * 2;
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 60;
             }
             else if (this.anim.atk.currentFrame() == 1 || this.anim.atk.currentFrame == 3) {
                 var knifeAngle = this.rotation + Math.atan(13 / 68);
                 acc = Math.abs(knifeAngle - atan2);
+                while (acc > Math.PI * 2) acc -= Math.PI * 2;
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 70;
             }
             else if (this.anim.atk.currentFrame() == 2) {
                 var knifeAngle = this.rotation + Math.atan(3 / 88);
                 acc = Math.abs(knifeAngle - atan2);
+                while (acc > Math.PI * 2) acc -= Math.PI * 2;
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 90;
             }
@@ -288,9 +291,8 @@ Enemy.prototype.hit = function (other, range) {
         else if (this.weapon.type == 'bat') {
             var moveAmnt = (Math.atan(79 / 3) + Math.atan(68 / 33)) / this.anim.atk.totalTime;
             var batAngle = (this.rotation + Math.atan(79 / 3)) - (this.anim.atk.elapsedTime * moveAmnt);
-            if (batAngle > Math.PI) batAngle = batAngle - (Math.PI * 2);
-            else if (batAngle < -Math.PI) batAngle = batAngle + (Math.PI * 2);
             acc = Math.abs(batAngle - atan2);
+            while (acc > Math.PI * 2) acc -= Math.PI * 2;
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 102;
         }
@@ -299,6 +301,7 @@ Enemy.prototype.hit = function (other, range) {
             var endTime = this.anim.atk.frameDuration * 4.25;
             if (this.anim.atk.elapsedTime > startTime && this.anim.atk.elapsedTime < endTime) {
                 acc = Math.abs(this.rotation - atan2);
+                while (acc > Math.PI * 2) acc -= Math.PI * 2;
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 75;
             }
@@ -307,6 +310,7 @@ Enemy.prototype.hit = function (other, range) {
             var moveAmnt = (Math.atan(33 / 40) + Math.atan(20 / 48)) / this.anim.atk.totalTime;
             var swingAngle = (this.rotation + Math.atan(33 / 40)) - (this.anim.atk.elapsedTime * moveAmnt);
             acc = Math.abs(swingAngle - atan2);
+            while (acc > Math.PI * 2) acc -= Math.PI * 2;
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 60;
         }
