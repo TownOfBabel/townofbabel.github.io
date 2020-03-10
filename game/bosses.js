@@ -1,4 +1,4 @@
-function SlowDogg(game, dogs) {
+function SlowDogg(game, dogs, lvl) {
     // animations
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 0, 0, 200, 200, 1, 1, true, false);
@@ -23,7 +23,8 @@ function SlowDogg(game, dogs) {
     this.maxSpeed = 65;
     this.mSpeed_init = 65;
     this.range = 130;
-    this.health = 250;
+    this.health = lvl * 125 + 250;
+    this.maxHealth = this.health;
     this.hpDrop = Math.floor(Math.random() * 2) + 3;
 
     this.engage = true;
@@ -42,7 +43,7 @@ SlowDogg.prototype.constructor = SlowDogg;
 
 SlowDogg.prototype.update = function () {
     if (Number.isNaN(this.health)) {
-        this.health = 250;
+        this.health = this.maxHealth;
     }
 
     if (this.health <= 0) {
@@ -232,7 +233,7 @@ SlowDogg.prototype.hit = function (other) {
         return false;
 }
 
-function BigGuy(game) {
+function BigGuy(game, lvl) {
     // animations
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 0, 600, 600, 1, 1, true, false);
@@ -255,7 +256,8 @@ function BigGuy(game) {
     this.range = 100;
     this.maxSpeed = 120;
     this.mSpeed_init = 120;
-    this.health = 300;
+    this.health = lvl * 150 + 300;
+    this.maxHealth = this.health;
     this.hpDrop = Math.floor(Math.random() * 2) + 3;
     this.storedRot = 0;
     this.engage = true;
@@ -274,7 +276,7 @@ BigGuy.prototype = new Entity();
 BigGuy.prototype.constructor = BigGuy;
 
 BigGuy.prototype.update = function () {
-    if (Number.isNaN(this.health)) this.health = 300;
+    if (Number.isNaN(this.health)) this.health = this.maxHealth;
     if (this.health <= 0) {
         this.die = true;
         this.alive = false;
@@ -480,7 +482,7 @@ BigGuy.prototype.hit = function (other) {
     else return false;
 }
 
-function NinjaGuy(game) {
+function NinjaGuy(game, lvl) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 0, 300, 300, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 0, 300, 300, 0.11, 8, true, false);
@@ -500,7 +502,8 @@ function NinjaGuy(game) {
     this.acceleration = 150;
     this.maxSpeed = 180;
     this.mSpeed_init = 180;
-    this.health = 225;
+    this.health = lvl * 125 + 200;
+    this.maxHealth = this.health;
     this.hpDrop = Math.floor(Math.random * 2) + 3;
     this.range = 250;
     this.engage = true;
@@ -519,7 +522,7 @@ NinjaGuy.prototype = new Entity();
 NinjaGuy.prototype.constructor = NinjaGuy;
 
 NinjaGuy.prototype.update = function () {
-    if (Number.isNaN(this.health)) this.health = 225;
+    if (Number.isNaN(this.health)) this.health = this.maxHealth;
     if (this.health <= 0) {
         this.die = true;
         this.alive = false;
@@ -759,30 +762,39 @@ Shuriken.prototype.draw = function (ctx) {
     this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
 }
 
-function MageGuy(game) {
+function MageGuy(game, lvl) {
     this.anim = {};
+    this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 0, 0, 200, 200, 1, 1, true, false);
+    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 0, 0, 200, 200, 0.17, 8, true, false);
+    this.anim.cast = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 400, 200, 200, 200, 0.2, 3, false, false);
+    this.anim.summon = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 0, 200, 200, 200, 1, 1, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 200, 200, 200, 200, 0.15, 1, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 200, 200, 200, 200, 0.5, 1, false, false);
 
     this.alive = true;
     this.enemy = true;
     this.boss = true;
-    this.radius = 40;
-    this.faces = 50;
-    this.sides = 50;
+    this.radius = 26;
+    this.faces = 30;
+    this.sides = 70;
     this.range = 250;
     this.rotation = Math.PI / 2;
     this.acceleration = 50;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 50;
-    this.health = 240;
+    this.maxSpeed = 100;
+    this.mSpeed_init = 100;
+    this.health = lvl * 120 + 240;
+    this.maxHealth = this.health;
     this.hpDrop = Math.floor(Math.random() * 2) + 3;
     this.storedRot = 0;
     this.engage = true;
 
+    this.orbitals = 0;
     this.knockBack = 0;
     this.stunCD = 0;
-    this.ballCD = 0;
-    this.missileCD = 0;
-    this.orbitalCD = 0;
+    this.ballCD = 105;
+    this.summonCD = 15;
+    this.orbitalCD = 165;
     this.meteorCD = 0;
     this.hitCD = 0;
     this.strafeCD = 0;
@@ -795,7 +807,7 @@ MageGuy.prototype = new Entity();
 MageGuy.prototype.constructor = MageGuy;
 
 MageGuy.prototype.update = function () {
-    if (Number.isNaN(this.health)) this.health = 240;
+    if (Number.isNaN(this.health)) this.health = this.maxHealth;
     if (this.health <= 0) {
         this.die = true;
         this.alive = false;
@@ -809,7 +821,7 @@ MageGuy.prototype.update = function () {
         else this.maxSpeed = this.mSpeed_init;
         if (this.stunCD > 0) this.stunCD--;
         if (this.ballCD > 0) this.ballCD--;
-        if (this.missileCD > 0) this.missileCD--;
+        if (this.summonCD > 0) this.summonCD--;
         if (this.orbitalCD > 0) this.orbitalCD--;
         if (this.meteorCD > 0) this.meteorCD--;
         if (this.hitCD > 0) this.hitCD--;
@@ -823,25 +835,270 @@ MageGuy.prototype.update = function () {
             this.anim.hit.elapsedTime = 0;
             this.hurt = false;
         }
-        if (this.ball && this.anim.ball.isDone()) {
-            this.anim.ball.elapsedTime = 0;
-            this.ball = false;
+        if (this.cast && this.anim.cast.isDone()) {
+            this.anim.cast.elapsedTime = 0;
+            this.cast = false;
         }
-        if (this.missile && this.anim.missile.isDone()) {
-            this.anim.missile.elapsedTime = 0;
-            this.missile = false;
+        if (this.summon && this.anim.summon.isDone()) {
+            this.anim.summon.elapsedTime = 0;
+            this.summon = false;
         }
-        if (this.orbital && this.anim.orbital.isDone()) {
-            this.anim.orbital.elapsedTime = 0;
-            this.orbital = false;
+        if (this.collideLeft() || this.collideRight()) {
+            this.velocity.x = -this.velocity.x / friction;
+            if (this.collideLeft()) this.x = this.radius;
+            if (this.collideRight()) this.x = 1280 - this.radius;
         }
-        if (this.meteor && this.anim.meteor.isDone()) {
-            this.anim.meteor.elapsedTime = 0;
-            this.meteor = false;
+        if (this.collideTop() || this.collideBottom()) {
+            this.velocity.y = -this.velocity.y / friction;
+            if (this.collideTop()) this.y = this.radius;
+            if (this.collideBottom()) this.y = 720 - this.radius;
+        }
+        for (var i = 0; i < this.game.entities.length; i++) {
+            var ent = this.game.entities[i];
+            if (ent.player && ent.alive && this.stunCD <= 0) {
+                var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
+                if (this.rotation > atan) {
+                    var rotdif = this.rotation - atan;
+                    while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
+                    if (rotdif > Math.PI) {
+                        rotdif = Math.PI * 2 - rotdif;
+                        this.rotation += rotdif / 24;
+                    } else this.rotation -= rotdif / 24;
+                }
+                else {
+                    var rotdif = atan - this.rotation;
+                    while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
+                    if (rotdif > Math.PI) {
+                        rotdif = Math.PI * 2 - rotdif;
+                        this.rotation -= rotdif / 24;
+                    } else this.rotation += rotdif / 24;
+                }
+                var dist = distance(this, ent);
+                var difX = Math.cos(atan);
+                var difY = Math.sin(atan);
+                var delta = this.radius + ent.radius - dist;
+                if (this.collide(ent) && !ent.dash && !ent.supDash && !ent.lunge) {
+                    this.velocity.x = -this.velocity.x / friction;
+                    this.velocity.y = -this.velocity.y / friction;
+                    this.x -= difX * delta / 2;
+                    this.y -= difY * delta / 2;
+                    ent.x += difX * delta / 2;
+                    ent.y += difY * delta / 2;
+                }
+                else {
+                    if (this.knockBack > 0) {
+                        this.velocity.x -= difX * this.acceleration * 8;
+                        this.velocity.y -= difY * this.acceleration * 8;
+                        this.maxSpeed *= 1.13;
+                    } else {
+                        var left = atan - Math.PI / 2;
+                        var right = atan + Math.PI / 2;
+                        if (this.left) {
+                            this.velocity.x += Math.cos(left) * this.acceleration;
+                            this.velocity.y += Math.sin(left) * this.acceleration;
+                        } else {
+                            this.velocity.x += Math.cos(right) * this.acceleration;
+                            this.velocity.y += Math.sin(right) * this.acceleration;
+                        }
+                        if (dist < this.range) {
+                            this.velocity.x -= difX * this.acceleration * 0.5;
+                            this.velocity.y -= difY * this.acceleration * 0.5;
+                        } else if (dist > this.range + 20) {
+                            this.velocity.x += difX * this.acceleration;
+                            this.velocity.y += difY * this.acceleration;
+                        }
+                    }
+                }
+                if (this.orbitals <= 0 && this.summonCD <= 0 && !this.cast) {
+                    this.summon = true;
+                    this.summonCD = 360;
+                }
+                else if (this.orbitals > 0 && this.orbitalCD <= 0 && !this.cast && !this.summon) {
+                    this.cast = true;
+                    this.orbitalCD = 270;
+                }
+                else if (this.ballCD <= 0 && !this.cast && !this.summon) {
+                    this.cast = true;
+                    this.ballCD = 120;
+                }
+                if (this.summon && this.summonCD == 320) {
+                    this.game.addEntity(new Orbital(this.game, this, this.rotation + Math.PI * 2 / 3));
+                    this.game.addEntity(new Orbital(this.game, this, this.rotation));
+                    this.game.addEntity(new Orbital(this.game, this, this.rotation - Math.PI * 2 / 3));
+                    this.orbitals = 3;
+                }
+                else if (this.cast && this.orbitalCD == 255) {
+                    var fire = false;
+                    for (var j = 0; j < this.game.entities.length; j++) {
+                        var ent2 = this.game.entities[j];
+                        if (ent2.orbital && !fire) {
+                            ent2.fire(ent);
+                            fire = true;
+                        }
+                    }
+                }
+                else if (this.cast && this.ballCD == 105) {
+                    var direction = Math.atan2(ent.y - (this.y + difY * 75), ent.x - (this.x + difY * 75));
+                    if (Math.floor(Math.random() * 4) == 0)
+                        this.game.addEntity(new Orange(this.game, this.x + difX * 75, this.y + difY * 75, direction));
+                    else
+                        this.game.addEntity(new Apple(this.game, this.x + difX * 75, this.y + difY * 75, direction));
+                }
+            }
         }
     }
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+
+    this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
+    this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 }
 
 MageGuy.prototype.draw = function (ctx) {
-    
+    if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.summon) this.anim.summon.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.cast) this.anim.cast.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else {
+        if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5)
+            this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+        else this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    }
+}
+
+function Fruit(game, x, y, rot) {
+    this.rotation = rot;
+    this.spawnCD = 15;
+    Entity.call(this, game, x, y);
+}
+
+Fruit.prototype = new Entity();
+Fruit.prototype.constructor = Fruit;
+
+Fruit.prototype.update = function () {
+    if (this.spawnCD > 0) this.spawnCD--;
+    else {
+        if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
+            this.removeFromWorld = true;
+        for (var i = 0; i < this.game.entities.length; i++) {
+            var ent = this.game.entities[i];
+            if (this.collide(ent)) {
+                if (ent.player) {
+                    ent.hurt = true;
+                    ent.health.current -= this.damage;
+                    this.removeFromWorld = true;
+                }
+                else if (ent.wall || ent.column)
+                    this.removeFromWorld = true;
+            }
+        }
+        var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+        if (speed > this.maxSpeed) {
+            var ratio = this.maxSpeed / speed;
+            this.velocity.x *= ratio;
+            this.velocity.y *= ratio;
+        }
+        this.x += this.velocity.x * this.game.clockTick;
+        this.y += this.velocity.y * this.game.clockTick;
+    }
+}
+
+Fruit.prototype.draw = function (ctx) {
+    this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+}
+
+function Apple(game, x, y, rot) {
+    this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/fruit.png'), 0, 0, 40, 40, 0.2, 4, true, false);
+    this.velocity = {};
+    this.velocity.x = Math.cos(rot) * 99999;
+    this.velocity.y = Math.sin(rot) * 99999;
+    this.maxSpeed = 650;
+    this.damage = 2;
+    this.radius = 11;
+    Fruit.call(this, game, x, y, rot);
+}
+
+Apple.prototype = new Fruit();
+Apple.prototype.constructor = Apple;
+
+function Orange(game, x, y, rot) {
+    this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/orange.png'), 0, 0, 40, 40, 0.2, 4, true, false);
+    this.velocity = {};
+    this.velocity.x = Math.cos(rot) * 99999;
+    this.velocity.y = Math.sin(rot) * 99999;
+    this.maxSpeed = 450;
+    this.damage = 4;
+    this.radius = 12;
+    Fruit.call(this, game, x, y, rot);
+}
+
+Orange.prototype = new Fruit();
+Orange.prototype.constructor = Orange;
+
+function Orbital(game, caster, rot) {
+    this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/melon.png'), 0, 0, 40, 40, 0.2, 4, true, false);
+    this.orbital = true;
+    this.floatRot = rot;
+    this.center = caster;
+    this.velocity = { x: 0, y: 0 };
+    this.maxSpeed = 550;
+    this.damage = 3;
+    this.radius = 14;
+    this.orbit = true;
+    Fruit.call(this, game, caster.x, caster.y, 0);
+}
+
+Orbital.prototype = new Fruit();
+Orbital.prototype.constructor = Orbital;
+
+Orbital.prototype.update = function () {
+    if (this.orbit) {
+        this.floatRot += Math.PI / 150;
+        this.x = this.center.x + Math.cos(this.floatRot) * 100;
+        this.y = this.center.y + Math.sin(this.floatRot) * 100;
+    }
+    if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom()) {
+        if (!this.orbit) {
+            this.center.orbitals--;
+            this.removeFromWorld = true;
+        }
+    }
+    if (!this.center.alive) this.removeFromWorld = true;
+    for (var i = 0; i < this.game.entities.length; i++) {
+        var ent = this.game.entities[i];
+        if (this.collide(ent)) {
+            if (ent.player) {
+                ent.hurt = true;
+                ent.health.current -= this.damage;
+                console.log(ent.health.current);
+                this.center.orbitals--;
+                this.removeFromWorld = true;
+            }
+            else if ((ent.wall) && !this.orbit) {
+                this.center.orbitals--;
+                this.removeFromWorld = true;
+            }
+        }
+    }
+    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    if (speed > this.maxSpeed) {
+        var ratio = this.maxSpeed / speed;
+        this.velocity.x *= ratio;
+        this.velocity.y *= ratio;
+    }
+    this.x += this.velocity.x * this.game.clockTick;
+    this.y += this.velocity.y * this.game.clockTick;
+}
+
+Orbital.prototype.fire = function (target) {
+    this.orbit = false;
+    this.rotation = Math.atan2(target.y - this.y, target.x - this.x);
+    this.velocity.x = Math.cos(this.rotation) * 99999;
+    this.velocity.y = Math.sin(this.rotation) * 99999;
 }

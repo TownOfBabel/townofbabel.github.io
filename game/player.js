@@ -99,7 +99,7 @@ function Weapon(game, player, type, rarity, ability, spawn) {
         this.type = 'bat';
         this.static = ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png');
         this.animated = new Animation(ASSET_MANAGER.getAsset('./img/weapons/bat' + rarity + '0.png'), 100, 0, 100, 100, .4, 4, true, false);
-        if (ability >= 3) this.ability = new FruitShot(game, player);
+        if (ability >= 3) this.ability = new FruitBat(game, player);
         this.scale = 0.7;
     } else if (type == 2) {
         this.type = 'gun';
@@ -232,7 +232,7 @@ function Frump(game) {
     this.sides = 38;
     this.acceleration = 200;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 245;
+    this.maxSpeed = 750;
     this.weapon = new Weapon(game, this, 0, 0);
     this.bullets = 6;
     this.range = 70;

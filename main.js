@@ -160,6 +160,7 @@ ASSET_MANAGER.queueDownload('./img/entities/police.png');
 ASSET_MANAGER.queueDownload('./img/entities/slow_dogg.png');
 ASSET_MANAGER.queueDownload('./img/entities/big_guy.png');
 ASSET_MANAGER.queueDownload('./img/entities/ninja_guy.png');
+ASSET_MANAGER.queueDownload('./img/entities/magic_guy.png');
 
 // weapons
 ASSET_MANAGER.queueDownload('./img/weapons/bat00.png');
@@ -180,6 +181,9 @@ ASSET_MANAGER.queueDownload('./img/weapons/shuriken.png');
 ASSET_MANAGER.queueDownload('./img/weapons/laser.png');
 ASSET_MANAGER.queueDownload('./img/weapons/apple.png');
 ASSET_MANAGER.queueDownload('./img/weapons/popup.png');
+ASSET_MANAGER.queueDownload('./img/weapons/fruit.png');
+ASSET_MANAGER.queueDownload('./img/weapons/orange.png');
+ASSET_MANAGER.queueDownload('./img/weapons/melon.png');
 
 ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 

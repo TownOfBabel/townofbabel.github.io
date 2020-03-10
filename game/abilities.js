@@ -347,7 +347,7 @@ Lunge.prototype.hit = function (other) {
     else return false;
 }
 
-function Apple(game, x, y, rot, dmg) {
+function FruitBall(game, x, y, rot, dmg) {
     this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/apple.png'), 0, 0, 22, 24, 1, 1, true, false);
     this.velocity = {};
     var newRot = rot + Math.random() * 0.12 - 0.06;
@@ -360,10 +360,10 @@ function Apple(game, x, y, rot, dmg) {
     Entity.call(this, game, x, y);
 }
 
-Apple.prototype = new Entity();
-Apple.prototype.constructor = Apple;
+FruitBall.prototype = new Entity();
+FruitBall.prototype.constructor = FruitBall;
 
-Apple.prototype.update = function () {
+FruitBall.prototype.update = function () {
     if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
         this.removeFromWorld = true;
 
@@ -391,11 +391,11 @@ Apple.prototype.update = function () {
     this.y += this.velocity.y * this.game.clockTick;
 }
 
-Apple.prototype.draw = function (ctx) {
+FruitBall.prototype.draw = function (ctx) {
     this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
 }
 
-function FruitShot(game, player) {
+function FruitBat(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/fruit_bat.png');
     this.maxCD = 210;
     this.hit = false;
@@ -404,10 +404,10 @@ function FruitShot(game, player) {
     Ability.call(this, game, player, 150, 35);
 }
 
-FruitShot.prototype = new Ability();
-FruitShot.prototype.constructor = FruitShot;
+FruitBat.prototype = new Ability();
+FruitBat.prototype.constructor = FruitBat;
 
-FruitShot.prototype.update = function () {
+FruitBat.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
     if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
@@ -432,7 +432,7 @@ FruitShot.prototype.update = function () {
             var spawnX = this.player.x + difX;
             var spawnY = this.player.y + difY;
             var spawnRot = Math.atan2(this.mouse.y - spawnY, this.mouse.x - spawnX);
-            this.game.addEntity(new Apple(this.game, spawnX, spawnY, spawnRot, this.player.weapon.damage * 3));
+            this.game.addEntity(new FruitBall(this.game, spawnX, spawnY, spawnRot, this.player.weapon.damage * 3));
         }
         if (this.player.anim.fruit.isDone()) {
             this.player.anim.fruit.elapsedTime = 0;

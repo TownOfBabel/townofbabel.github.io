@@ -119,7 +119,7 @@ function SceneManager(game) {
     this.level = { current: 0, clear: false };
     this.player = new Frump(game);
     this.arrow = new Arrow(game, this);
-    this.bosses = [0, 1, 2];
+    this.bosses = [0, 1, 2, 3];
 
     this.menus = {};
     this.menus.title = new TitleScreen(game);
