@@ -310,7 +310,6 @@ SceneManager.prototype.updateBackground = function () {
     this.player.health.removeFromWorld = false;
     if (this.level.clear)
         this.menus.cont.removeFromWorld = false;
-    this.menus.fade.removeFromWorld = false;
 
     // add entities back into game engine
     if (!this.activeBG.menu) {
@@ -426,7 +425,6 @@ SceneManager.prototype.changeBackground = function (nextBG) {
     this.player.health.removeFromWorld = true;
     if (this.level.clear)
         this.menus.cont.removeFromWorld = true;
-    this.menus.fade.removeFromWorld = true;
     this.prevBG = this.activeBG;
     this.activeBG = nextBG;
 
