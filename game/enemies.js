@@ -468,9 +468,9 @@ function Police(game, x, y) {
     this.sides = 38;
     this.range = 250;
     this.rotationLag = 20;
-    this.acceleration = 90;
-    this.maxSpeed = 130;
-    this.mSpeed_init = 130;
+    this.acceleration = 80;
+    this.maxSpeed = 120;
+    this.mSpeed_init = 120;
     this.sight = 420;
     this.fov = Math.PI / 2;
     this.hpDrop = Math.floor(Math.random() * 2) + 1;

@@ -240,7 +240,7 @@ function BigGuy(game, lvl) {
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 0, 600, 600, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 0, 600, 600, 0.13, 8, true, false);
     this.anim.jab = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 600, 600, 600, 0.13, 4, false, false);
-    this.anim.slm = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 1200, 600, 600, 0.13, 6, false, false);
+    this.anim.slm = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 1200, 600, 600, 0.25, 6, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 2400, 600, 600, 600, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 2400, 600, 600, 600, 0.5, 1, false, false);
 
@@ -309,12 +309,12 @@ BigGuy.prototype.update = function () {
             if (this.anim.jab.isDone() || this.stunCD > 0) {
                 this.anim.jab.elapsedTime = 0;
                 this.jab = false;
-                this.jabCD = 70;
+                this.jabCD = 75;
             }
             if (this.anim.slm.isDone() || this.stunCD > 0) {
                 this.anim.slm.elapsedTime = 0;
                 this.slam = false;
-                this.slmCD = 150;
+                this.slmCD = 240;
                 this.maxSpeed = this.mSpeed_init;
             }
         }
@@ -778,12 +778,12 @@ function MageGuy(game, lvl) {
     this.radius = 26;
     this.faces = 30;
     this.sides = 70;
-    this.range = 250;
+    this.range = 280;
     this.rotation = Math.PI / 2;
     this.acceleration = 50;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 100;
-    this.mSpeed_init = 100;
+    this.maxSpeed = 90;
+    this.mSpeed_init = 90;
     this.health = lvl * 120 + 240;
     this.maxHealth = this.health;
     this.hpDrop = Math.floor(Math.random() * 2) + 3;
@@ -916,11 +916,11 @@ MageGuy.prototype.update = function () {
                 }
                 else if (this.orbitals > 0 && this.orbitalCD <= 0 && !this.cast && !this.summon) {
                     this.cast = true;
-                    this.orbitalCD = 270;
+                    this.orbitalCD = 300;
                 }
                 else if (this.ballCD <= 0 && !this.cast && !this.summon) {
                     this.cast = true;
-                    this.ballCD = 120;
+                    this.ballCD = 180;
                 }
                 if (this.summon && this.summonCD == 320) {
                     this.game.addEntity(new Orbital(this.game, this, this.rotation + Math.PI * 2 / 3));
@@ -928,7 +928,7 @@ MageGuy.prototype.update = function () {
                     this.game.addEntity(new Orbital(this.game, this, this.rotation - Math.PI * 2 / 3));
                     this.orbitals = 3;
                 }
-                else if (this.cast && this.orbitalCD == 255) {
+                else if (this.cast && this.orbitalCD == 285) {
                     var fire = false;
                     for (var j = 0; j < this.game.entities.length; j++) {
                         var ent2 = this.game.entities[j];
@@ -938,7 +938,7 @@ MageGuy.prototype.update = function () {
                         }
                     }
                 }
-                else if (this.cast && this.ballCD == 105) {
+                else if (this.cast && this.ballCD == 165) {
                     var direction = Math.atan2(ent.y - (this.y + difY * 75), ent.x - (this.x + difY * 75));
                     if (Math.floor(Math.random() * 4) == 0)
                         this.game.addEntity(new Orange(this.game, this.x + difX * 75, this.y + difY * 75, direction));

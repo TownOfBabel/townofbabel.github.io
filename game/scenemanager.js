@@ -37,7 +37,7 @@ function Fade(game, tofrom) {
     this.menu = true;
     this.tofrom = tofrom;
     this.toBlack = new Animation(ASSET_MANAGER.getAsset('./img/menus/fadeblack.png'), 0, 0, 1280, 720, 0.2, 5, false, false);
-    this.fromBlack = new Animation(ASSET_MANAGER.getAsset('./img/menus/fadeblack.png'), 0, 0, 1280, 720, 0.2, 5, false, true);
+    this.fromBlack = new Animation(ASSET_MANAGER.getAsset('./img/menus/fadeblack.png'), 0, 0, 1280, 720, 0.1, 5, false, true);
     this.black = new Animation(ASSET_MANAGER.getAsset('./img/menus/fadeblack.png'), 5120, 0, 1280, 720, 1, 1, true, true);
     this.clear = new Animation(ASSET_MANAGER.getAsset('./img/menus/fadeblack.png'), 0, 0, 1, 1, 1, 1, true, true);
     this.rotation = 0;
@@ -209,6 +209,13 @@ SceneManager.prototype.update = function () {
             this.changeBackground(this.levels[0].houses[5]);
             this.game.addEntity(new Fade(this.game, 'fromBlack'));
         }
+        else if (this.activeBG === this.menus.boss[0] && this.game.click) {
+            var room = this.levels[this.level.current].houses[4];
+            this.player.x = room.spawn.x;
+            this.player.y = room.spawn.y;
+            this.changeBackground(room);
+            this.game.addEntity(new Fade(this.game, 'fromBlack'));
+        }
         else if (this.activeBG === this.menus.lose && this.game.click)
             this.changeBackground(this.menus.title);
         // for difficulty selection - not fully implemented
@@ -249,6 +256,12 @@ SceneManager.prototype.update = function () {
                     this.player.y = 470;
                     this.changeBackground(this.menus.title);
                 }
+            }
+        }
+        if (!this.activeBG.menu) {
+            if (this.timer.check() >= 1 && this.activeBG === this.levels[this.level.current].streets[5]) {
+                this.timer.stop();
+                this.changeBackground(this.menus.boss[0]);
             }
         }
         if (!this.activeBG.menu) {
@@ -331,8 +344,6 @@ SceneManager.prototype.updateBackground = function () {
     }
     if (this.level.clear)
         this.game.addEntity(this.menus.cont);
-    if (this.prevBG === this.menus.story2)
-        this.game.addEntity(new Fade(this.game, 'fromBlack'));
     this.changedBG = false;
 };
 
@@ -367,13 +378,19 @@ SceneManager.prototype.checkBounds = function () {
     }
     else if (this.player.collide(this.activeBG.door) && this.activeBG.enemies.length == 0) {
         if (this.activeBG.door.x == 4 || this.activeBG.door.x == 0)
-            this.changeBackground(this.activeBG.neighbors[3])
+            this.changeBackground(this.activeBG.neighbors[3]);
         else if (this.activeBG.door.x == 1254 || this.activeBG.door.x == 1270)
-            this.changeBackground(this.activeBG.neighbors[1])
-        else if (this.activeBG.door.y == 0)
-            this.changeBackground(this.activeBG.neighbors[0])
+            this.changeBackground(this.activeBG.neighbors[1]);
+        else if (this.activeBG.door.y == 0) {
+            if (this.activeBG.neighbors[0].enemies.length == 0)
+                this.changeBackground(this.activeBG.neighbors[0]);
+            else {
+                this.timer.start();
+                this.game.addEntity(new Fade(this.game, 'toBlack'));
+            }
+        }
         else
-            this.changeBackground(this.activeBG.neighbors[2])
+            this.changeBackground(this.activeBG.neighbors[2]);
         this.player.x = this.activeBG.spawn.x;
         this.player.y = this.activeBG.spawn.y;
     }
