@@ -79,6 +79,7 @@ Popup.prototype.constructor = Popup;
 Popup.prototype.update = function () {
     if (!this.weapon.floating) this.removeFromWorld = true;
     if (!this.weapon.hover) this.removeFromWorld = true;
+    if (this.weapon.removeFromWorld) this.removeFromWorld = true;
 };
 
 Popup.prototype.draw = function (ctx) {
@@ -238,7 +239,7 @@ function Frump(game) {
     this.sound.hit2 = new Audio('./sound/hit2.wav');
     this.sound.hit2.volume = 0.15;
     this.sound.hit3 = new Audio('./sound/hit3.wav');
-    this.sound.hit3.volume = 0.15;
+    this.sound.hit3.volume = 0.2;
 
     // Properties
     this.player = true;
@@ -279,11 +280,11 @@ Frump.prototype.update = function () {
         this.die = false;
     }
     if (this.alive) {
+        if (this.atkCD > 0) this.atkCD--;
+        if (this.hitCD > 0) this.hitCD--;
         if (this.stunCD <= 0) {
             // Player faces mouse pointer
             this.rotation = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x - this.x);
-            if (this.atkCD > 0) this.atkCD--;
-            if (this.hitCD > 0) this.hitCD--;
 
             // Movement control
             if (this.dashing || this.supDash || this.lunge || this.fruit) {
@@ -503,21 +504,21 @@ Frump.prototype.hit = function (other, range) {
             if (this.anim.knifeAtk.currentFrame() == 0) {
                 var knifeAngle = this.rotation + Math.atan(21 / 56);
                 acc = Math.abs(knifeAngle - atan2);
-                while (acc > Math.PI * 2) acc -= Math.PI * 2;
+                while (acc > Math.PI * 2) acc -= (Math.PI * 2);
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 60;
             }
             else if (this.anim.knifeAtk.currentFrame() == 1 || this.anim.knifeAtk.currentFrame == 3) {
                 var knifeAngle = this.rotation + Math.atan(13 / 68);
                 acc = Math.abs(knifeAngle - atan2);
-                while (acc > Math.PI * 2) acc -= Math.PI * 2;
+                while (acc > Math.PI * 2) acc -= (Math.PI * 2);
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 70;
             }
             else if (this.anim.knifeAtk.currentFrame() == 2) {
                 var knifeAngle = this.rotation + Math.atan(3 / 88);
                 acc = Math.abs(knifeAngle - atan2);
-                while (acc > Math.PI * 2) acc -= Math.PI * 2;
+                while (acc > Math.PI * 2) acc -= (Math.PI * 2);
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 90;
             }
@@ -525,8 +526,8 @@ Frump.prototype.hit = function (other, range) {
         else if (this.weapon.type == 'bat') {
             var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / this.anim.batAtk.totalTime;
             var batAngle = (this.rotation + Math.PI / 2) - (this.anim.batAtk.elapsedTime * moveAmnt);
-            while (acc > Math.PI * 2) acc -= Math.PI * 2;
             acc = Math.abs(batAngle - atan2);
+            while (acc > Math.PI * 2) acc -= (Math.PI * 2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 110;
         }

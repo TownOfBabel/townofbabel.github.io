@@ -162,9 +162,9 @@ SceneManager.prototype.buildLevelOne = function (game) {
         }
     }
     // house 04
-    this.levels[0].houses[4] = this.buildBossRoom(0, 3);
-    // this.levels[0].houses[4].enemies.push(new MageGuy(game));
-    // this.fillBossRoom(0);
+    // this.levels[0].houses[4] = this.buildBossRoom(0, 3);
+    // this.levels[0].houses[4].enemies.push(new MageGuy(game, 0));
+    this.fillBossRoom(0);
     // house 00
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
         new Weapon(game, this.player, 1, 0, null, { x: 1100, y: 380 }),
@@ -424,57 +424,57 @@ SceneManager.prototype.buildLevelTwo = function (game) {
         if (Math.random() * 100 < 40)
             this.levels[1].houses[1] = new Background(game, './img/backgrounds/apartment01.png',
                 new Weapon(game, this.player, Math.floor(Math.random() * 3), 2, Math.floor(Math.random() * 4)),
-                new Door(game, 1254, 188, 22, 116), 'house', [], { x: 1200, y: 246 });
+                new Door(game, 1254, 188, 22, 116), 'house', [], { x: 1200, y: 246 }, [{ x: 1050, y: 525 }, { x: 570, y: 370 }, { x: 190, y: 205 }]);
         else this.levels[1].houses[1] = new Background(game, './img/backgrounds/apartment01.png',
-            new Weapon(game, this.player, Math.floor(Math.random() * 3), 2),
-            new Door(game, 1254, 188, 22, 116), 'house', [], { x: 1200, y: 246 });
+            new Weapon(game, this.player, Math.floor(Math.random() * 3), 2), new Door(game, 1254, 188, 22, 116),
+            'house', [], { x: 1200, y: 246 }, [{ x: 1050, y: 525 }, { x: 570, y: 370 }, { x: 190, y: 205 }]);
     } else {
         if (Math.random() * 100 < 30)
             this.levels[1].houses[1] = new Background(game, './img/backgrounds/apartment01.png',
                 new Weapon(game, this.player, Math.floor(Math.random() * 3), 1, Math.floor(Math.random() * 4)),
-                new Door(game, 1254, 188, 22, 116), 'house', [], { x: 1200, y: 246 });
+                new Door(game, 1254, 188, 22, 116), 'house', [], { x: 1200, y: 246 }, [{ x: 1050, y: 525 }, { x: 570, y: 370 }, { x: 190, y: 205 }]);
         else this.levels[1].houses[1] = new Background(game, './img/backgrounds/apartment01.png',
-            new Weapon(game, this.player, Math.floor(Math.random() * 3), 1),
-            new Door(game, 1254, 188, 22, 116), 'house', [], { x: 1200, y: 246 });
+            new Weapon(game, this.player, Math.floor(Math.random() * 3), 1), new Door(game, 1254, 188, 22, 116),
+            'house', [], { x: 1200, y: 246 }, [{ x: 1050, y: 525 }, { x: 570, y: 370 }, { x: 190, y: 205 }]);
     }
     // apartment 2
     if (Math.random() * 100 < 25) {
         if (Math.random() * 100 < 40)
             this.levels[1].houses[2] = new Background(game, './img/backgrounds/apartment02.png',
                 new Weapon(game, this.player, Math.floor(Math.random() * 3), 2, Math.floor(Math.random() * 4)),
-                new Door(game, 0, 0, 0, 0), 'house', [], { x: 640, y: 640 });
+                new Door(game, 0, 0, 0, 0), 'house', [], { x: 640, y: 640 }, [{ x: 235, y: 315 }, { x: 900, y: 200 }, { x: 1100, y: 575 }]);
         else this.levels[1].houses[2] = new Background(game, './img/backgrounds/apartment02.png',
-            new Weapon(game, this.player, Math.floor(Math.random() * 3), 2),
-            new Door(game, 0, 0, 0, 0), 'house', [], { x: 640, y: 640 });
+            new Weapon(game, this.player, Math.floor(Math.random() * 3), 2), new Door(game, 0, 0, 0, 0),
+            'house', [], { x: 640, y: 640 }, [{ x: 235, y: 315 }, { x: 900, y: 200 }, { x: 1100, y: 575 }]);
     } else {
         if (Math.random() * 100 < 30)
             this.levels[1].houses[2] = new Background(game, './img/backgrounds/apartment02.png',
                 new Weapon(game, this.player, Math.floor(Math.random() * 3), 1, Math.floor(Math.random() * 4)),
-                new Door(game, 0, 0, 0, 0), 'house', [], { x: 640, y: 640 });
+                new Door(game, 0, 0, 0, 0), 'house', [], { x: 640, y: 640 }, [{ x: 235, y: 315 }, { x: 900, y: 200 }, { x: 1100, y: 575 }]);
         else this.levels[1].houses[2] = new Background(game, './img/backgrounds/apartment02.png',
-            new Weapon(game, this.player, Math.floor(Math.random() * 3), 1),
-            new Door(game, 0, 0, 0, 0), 'house', [], { x: 640, y: 640 });
+            new Weapon(game, this.player, Math.floor(Math.random() * 3), 1), new Door(game, 0, 0, 0, 0),
+            'house', [], { x: 640, y: 640 }, [{ x: 235, y: 315 }, { x: 900, y: 200 }, { x: 1100, y: 575 }]);
     }
     // apartment 3
     if (Math.random() * 100 < 25) {
         if (Math.random() * 100 < 40)
             this.levels[1].houses[3] = new Background(game, './img/backgrounds/apartment03.png',
                 new Weapon(game, this.player, Math.floor(Math.random() * 3), 2, Math.floor(Math.random() * 4)),
-                new Door(game, 1254, 416, 22, 116), 'house', [], { x: 1200, y: 474 });
+                new Door(game, 1254, 416, 22, 116), 'house', [], { x: 1200, y: 474 }, [{ x: 225, y: 200 }, { x: 640, y: 360 }, { x: 1060, y: 180 }]);
         else this.levels[1].houses[3] = new Background(game, './img/backgrounds/apartment03.png',
-            new Weapon(game, this.player, Math.floor(Math.random() * 3), 2),
-            new Door(game, 1254, 416, 22, 116), 'house', [], { x: 1200, y: 474 });
+            new Weapon(game, this.player, Math.floor(Math.random() * 3), 2), new Door(game, 1254, 416, 22, 116),
+            'house', [], { x: 1200, y: 474 }, [{ x: 225, y: 200 }, { x: 640, y: 360 }, { x: 1060, y: 180 }]);
     } else {
         if (Math.random() * 100 < 30)
             this.levels[1].houses[3] = new Background(game, './img/backgrounds/apartment03.png',
                 new Weapon(game, this.player, Math.floor(Math.random() * 3), 1, Math.floor(Math.random() * 4)),
-                new Door(game, 1254, 416, 22, 116), 'house', [], { x: 1200, y: 474 });
+                new Door(game, 1254, 416, 22, 116), 'house', [], { x: 1200, y: 474 }, [{ x: 225, y: 200 }, { x: 640, y: 360 }, { x: 1060, y: 180 }]);
         else this.levels[1].houses[3] = new Background(game, './img/backgrounds/apartment03.png',
-            new Weapon(game, this.player, Math.floor(Math.random() * 3), 1),
-            new Door(game, 1254, 416, 22, 116), 'house', [], { x: 1200, y: 474 });
+            new Weapon(game, this.player, Math.floor(Math.random() * 3), 1), new Door(game, 1254, 416, 22, 116), 
+            'house', [], { x: 1200, y: 474 }, [{ x: 225, y: 200 }, { x: 640, y: 360 }, { x: 1060, y: 180 }]);
     }
-    this.levels[1].houses[4] = this.buildBossRoom(1, 1);
-    // this.fillBossRoom(1);
+    // this.levels[1].houses[4] = this.buildBossRoom(1, 1);
+    this.fillBossRoom(1);
 
     // walls + roofs
     // street 0
@@ -718,8 +718,8 @@ SceneManager.prototype.buildLevelThree = function (game) {
     this.levels[2].houses[2] = this.buildGarden(2, gardens[roll2]);
     gardens.splice(roll2, 1);
     this.levels[2].houses[3] = this.buildHouse(2, 1, parseInt(this.levels[2].houses[1].source.substring(24, 25)));
-    this.levels[2].houses[4] = this.buildBossRoom(2, 2);
-    // this.fillBossRoom(2);
+    // this.levels[2].houses[4] = this.buildBossRoom(2, 2);
+    this.fillBossRoom(2);
 
     // walls + roofs
     // street 0
@@ -983,6 +983,7 @@ SceneManager.prototype.buildHouse = function (lvl, side, prev) {
 SceneManager.prototype.fillBossRoom = function (lvl) {
     var index = Math.floor(Math.random() * this.bosses.length);
     var select = this.bosses[index];
+    this.bossArray[lvl] = select;
     this.bosses.splice(index, 1);
     if (select == 0) {
         this.levels[lvl].houses[4] = this.buildBossRoom(0, 0);

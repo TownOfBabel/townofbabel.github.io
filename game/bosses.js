@@ -9,6 +9,20 @@ function SlowDogg(game, dogs, lvl) {
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 1400, 0, 200, 200, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/slow_dogg.png'), 800, 0, 200, 200, 0.25, 2, false, false);
 
+    this.sound = {};
+    this.sound.cane = new Audio('./sound/bat_p.wav');
+    this.sound.cane.volume = 0.25;
+    this.sound.shotgun = new Audio('./sound/shotgun.wav');
+    this.sound.shotgun.volume = 0.15;
+    this.sound.whistle = new Audio('./sound/whistle.wav');
+    this.sound.whistle.volume = 0.2;
+    this.sound.hit1 = new Audio('./sound/hit1.wav');
+    this.sound.hit1.volume = 0.1;
+    this.sound.hit2 = new Audio('./sound/hit2.wav');
+    this.sound.hit2.volume = 0.1;
+    this.sound.hit3 = new Audio('./sound/hit3.wav');
+    this.sound.hit3.volume = 0.1;
+
     // properties
     this.alive = true;
     this.boss = true;
@@ -65,6 +79,12 @@ SlowDogg.prototype.update = function () {
         // animation control
         if (this.hurt && this.anim.hit.isDone()) {
             this.anim.hit.elapsedTime = 0;
+            this.sound.hit1.pause();
+            this.sound.hit1.load();
+            this.sound.hit2.pause();
+            this.sound.hit2.load();
+            this.sound.hit3.pause();
+            this.sound.hit3.load();
             this.hurt = false;
         }
         if (this.whistle || this.shoot) {
@@ -147,12 +167,14 @@ SlowDogg.prototype.update = function () {
                 }
                 var dist = distance(this, ent);
                 if (this.wslCD <= 0 && this.dogs.length > 0 && !this.shoot && !this.attack) {
+                    this.sound.whistle.play();
                     this.whistle = true;
                     var dog = this.dogs.pop();
                     dog.caged = false;
                     this.wslCD = 720;
                 }
                 else if (dist < 140 && this.atkCD <= 0 && !this.shoot && !this.whistle) {
+                    this.sound.cane.play();
                     this.attack = true;
                     this.atkCD = 112;
                 }
@@ -161,11 +183,13 @@ SlowDogg.prototype.update = function () {
                     this.shtCD = 118;
                 }
                 if (this.attack && ent.hitCD <= 0 && this.hit(ent)) {
+                    ent.sound.hit1.play();
                     ent.hurt = true;
                     ent.health.current -= 2;
                     ent.hitCD = 20;
                 }
                 else if (this.shoot && this.shtCD == 100) {
+                    this.sound.shotgun.play();
                     var gunRot = this.rotation + Math.atan(29 / 86);
                     var difX = Math.cos(gunRot) * 90;
                     var difY = Math.sin(gunRot) * 90;
@@ -244,6 +268,20 @@ function BigGuy(game, lvl) {
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 2400, 600, 600, 600, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 2400, 600, 600, 600, 0.5, 1, false, false);
 
+    this.sound = {};
+    this.sound.jab = new Audio('./sound/bat_p.wav');
+    this.sound.jab.volume = 0.25;
+    this.sound.slam1 = new Audio('./sound/slam_swing.wav');
+    this.sound.slam1.volume = 0.25;
+    this.sound.slam2 = new Audio('./sound/big_slam.wav');
+    this.sound.slam2.volume = 0.2;
+    this.sound.hit1 = new Audio('./sound/hit1.wav');
+    this.sound.hit1.volume = 0.1;
+    this.sound.hit2 = new Audio('./sound/hit2.wav');
+    this.sound.hit2.volume = 0.1;
+    this.sound.hit3 = new Audio('./sound/hit3.wav');
+    this.sound.hit3.volume = 0.1;
+
     // properties
     this.alive = true;
     this.boss = true;
@@ -301,21 +339,29 @@ BigGuy.prototype.update = function () {
 
         if (this.hurt && this.anim.hit.isDone()) {
             this.anim.hit.elapsedTime = 0;
+            this.sound.hit1.pause();
+            this.sound.hit1.load();
+            this.sound.hit2.pause();
+            this.sound.hit2.load();
+            this.sound.hit3.pause();
+            this.sound.hit3.load();
             this.hurt = false;
         }
         if (this.jab || this.slam) {
-            this.velocity.x /= 4;
-            this.velocity.y /= 4;
+            this.maxSpeed = 60;
             if (this.anim.jab.isDone() || this.stunCD > 0) {
                 this.anim.jab.elapsedTime = 0;
+                this.maxSpeed = this.mSpeed_init;
+                this.sound.jab.pause();
+                this.sound.jab.load();
                 this.jab = false;
                 this.jabCD = 75;
             }
             if (this.anim.slm.isDone() || this.stunCD > 0) {
                 this.anim.slm.elapsedTime = 0;
-                this.slam = false;
-                this.slmCD = 240;
                 this.maxSpeed = this.mSpeed_init;
+                this.slam = false;
+                this.slmCD = 300;
             }
         }
         if (this.collideLeft() || this.collideRight()) {
@@ -331,7 +377,7 @@ BigGuy.prototype.update = function () {
         for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
             if (ent.player && ent.alive && this.stunCD <= 0) {
-                var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
+                var atan = Math.atan2(ent.y - this.y, ent.x - this.x) - 0.4;
                 if (this.rotation > atan) {
                     var rotdif = this.rotation - atan;
                     while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
@@ -349,8 +395,8 @@ BigGuy.prototype.update = function () {
                     } else this.rotation += rotdif / 18;
                 }
                 var dist = distance(this, ent);
-                var difX = Math.cos(atan);
-                var difY = Math.sin(atan);
+                var difX = Math.cos(Math.atan2(ent.y - this.y, ent.x - this.x));
+                var difY = Math.sin(Math.atan2(ent.y - this.y, ent.x - this.x));
                 var delta = this.radius + ent.radius - dist;
                 if (this.collide(ent) && !ent.dash && !ent.supDash && !ent.lunge) {
                     this.velocity.x = -this.velocity.x / friction;
@@ -385,21 +431,26 @@ BigGuy.prototype.update = function () {
                     }
                 }
                 if (this.slmCD <= 0 && dist < 200 && !this.jab) {
+                    this.sound.slam1.play();
                     this.slam = true;
-                    this.slmCD = 118;
+                    this.slmCD = 145;
                     this.storedRot = this.rotation;
                 }
                 else if (this.jabCD <= 0 && dist < 140 && !this.slam) {
+                    this.sound.jab.play();
                     this.jab = true;
                     this.atkCD = 106;
                 }
+                if (this.slam && this.slmCD == 100) this.sound.slam2.play();
                 if (this.slam && this.hit(ent) && ent.hitCD <= 0) {
+                    ent.sound.hit3.play();
                     ent.hurt = true;
                     ent.health.current--;
-                    ent.hitCD = 12;
+                    ent.hitCD = Math.ceil((this.anim.slm.totalTime - this.anim.slm.elapsedTime) * 60);
                     ent.stunCD = 75;
                 }
                 else if (this.jab && this.hit(ent) && ent.hitCD <= 0) {
+                    ent.sound.hit2.play();
                     ent.hurt = true;
                     ent.health.current -= 2;
                     ent.hitCD = 18;
@@ -492,6 +543,20 @@ function NinjaGuy(game, lvl) {
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 600, 300, 300, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 600, 300, 300, 0.5, 1, false, false);
 
+    this.sound = {};
+    this.sound.slash = new Audio('./sound/slash.wav');
+    this.sound.slash.volume = 0.2;
+    this.sound.throw = new Audio('./sound/throw.wav');
+    this.sound.throw.volume = 0.2;
+    this.sound.hit = new Audio('./sound/ninja_hit.wav');
+    this.sound.hit.volume = 0.15;
+    this.sound.hit1 = new Audio('./sound/hit1.wav');
+    this.sound.hit1.volume = 0.1;
+    this.sound.hit2 = new Audio('./sound/hit2.wav');
+    this.sound.hit2.volume = 0.1;
+    this.sound.hit3 = new Audio('./sound/hit3.wav');
+    this.sound.hit3.volume = 0.1;
+
     this.alive = true;
     this.boss = true;
     this.enemy = true;
@@ -546,12 +611,20 @@ NinjaGuy.prototype.update = function () {
 
         if (this.hurt && this.anim.hit.isDone()) {
             this.anim.hit.elapsedTime = 0;
+            this.sound.hit1.pause();
+            this.sound.hit1.load();
+            this.sound.hit2.pause();
+            this.sound.hit2.load();
+            this.sound.hit3.pause();
+            this.sound.hit3.load();
             this.hurt = false;
         }
         if (this.slash) {
             this.maxSpeed = 160;
             if (this.anim.slash.isDone()) {
                 this.anim.slash.elapsedTime = 0;
+                this.sound.slash.pause();
+                this.sound.slash.load();
                 this.maxSpeed = this.mSpeed_init;
                 this.slash = false;
             }
@@ -560,6 +633,8 @@ NinjaGuy.prototype.update = function () {
             this.maxSpeed = 100;
             if (this.anim.throw.isDone()) {
                 this.anim.throw.elapsedTime = 0;
+                this.sound.throw.pause();
+                this.sound.throw.load();
                 this.maxSpeed = this.mSpeed_init;
                 this.throw = false;
             }
@@ -635,10 +710,12 @@ NinjaGuy.prototype.update = function () {
                     this.throwCD = 150;
                 }
                 else if (dist < 150 && this.slashCD <= 0) {
+                    this.sound.slash.play();
                     this.slash = true;
                     this.slashCD = 105;
                 }
                 if (this.throw && this.throwCD == 135) {
+                    this.sound.throw.play();
                     var throwRot = this.rotation - Math.atan(23 / 130);
                     var difX = Math.cos(throwRot) * 132;
                     var difY = Math.sin(throwRot) * 132;
@@ -648,6 +725,7 @@ NinjaGuy.prototype.update = function () {
                     this.game.addEntity(new Shuriken(this.game, this.x + difX, this.y + difY, throwDir - Math.PI / 6));
                 }
                 else if (this.slash && this.hit(ent) && ent.hitCD <= 0) {
+                    this.sound.hit.play();
                     ent.hurt = true;
                     ent.hitCD = 12;
                     ent.health.current -= 2;
@@ -772,6 +850,20 @@ function MageGuy(game, lvl) {
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 200, 200, 200, 200, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 200, 200, 200, 200, 0.5, 1, false, false);
 
+    this.sound = {};
+    this.sound.summon = new Audio('./sound/summon.mp3');
+    this.sound.summon.volume = 0.4;
+    this.sound.orbital = new Audio('./sound/orbital.wav');
+    this.sound.orbital.volume = 0.14;
+    this.sound.fire = new Audio('./sound/fruit.wav');
+    this.sound.fire.volume = 0.12;
+    this.sound.hit1 = new Audio('./sound/hit1.wav');
+    this.sound.hit1.volume = 0.1;
+    this.sound.hit2 = new Audio('./sound/hit2.wav');
+    this.sound.hit2.volume = 0.1;
+    this.sound.hit3 = new Audio('./sound/hit3.wav');
+    this.sound.hit3.volume = 0.1;
+
     this.alive = true;
     this.enemy = true;
     this.boss = true;
@@ -793,9 +885,9 @@ function MageGuy(game, lvl) {
     this.orbitals = 0;
     this.knockBack = 0;
     this.stunCD = 0;
-    this.ballCD = 105;
+    this.ballCD = 135;
     this.summonCD = 15;
-    this.orbitalCD = 165;
+    this.orbitalCD = 225;
     this.meteorCD = 0;
     this.hitCD = 0;
     this.strafeCD = 0;
@@ -834,6 +926,12 @@ MageGuy.prototype.update = function () {
 
         if (this.hurt && this.anim.hit.isDone()) {
             this.anim.hit.elapsedTime = 0;
+            this.sound.hit1.pause();
+            this.sound.hit1.load();
+            this.sound.hit2.pause();
+            this.sound.hit2.load();
+            this.sound.hit3.pause();
+            this.sound.hit3.load();
             this.hurt = false;
         }
         if (this.cast && this.anim.cast.isDone()) {
@@ -923,12 +1021,14 @@ MageGuy.prototype.update = function () {
                     this.ballCD = 180;
                 }
                 if (this.summon && this.summonCD == 320) {
+                    this.sound.summon.play();
                     this.game.addEntity(new Orbital(this.game, this, this.rotation + Math.PI * 2 / 3));
                     this.game.addEntity(new Orbital(this.game, this, this.rotation));
                     this.game.addEntity(new Orbital(this.game, this, this.rotation - Math.PI * 2 / 3));
                     this.orbitals = 3;
                 }
                 else if (this.cast && this.orbitalCD == 285) {
+                    this.sound.orbital.play();
                     var fire = false;
                     for (var j = 0; j < this.game.entities.length; j++) {
                         var ent2 = this.game.entities[j];
@@ -939,6 +1039,7 @@ MageGuy.prototype.update = function () {
                     }
                 }
                 else if (this.cast && this.ballCD == 165) {
+                    this.sound.fire.play();
                     var direction = Math.atan2(ent.y - (this.y + difY * 75), ent.x - (this.x + difY * 75));
                     if (Math.floor(Math.random() * 4) == 0)
                         this.game.addEntity(new Orange(this.game, this.x + difX * 75, this.y + difY * 75, direction));
@@ -991,6 +1092,7 @@ Fruit.prototype.update = function () {
             var ent = this.game.entities[i];
             if (this.collide(ent)) {
                 if (ent.player) {
+                    ent.sound.hit3.play();
                     ent.hurt = true;
                     ent.health.current -= this.damage;
                     this.removeFromWorld = true;
@@ -1020,7 +1122,7 @@ function Apple(game, x, y, rot) {
     this.velocity.x = Math.cos(rot) * 99999;
     this.velocity.y = Math.sin(rot) * 99999;
     this.maxSpeed = 650;
-    this.damage = 2;
+    this.damage = 1;
     this.radius = 11;
     Fruit.call(this, game, x, y, rot);
 }
@@ -1034,7 +1136,7 @@ function Orange(game, x, y, rot) {
     this.velocity.x = Math.cos(rot) * 99999;
     this.velocity.y = Math.sin(rot) * 99999;
     this.maxSpeed = 450;
-    this.damage = 4;
+    this.damage = 3;
     this.radius = 12;
     Fruit.call(this, game, x, y, rot);
 }
@@ -1049,7 +1151,7 @@ function Orbital(game, caster, rot) {
     this.center = caster;
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 550;
-    this.damage = 3;
+    this.damage = 2;
     this.radius = 14;
     this.orbit = true;
     Fruit.call(this, game, caster.x, caster.y, 0);
@@ -1075,13 +1177,13 @@ Orbital.prototype.update = function () {
         var ent = this.game.entities[i];
         if (this.collide(ent)) {
             if (ent.player) {
+                ent.sound.hit3.play();
                 ent.hurt = true;
                 ent.health.current -= this.damage;
-                console.log(ent.health.current);
                 this.center.orbitals--;
                 this.removeFromWorld = true;
             }
-            else if ((ent.wall) && !this.orbit) {
+            else if ((ent.wall || ent.column) && !this.orbit) {
                 this.center.orbitals--;
                 this.removeFromWorld = true;
             }

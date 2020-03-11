@@ -105,6 +105,10 @@ SelectDif.prototype.draw = function (ctx) {
         ctx.drawImage(this.none, 0, 0);
 };
 
+function CreditsBtn(game) {
+    
+}
+
 function getTrans(weapon) {
     return (71.4 - (weapon.scale * 71.4)) / 2;
 }
@@ -146,10 +150,14 @@ function SceneManager(game) {
     this.arrow = new Arrow(game, this);
     this.arrow2 = new Arrow2(game, this);
     this.bosses = [0, 1, 2, 3];
+    this.bossArray = [];
+    this.clear = [false, false, false, false];
 
-    this.music = {};
-    this.music.menus = new Audio('./sound/menus.mp3');
-    this.music.game = new Audio('./sound/game.mp3');
+    this.sound = {};
+    this.sound.menus = new Audio('./sound/menus.mp3');
+    this.sound.game = new Audio('./sound/game.mp3');
+    this.sound.swap = new Audio('./sound/weapon_swap.wav');
+    this.sound.swap.volume = 0.15;
     this.menus = {};
     this.menus.title = new TitleScreen(game);
     this.menus.dif = new SelectDif(game);
@@ -167,6 +175,12 @@ function SceneManager(game) {
     this.menus.street.push(new Menu(game, './img/menus/street2.png'));
     this.menus.boss.push(new Menu(game, './img/menus/boss1.png'));
     this.menus.boss.push(new Menu(game, './img/menus/boss2.png'));
+    this.menus.boss.push(new Menu(game, './img/menus/boss3.png'));
+    this.menus.boss.push(new Menu(game, './img/menus/boss4.png'));
+    this.menus.boss.push(new Menu(game, './img/menus/boss5.png'));
+    this.menus.boss.push(new Menu(game, './img/menus/boss6.png'));
+    this.menus.boss.push(new Menu(game, './img/menus/boss7.png'));
+    this.menus.boss.push(new Menu(game, './img/menus/boss8.png'));
     this.menus.final.push(new Menu(game, './img/menus/final1.png'));
     this.menus.final.push(new Menu(game, './img/menus/final2.png'));
     this.menus.final.push(new Menu(game, './img/menus/final3.png'));
@@ -196,7 +210,7 @@ SceneManager.prototype.update = function () {
             }
             if (this.timer.check() >= 1) {
                 this.timer.stop();
-                this.music.menus.pause();
+                this.sound.menus.pause();
                 this.changeBackground(this.menus.intro[0]);
             }
         }
@@ -212,17 +226,26 @@ SceneManager.prototype.update = function () {
             this.player.alive = true;
             this.changeBackground(this.levels[0].houses[5]);
             this.game.addEntity(new Fade(this.game, 'fromBlack'));
-            this.music.game.volume = 0.1;
-            this.music.game.loop = true;
-            this.music.game.play();
+            this.sound.game.volume = 0.1;
+            this.sound.game.loop = true;
+            this.sound.game.play();
         }
-        else if (this.activeBG === this.menus.boss[0] && this.game.click) {
+        else if (this.activeBG === this.menus.boss[this.bossArray[this.level.current] * 2] && this.game.click) {
             var room = this.levels[this.level.current].houses[4];
             this.player.x = room.spawn.x;
             this.player.y = room.spawn.y;
             this.changeBackground(room);
             this.game.addEntity(new Fade(this.game, 'fromBlack'));
         }
+        else if (this.activeBG === this.menus.boss[this.bossArray[this.level.current] * 2 + 1] && this.game.click) {
+            this.sound.menus.pause();
+            this.sound.menus.volume = 0.2;
+            this.sound.game.play();
+            this.changeBackground(this.levels[this.level.current].houses[4]);
+            this.game.addEntity(new Fade(this.game, 'fromBlack'));
+        }
+        else if (this.activeBG === this.menus.win && this.game.enter)
+            this.changeBackground(this.menus.title);
         else if (this.activeBG === this.menus.lose && this.game.click)
             this.changeBackground(this.menus.title);
         // for difficulty selection - not fully implemented
@@ -243,33 +266,40 @@ SceneManager.prototype.update = function () {
             for (var i = this.activeBG.enemies.length - 1; i >= 0; --i) {
                 var ent = this.activeBG.enemies[i];
                 if (!ent.alive && !ent.die) {
-                    // if (ent.boss) {
-                    //     this.bossDead = true;
-                    //     this.game.addEntity(this.menus.win);
-                    // }
-                    ent.removeFromWorld = true;
-                    this.activeBG.enemies.splice(i, 1);
-                }
-                else if (this.bossDead) {
                     ent.removeFromWorld = true;
                     this.activeBG.enemies.splice(i, 1);
                 }
             }
-            if (this.bossDead) {
-                this.level.clear = true;
-                if (this.game.enter) {
-                    this.level.clear = false;
-                    this.player.x = 515;
-                    this.player.y = 470;
-                    this.changeBackground(this.menus.title);
-                }
+            if (this.activeBG === this.levels[this.level.current].houses[4]
+                && this.activeBG.enemies.length == 0 && !this.clear[this.level.current]) {
+                this.clear[this.level.current] = true;
+                this.game.addEntity(new Fade(this.game, 'toBlack'));
+                this.timer.start();
             }
         }
         if (!this.activeBG.menu) {
-            if (this.timer.check() >= 1 && this.activeBG === this.levels[this.level.current].streets[5]) {
+            if (this.timer.check() >= 1 && this.activeBG === this.levels[2].houses[4]) {
                 this.timer.stop();
-                this.changeBackground(this.menus.boss[0]);
+                this.sound.game.pause();
+                this.sound.game.load();
+                this.sound.menus.volume = 0.2;
+                this.sound.menus.load();
+                this.sound.menus.play();
+                this.changeBackground(this.menus.win);
             }
+            else if (this.timer.check() >= 1 && this.activeBG === this.levels[this.level.current].houses[4]) {
+                this.timer.stop();
+                this.changeBackground(this.menus.boss[this.bossArray[this.level.current] * 2 + 1]);
+            }
+            else if (this.timer.check() >= 1 && this.activeBG === this.levels[this.level.current].streets[5]) {
+                this.timer.stop();
+                this.sound.game.pause();
+                this.sound.menus.load();
+                this.sound.menus.volume = 0.1;
+                this.sound.menus.play();
+                this.changeBackground(this.menus.boss[this.bossArray[this.level.current] * 2]);
+            }
+            
         }
         if (!this.activeBG.menu) {
             if (this.activeBG.enemies.length == 0) {
@@ -277,6 +307,7 @@ SceneManager.prototype.update = function () {
                 if (this.game.player.interact) this.swapHeld++;
                 else this.swapHeld = 0;
                 if (this.swapHeld > 15 && distance(this.player, this.activeBG.drop) < 100) {
+                    this.sound.swap.play();
                     var old = this.player.weapon;
                     if (old.ability) old.ability.removeFromWorld = true;
                     this.player.weapon = this.activeBG.drop;
@@ -356,9 +387,9 @@ SceneManager.prototype.updateBackground = function () {
 
 SceneManager.prototype.startGame = function () {
     this.game.addEntity(this.activeBG);
-    this.music.menus.volume = 0.2;
-    this.music.menus.loop = true;
-    this.music.menus.play();
+    this.sound.menus.volume = 0.2;
+    this.sound.menus.loop = true;
+    this.sound.menus.play();
     this.start = false;
 };
 

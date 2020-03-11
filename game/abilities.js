@@ -30,7 +30,7 @@ function Dash(game, player) {
     this.sound = new Audio('./sound/dash.wav');
     this.sound.volume = 0.3;
     this.ding = new Audio('./sound/ding2.wav');
-    this.ding.volume = 0.1;
+    this.ding.volume = 0.03;
     this.ready = false;
     this.maxCD = 90;
     Ability.call(this, game, player, 75, 35);
@@ -314,6 +314,8 @@ function Lunge(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/lunge.png');
     this.sound = new Audio('./sound/lunge.wav');
     this.sound.volume = 0.2;
+    this.sound.hit = new Audio('./sound/ninja_hit.wav');
+    this.sound.volume = 0.18;
     this.ding = new Audio('./sound/ding.wav');
     this.ding.volume = 0.1;
     this.ready = false;
@@ -366,6 +368,7 @@ Lunge.prototype.update = function () {
         var ent = this.game.entities[i];
         if (ent.enemy) {
             if (this.player.lunge && this.hit(ent) && ent.hitCD <= 0) {
+                this.sound.hit.play();
                 ent.hurt = true;
                 ent.health -= this.player.weapon.damage * 2;
                 ent.hitCD = (this.player.anim.lunge.totalTime - this.player.anim.lunge.elapsedTime) * 60;
@@ -430,6 +433,7 @@ FruitBall.prototype.update = function () {
         var ent = this.game.entities[i];
         if (this.collide(ent)) {
             if (ent.enemy) {
+                ent.sound.hit2.play();
                 ent.hurt = true;
                 ent.health -= this.damage;
                 ent.hitCD = 6;
@@ -536,6 +540,7 @@ LaserProj.prototype.update = function () {
         var ent = this.game.entities[i];
         if (this.collide(ent)) {
             if (ent.enemy && ent.hitCD <= 0) {
+                ent.sound.hit3.play();
                 ent.hurt = true;
                 ent.health -= this.damage;
                 ent.hitCD = 12;

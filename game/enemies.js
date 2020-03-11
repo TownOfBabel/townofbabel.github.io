@@ -2,7 +2,9 @@ function HealthDrop(game, x, y, heal) {
     this.healOne = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 0, 40, 40, 0.2, 4, true, false);
     this.healTwo = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 40, 40, 40, 0.2, 4, true, false);
     this.healThree = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 80, 40, 40, 0.2, 4, true, false);
-    this.heal = heal * 2;
+    this.sound = new Audio('./sound/eating.wav');
+    this.sound.volume = 0.15;
+    this.heal = heal;
     this.radius = 10;
     Entity.call(this, game, x, y);
 }
@@ -15,10 +17,11 @@ HealthDrop.prototype.update = function () {
         var ent = this.game.entities[i];
         if (ent.player) {
             if (this.collide(ent)) {
-                ent.health.current += this.heal;
+                ent.health.current += (this.heal * 2);
                 if (ent.health.current > ent.health.max)
                     ent.health.current = ent.health.max;
                 this.removeFromWorld = true;
+                this.sound.play();
             }
         }
     }
@@ -99,8 +102,7 @@ Enemy.prototype.update = function () {
             this.hurt = false;
         }
         if (this.slamming) {
-            this.velocity.x = 0;
-            this.velocity.y = 0;
+            this.maxSpeed = 10;
             if (this.anim.slam.isDone()) {
                 this.anim.slam.elapsedTime = 0;
                 this.slamming = false;
@@ -211,11 +213,13 @@ Enemy.prototype.update = function () {
                         }
                     }
                     // Attack calculations
-                    if (this.weapon.type == 'swing' && distance(this, ent) < 140 && this.slamCD <= 0) {
+                    if (this.weapon.type == 'swing' && distance(this, ent) < 140 && this.slamCD <= 0 && !this.attacking) {
+                        this.sound.slam.play();
                         this.slamming = true;
-                        this.slamCD = 150;
+                        this.slamCD = 142;
+                        this.storedRot = this.rotation;
                     }
-                    else if (distance(this, ent) < (this.range + ent.radius) && this.atkCD <= 0) {
+                    else if (distance(this, ent) < (this.range + ent.radius) && this.atkCD <= 0 && !this.slamming) {
                         this.sound.atk.play();
                         this.attacking = true;
                         this.atkCD = this.begLag;
@@ -227,6 +231,7 @@ Enemy.prototype.update = function () {
                         this.acceleration = 400;
                         this.maxSpeed = 400;
                     }
+                    if (this.slamming && this.slamCD == 100) this.sound.hit.play();
                     if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 150)
                         && this.slamCD > 91 && this.slamCD <= 100) {
                         ent.sound.hit2.play();
@@ -244,6 +249,7 @@ Enemy.prototype.update = function () {
                     }
                 }
             }
+            if (this.slamming) this.rotation = this.storedRot;
         }
     }
     // Speed control
@@ -452,13 +458,17 @@ function Bodyguard(game, x, y) {
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 0.15, 8, true, false);
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 200, 200, 200, 0.14, 5, false, false);
-    this.anim.slam = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 1600, 300, 300, 0.14, 7, false, false);
+    this.anim.slam = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 1600, 300, 300, 0.15, 7, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 1400, 400, 200, 200, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 600, 200, 700, 0.125, 4, false, false);
 
     this.sound = {};
     this.sound.atk = new Audio('./sound/attack.wav');
-    this.sound.atk.volume = 0.2;
+    this.sound.atk.volume = 0.12;
+    this.sound.slam = new Audio('./sound/slam_swing.wav');
+    this.sound.slam.volume = 0.15;
+    this.sound.hit = new Audio('./sound/slam.wav');
+    this.sound.hit.volume = 0.2;
 
     // Properties
     this.radius = 26;
@@ -658,6 +668,7 @@ Police.prototype.update = function () {
                         }
                     }
                     if (this.atkCD <= 0 && !this.reload && !this.attacking) {
+                        this.sound.atk.play();
                         this.attacking = true;
                         this.atkCD = 45;
                         this.bullets--;
