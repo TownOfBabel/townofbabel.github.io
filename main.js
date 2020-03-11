@@ -45,15 +45,15 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y, angle, scaleBy) {
         this.frameWidth * scaleBy, this.frameHeight * scaleBy);
     ctx.rotate(angle);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-}
+};
 
 Animation.prototype.currentFrame = function () {
     return Math.floor(this.elapsedTime / this.frameDuration);
-}
+};
 
 Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
-}
+};
 
 // the 'main' code begins here
 var friction = 8;
@@ -70,8 +70,16 @@ ASSET_MANAGER.queueDownload('./img/menus/roomclear.png');
 ASSET_MANAGER.queueDownload('./img/menus/game over.png');
 ASSET_MANAGER.queueDownload('./img/menus/continued.png');
 ASSET_MANAGER.queueDownload('./img/menus/fadeblack.png');
-ASSET_MANAGER.queueDownload('./img/menus/story1.png');
-ASSET_MANAGER.queueDownload('./img/menus/story2.png');
+ASSET_MANAGER.queueDownload('./img/menus/credits.png');
+ASSET_MANAGER.queueDownload('./img/menus/intro1.png');
+ASSET_MANAGER.queueDownload('./img/menus/intro2.png');
+ASSET_MANAGER.queueDownload('./img/menus/street1.png');
+ASSET_MANAGER.queueDownload('./img/menus/street2.png');
+ASSET_MANAGER.queueDownload('./img/menus/boss1.png');
+ASSET_MANAGER.queueDownload('./img/menus/boss2.png');
+ASSET_MANAGER.queueDownload('./img/menus/final1.png');
+ASSET_MANAGER.queueDownload('./img/menus/final2.png');
+ASSET_MANAGER.queueDownload('./img/menus/final3.png');
 
 // backgrounds
 ASSET_MANAGER.queueDownload('./img/backgrounds/street00.png');
@@ -138,6 +146,7 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/roof23.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/roof24.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/roof25.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/arrow.png');
+ASSET_MANAGER.queueDownload('./img/backgrounds/arrow2.png');
 
 // entities (player + enemies)
 ASSET_MANAGER.queueDownload('./img/entities/frump.png');

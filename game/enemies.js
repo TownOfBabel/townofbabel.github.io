@@ -22,7 +22,7 @@ HealthDrop.prototype.update = function () {
             }
         }
     }
-}
+};
 
 HealthDrop.prototype.draw = function (ctx) {
     if (this.heal == 1)
@@ -31,7 +31,7 @@ HealthDrop.prototype.draw = function (ctx) {
         this.healTwo.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 1.5);
     else if (this.heal == 3)
         this.healThree.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 1.5);
-}
+};
 
 function Enemy(game, x, y) {
     //Properties
@@ -237,7 +237,7 @@ Enemy.prototype.update = function () {
 
     this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-}
+};
 
 Enemy.prototype.draw = function (ctx) {
     if (this.die)
@@ -256,7 +256,7 @@ Enemy.prototype.draw = function (ctx) {
         else
             this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     }
-}
+};
 
 Enemy.prototype.hit = function (other, range) {
     if (range === undefined) {
@@ -326,7 +326,7 @@ Enemy.prototype.hit = function (other, range) {
     }
     else
         return distance(this, other) < range + other.radius;
-}
+};
 
 function Dog(game, x, y) {
     // Animations
@@ -642,7 +642,7 @@ Police.prototype.update = function () {
 
     this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-}
+};
 
 function Mailbox(game, timer) {
     this.image = './img/Mailbox.png';
@@ -688,8 +688,8 @@ Mailbox.prototype.update = function () {
     }
     this.x += this.velocity.x * this.game.clockTick;
     this.y += this.velocity.y * this.game.clockTick;
-}
+};
 
 Mailbox.prototype.draw = function (ctx) {
     ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
-}
+};

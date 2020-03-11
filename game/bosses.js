@@ -189,7 +189,7 @@ SlowDogg.prototype.update = function () {
 
     this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-}
+};
 
 SlowDogg.prototype.draw = function (ctx) {
     if (this.die)
@@ -208,7 +208,7 @@ SlowDogg.prototype.draw = function (ctx) {
         else
             this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     }
-}
+};
 
 SlowDogg.prototype.hit = function (other) {
     var acc = 1;
@@ -220,6 +220,7 @@ SlowDogg.prototype.hit = function (other) {
         var moveAmnt = (Math.atan(158 / 10) + Math.atan(86 / 46)) / (this.anim.atk.totalTime - this.anim.atk.frameDuration);
         var caneAngle = (this.rotation + Math.atan(158 / 10)) - ((this.anim.atk.elapsedTime - this.anim.atk.frameDuration) * moveAmnt);
         acc = Math.abs(caneAngle - atan2);
+        while (acc > Math.PI * 2) acc -= Math.PI * 2;
         if (acc > Math.PI) acc = (Math.PI * 2) - acc;
     }
 
@@ -231,7 +232,7 @@ SlowDogg.prototype.hit = function (other) {
     }
     else
         return false;
-}
+};
 
 function BigGuy(game, lvl) {
     // animations
@@ -420,7 +421,7 @@ BigGuy.prototype.update = function () {
 
     this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-}
+};
 
 BigGuy.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
@@ -432,7 +433,7 @@ BigGuy.prototype.draw = function (ctx) {
             this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     }
-}
+};
 
 BigGuy.prototype.hit = function (other) {
     if (this.slam) {
@@ -480,7 +481,7 @@ BigGuy.prototype.hit = function (other) {
             return false;
     }
     else return false;
-}
+};
 
 function NinjaGuy(game, lvl) {
     this.anim = {};
@@ -665,7 +666,7 @@ NinjaGuy.prototype.update = function () {
 
     this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-}
+};
 
 NinjaGuy.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
@@ -677,7 +678,7 @@ NinjaGuy.prototype.draw = function (ctx) {
             this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     }
-}
+};
 
 NinjaGuy.prototype.hit = function (other) {
     if (this.slash) {
@@ -712,7 +713,7 @@ NinjaGuy.prototype.hit = function (other) {
                 return distance(this, other) < 112 + other.sides;
         } else return false;
     } else return false;
-}
+};
 
 function Shuriken(game, x, y, rot) {
     this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/shuriken.png'), 0, 0, 20, 20, 1, 1, true, false);
@@ -756,11 +757,11 @@ Shuriken.prototype.update = function () {
     }
     this.x += this.velocity.x * this.game.clockTick;
     this.y += this.velocity.y * this.game.clockTick;
-}
+};
 
 Shuriken.prototype.draw = function (ctx) {
     this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
-}
+};
 
 function MageGuy(game, lvl) {
     this.anim = {};
@@ -958,7 +959,7 @@ MageGuy.prototype.update = function () {
 
     this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-}
+};
 
 MageGuy.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
@@ -970,7 +971,7 @@ MageGuy.prototype.draw = function (ctx) {
             this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     }
-}
+};
 
 function Fruit(game, x, y, rot) {
     this.rotation = rot;
@@ -1007,11 +1008,11 @@ Fruit.prototype.update = function () {
         this.x += this.velocity.x * this.game.clockTick;
         this.y += this.velocity.y * this.game.clockTick;
     }
-}
+};
 
 Fruit.prototype.draw = function (ctx) {
     this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-}
+};
 
 function Apple(game, x, y, rot) {
     this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/fruit.png'), 0, 0, 40, 40, 0.2, 4, true, false);
@@ -1094,11 +1095,11 @@ Orbital.prototype.update = function () {
     }
     this.x += this.velocity.x * this.game.clockTick;
     this.y += this.velocity.y * this.game.clockTick;
-}
+};
 
 Orbital.prototype.fire = function (target) {
     this.orbit = false;
     this.rotation = Math.atan2(target.y - this.y, target.x - this.x);
     this.velocity.x = Math.cos(this.rotation) * 99999;
     this.velocity.y = Math.sin(this.rotation) * 99999;
-}
+};

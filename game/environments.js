@@ -9,7 +9,7 @@ function Background(game, image, weapon, door, type, walls, spawn, spawns) {
     this.door = door;
     if (spawn === undefined) this.spawn = { x: 640, y: 360 };
     else this.spawn = spawn;
-    if (spawns === undefined) this.spawns = [{ x: 640, y: 200}];
+    if (spawns === undefined) this.spawns = [{ x: 640, y: 200 }];
     else this.spawns = spawns;
     this.type = type;
     Entity.call(this, game, 0, 0);
@@ -19,11 +19,11 @@ Background.prototype = new Entity();
 Background.prototype.constructor = Background;
 
 Background.prototype.update = function () {
-}
+};
 
 Background.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, 0, 0);
-}
+};
 
 function Roof(game, x, y, image) {
     this.image = ASSET_MANAGER.getAsset(image);
@@ -34,11 +34,11 @@ Roof.prototype = new Entity();
 Roof.prototype.constructor = Roof;
 
 Roof.prototype.update = function () {
-}
+};
 
 Roof.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, this.x, this.y);
-}
+};
 
 function Wall(game, x, y, w, h) {
     this.wall = true;
@@ -107,10 +107,10 @@ Wall.prototype.update = function () {
             }
         }
     }
-}
+};
 
 Wall.prototype.draw = function (ctx) {
-}
+};
 
 Wall.prototype.collide = function (other) {
     if (other.player || other.enemy) {
@@ -155,7 +155,7 @@ Wall.prototype.collide = function (other) {
                 return true;
         }
     }
-}
+};
 
 function Column(game, x, y, radius, image) {
     this.column = true;
@@ -182,12 +182,12 @@ Column.prototype.update = function () {
             }
         }
     }
-}
+};
 
 Column.prototype.draw = function (ctx) {
     if (this.image)
         ctx.drawImage(this.image, this.x, this.y);
-}
+};
 
 function Door(game, x, y, w, h) {
     this.door = true;
@@ -200,16 +200,16 @@ Door.prototype = new Entity();
 Door.prototype.constructor = Door;
 
 Door.prototype.update = function () {
-}
+};
 
 Door.prototype.draw = function (ctx) {
-}
+};
 
 function Arrow(game, manager) {
     this.image = new Animation(ASSET_MANAGER.getAsset('./img/backgrounds/arrow.png'), 0, 0, 50, 50, 0.25, 4, true, false);
     this.manager = manager;
     this.rotation = 0;
-    Entity.call(this, game, 640, 360);
+    Entity.call(this, game, 1100, 200);
 }
 
 Arrow.prototype = new Entity();
@@ -258,9 +258,93 @@ Arrow.prototype.update = function () {
             this.rotation = 0;
         }
     }
-}
+};
 
 Arrow.prototype.draw = function (ctx) {
     if (this.manager.activeBG.enemies.length == 0)
         this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+};
+
+function Arrow2(game, manager) {
+    this.image = new Animation(ASSET_MANAGER.getAsset('./img/backgrounds/arrow2.png'), 0, 0, 50, 50, 0.25, 4, true, false);
+    this.manager = manager;
+    this.rotation = 0;
+    Entity.call(this, game, 1100, 200);
 }
+
+Arrow2.prototype = new Entity();
+Arrow2.prototype.constructor = Arrow2;
+
+Arrow2.prototype.update = function () {
+    var displayBG = this.manager.activeBG;
+    if (displayBG.type == 'street') {
+        if (displayBG === this.manager.levels[this.manager.level.current].streets[5]) {
+            if (displayBG.neighbors[0].enemies.length == 0) {
+                this.x = 1200;
+                this.y = 500;
+                this.rotation = 0;
+            }
+            else {
+                this.x = displayBG.spawn.x;
+                this.y = displayBG.spawn.y + 50;
+                this.rotation = -Math.PI / 2;
+            }
+        }
+        else if (displayBG === this.manager.levels[1].streets[2]) {
+            this.x = displayBG.spawn.x + 50;
+            this.y = displayBG.spawn.y;
+            this.rotation = Math.PI;
+        }
+        else if (displayBG.neighbors[1]) {
+            if (displayBG.neighbors[1].enemies.length > 0) {
+                this.x = displayBG.spawn.x - 50;
+                this.y = displayBG.spawn.y;
+                this.rotation = 0;
+            }
+            else {
+                this.x = 640;
+                this.y = 100;
+                this.rotation = -Math.PI / 2;
+            }
+        }
+        else if (displayBG.neighbors[3]) {
+            if (displayBG.neighbors[3].enemies.length > 0) {
+                this.x = displayBG.spawn.x + 50;
+                this.y = displayBG.spawn.y;
+                this.rotation = Math.PI;
+            }
+            else {
+                this.x = 640;
+                this.y = 100;
+                this.rotation = -Math.PI / 2;
+            }
+        }
+        else {
+            this.x = 640;
+            this.y = 100;
+            this.rotation = -Math.PI / 2;
+        }
+    }
+    else if (displayBG === this.manager.levels[1].houses[1] || displayBG === this.manager.levels[1].houses[2]) {
+        this.x = 575;
+        this.y = 100;
+        this.rotation = -Math.PI / 2;
+    }
+    else {
+        if (displayBG.spawn.x < 640) {
+            this.x = displayBG.spawn.x + 50;
+            this.y = displayBG.spawn.y;
+            this.rotation = Math.PI;
+        }
+        else {
+            this.x = displayBG.spawn.x - 50;
+            this.y = displayBG.spawn.y;
+            this.rotation = 0;
+        }
+    }
+};
+
+Arrow2.prototype.draw = function (ctx) {
+    if (this.manager.activeBG.enemies.length == 0)
+        this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+};

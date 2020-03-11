@@ -7,11 +7,11 @@ InfoUI.prototype = new Entity();
 InfoUI.prototype.constructor = InfoUI;
 
 InfoUI.prototype.update = function () {
-}
+};
 
 InfoUI.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, 0, 0);
-}
+};
 
 function Health(game, hp) {
     this.health = [];
@@ -28,12 +28,12 @@ Health.prototype = new Entity();
 Health.prototype.constructor = Health;
 
 Health.prototype.update = function () {
-}
+};
 
 Health.prototype.draw = function (ctx) {
     if (this.current < 0) this.health[0].drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     else this.health[this.current].drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
-}
+};
 
 function calcDmg(weapon) {
     switch (weapon.rarity) {
@@ -79,11 +79,11 @@ Popup.prototype.constructor = Popup;
 Popup.prototype.update = function () {
     if (!this.weapon.floating) this.removeFromWorld = true;
     if (!this.weapon.hover) this.removeFromWorld = true;
-}
+};
 
 Popup.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, this.startX, this.startY, 150, 50, this.x, this.y, 150, 50);
-}
+};
 
 function Weapon(game, player, type, rarity, ability, spawn) {
     this.hidden = true;
@@ -132,7 +132,7 @@ Weapon.prototype.update = function () {
     }
     else if (distance(this, this.game.mouse) > 40 && this.hover)
         this.hover = false;
-}
+};
 
 Weapon.prototype.draw = function (ctx) {
     if (this.hidden) { }
@@ -140,7 +140,7 @@ Weapon.prototype.draw = function (ctx) {
         this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     else
         ctx.drawImage(this.static, 0, 0, 100, 100, this.x, this.y, 71.4 * this.scale, 71.4 * this.scale);
-}
+};
 
 function Bullet(game, x, y, rot, dmg) {
     this.image = ASSET_MANAGER.getAsset('./img/weapons/bullet.png');
@@ -189,11 +189,11 @@ Bullet.prototype.update = function () {
     }
     this.x += this.velocity.x * this.game.clockTick;
     this.y += this.velocity.y * this.game.clockTick;
-}
+};
 
 Bullet.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, this.x, this.y);
-}
+};
 
 function Frump(game) {
     // Animations
@@ -232,7 +232,7 @@ function Frump(game) {
     this.sides = 38;
     this.acceleration = 200;
     this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 750;
+    this.maxSpeed = 245;
     this.weapon = new Weapon(game, this, 0, 0);
     this.bullets = 6;
     this.range = 70;
@@ -406,7 +406,7 @@ Frump.prototype.update = function () {
 
     this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-}
+};
 
 Frump.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
@@ -439,7 +439,7 @@ Frump.prototype.draw = function (ctx) {
             else this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         }
     }
-}
+};
 
 Frump.prototype.hit = function (other, range) {
     if (range === undefined) {
@@ -493,4 +493,4 @@ Frump.prototype.hit = function (other, range) {
     }
     else
         return distance(this, other) < range + other.radius;
-}
+};

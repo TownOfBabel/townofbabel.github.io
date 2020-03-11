@@ -297,7 +297,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
 
     console.log('loading complete!');
     this.buildLevelTwo(game);
-}
+};
 
 SceneManager.prototype.buildLevelTwo = function (game) {
     this.levels[1] = { streets: [], houses: [] };
@@ -587,7 +587,7 @@ SceneManager.prototype.buildLevelTwo = function (game) {
 
     console.log('loading complete!');
     this.buildLevelThree(game);
-}
+};
 
 SceneManager.prototype.buildLevelThree = function (game) {
     this.levels[2] = { streets: [], houses: [] };
@@ -784,7 +784,7 @@ SceneManager.prototype.buildLevelThree = function (game) {
     generateEnemies(game, this.levels[2].houses[3], 9);
 
     console.log('loading complete!');
-}
+};
 
 SceneManager.prototype.buildHouse = function (lvl, side, prev) {
     var walls = [];
@@ -972,7 +972,7 @@ SceneManager.prototype.buildHouse = function (lvl, side, prev) {
     }
 
     return new Background(this.game, './img/backgrounds/house' + side + index + '.png', weapon, door, 'house', walls, spawn, spawns);
-}
+};
 
 SceneManager.prototype.fillBossRoom = function (lvl) {
     var index = Math.floor(Math.random() * this.bosses.length);
@@ -1008,7 +1008,7 @@ SceneManager.prototype.fillBossRoom = function (lvl) {
         this.levels[lvl].houses[4].enemies.push(new Police(this.game, 1100, 250));
         this.levels[lvl].houses[4].enemies.push(new MageGuy(this.game, lvl));
     }
-}
+};
 
 SceneManager.prototype.buildBossRoom = function (lvl, boss) {
     var walls = [];
@@ -1122,7 +1122,7 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
     }
 
     return new Background(this.game, './img/backgrounds/boss0' + (boss + 1) + '.png', weapon, door, 'house', walls, spawn);
-}
+};
 
 SceneManager.prototype.buildGarden = function (lvl, index) {
     var walls = [];
@@ -1176,4 +1176,4 @@ SceneManager.prototype.buildGarden = function (lvl, index) {
     }
 
     return new Background(this.game, './img/backgrounds/garden0' + index + '.png', weapon, door, 'house', walls, spawn);
-}
+};
