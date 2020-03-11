@@ -147,6 +147,9 @@ function SceneManager(game) {
     this.arrow2 = new Arrow2(game, this);
     this.bosses = [0, 1, 2, 3];
 
+    this.music = {};
+    this.music.menus = new Audio('./sound/menus.mp3');
+    this.music.game = new Audio('./sound/game.mp3');
     this.menus = {};
     this.menus.title = new TitleScreen(game);
     this.menus.dif = new SelectDif(game);
@@ -193,6 +196,7 @@ SceneManager.prototype.update = function () {
             }
             if (this.timer.check() >= 1) {
                 this.timer.stop();
+                this.music.menus.pause();
                 this.changeBackground(this.menus.intro[0]);
             }
         }
@@ -208,6 +212,9 @@ SceneManager.prototype.update = function () {
             this.player.alive = true;
             this.changeBackground(this.levels[0].houses[5]);
             this.game.addEntity(new Fade(this.game, 'fromBlack'));
+            this.music.game.volume = 0.1;
+            this.music.game.loop = true;
+            this.music.game.play();
         }
         else if (this.activeBG === this.menus.boss[0] && this.game.click) {
             var room = this.levels[this.level.current].houses[4];
@@ -349,6 +356,9 @@ SceneManager.prototype.updateBackground = function () {
 
 SceneManager.prototype.startGame = function () {
     this.game.addEntity(this.activeBG);
+    this.music.menus.volume = 0.2;
+    this.music.menus.loop = true;
+    this.music.menus.play();
     this.start = false;
 };
 

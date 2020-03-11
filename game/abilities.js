@@ -27,6 +27,11 @@ Ability.prototype.draw = function (ctx) {
 
 function Dash(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
+    this.sound = new Audio('./sound/dash.wav');
+    this.sound.volume = 0.3;
+    this.ding = new Audio('./sound/ding2.wav');
+    this.ding.volume = 0.1;
+    this.ready = false;
     this.maxCD = 90;
     Ability.call(this, game, player, 75, 35);
 }
@@ -37,6 +42,10 @@ Dash.prototype.constructor = Dash;
 Dash.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
+    if (this.ready && this.cooldown <= 0) {
+        this.ding.play();
+        this.ready = false;
+    }
     if (this.game.player.space && this.cooldown <= 0 && this.player.stunCD <= 0
         && !this.player.lunge && !this.player.fruit && !this.player.laser) {
         if (this.player.attacking) {
@@ -54,6 +63,8 @@ Dash.prototype.update = function () {
                 this.player.atkCD = 30;
             }
         }
+        this.sound.play();
+        this.ready = true;
         this.player.dashing = true;
         this.player.hitCD = 20;
         var pointy = this.player.y + this.player.velocity.y;
@@ -76,6 +87,11 @@ Dash.prototype.update = function () {
 
 function SuperDash(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/super_dash.png');
+    this.sound = new Audio('./sound/dash.wav');
+    this.sound.volume = 0.35;
+    this.ding = new Audio('./sound/ding.wav');
+    this.ding.volume = 0.1;
+    this.ready = false;
     this.maxCD = 120;
     Ability.call(this, game, player, 150, 35);
 }
@@ -86,6 +102,10 @@ SuperDash.prototype.constructor = SuperDash;
 SuperDash.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
+    if (this.ready && this.cooldown <= 0) {
+        this.ding.play();
+        this.ready = false;
+    }
     if (this.game.player.dash && this.player.supDash) {
         this.player.supDash = false;
         this.player.anim.supDash.elapsedTime = 0;
@@ -108,6 +128,8 @@ SuperDash.prototype.update = function () {
                 this.player.atkCD = 30;
             }
         }
+        this.sound.play();
+        this.ready = true;
         this.player.supDash = true;
         this.player.radius = 10;
         this.player.hitCD = 30;
@@ -131,6 +153,11 @@ SuperDash.prototype.update = function () {
 
 function BlingStun(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/bling.png');
+    this.sound = new Audio('./sound/bling.mp3');
+    this.sound.volume = 0.1;
+    this.ding = new Audio('./sound/ding.wav');
+    this.ding.volume = 0.1;
+    this.ready = false;
     this.maxCD = 240;
     Ability.call(this, game, player, 150, 35);
 }
@@ -141,6 +168,10 @@ BlingStun.prototype.constructor = BlingStun;
 BlingStun.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
+    if (this.ready && this.cooldown <= 0) {
+        this.ding.play();
+        this.ready = false;
+    }
     if (this.game.player.dash && this.player.bling) {
         this.player.bling = false;
         this.player.anim.bling.elapsedTime = 0;
@@ -163,6 +194,8 @@ BlingStun.prototype.update = function () {
                 this.player.atkCD = 30;
             }
         }
+        this.sound.play();
+        this.ready = true;
         this.player.bling = true;
         this.cooldown = 109;
         this.iconCD = this.maxCD * 2;
@@ -178,6 +211,7 @@ BlingStun.prototype.update = function () {
         if (ent.enemy) {
             if (this.player.bling && this.player.hit(ent, 150) && ent.hitCD <= 0
                 && this.cooldown <= 100 && this.cooldown > 82) {
+                ent.sound.hit3.play();
                 ent.hurt = true;
                 ent.health -= 10;
                 ent.hitCD = 18;
@@ -189,6 +223,11 @@ BlingStun.prototype.update = function () {
 
 function BoomSpeaker(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/boombox.png');
+    this.sound = new Audio('./sound/boom.mp3');
+    this.sound.volume = 0.1;
+    this.ding = new Audio('./sound/ding.wav');
+    this.ding.volume = 0.1;
+    this.ready = false;
     this.maxCD = 275;
     Ability.call(this, game, player, 150, 35);
 }
@@ -199,6 +238,10 @@ BoomSpeaker.prototype.constructor = BoomSpeaker;
 BoomSpeaker.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
+    if (this.ready && this.cooldown <= 0) {
+        this.ding.play();
+        this.ready = false;
+    }
     if (this.game.player.dash && this.player.boom) {
         this.player.boom = false;
         this.player.anim.boom.elapsedTime = 0;
@@ -221,11 +264,15 @@ BoomSpeaker.prototype.update = function () {
                 this.player.atkCD = 30;
             }
         }
+        this.sound.play();
+        this.ready = true;
         this.player.boom = true;
         this.cooldown = 109;
         this.iconCD = this.maxCD * 2;
     }
     if (this.player.boom && this.player.anim.boom.isDone()) {
+        this.sound.pause();
+        this.sound.load();
         this.player.anim.boom.elapsedTime = 0;
         this.player.boom = false;
         this.cooldown = this.maxCD;
@@ -236,6 +283,7 @@ BoomSpeaker.prototype.update = function () {
         if (ent.enemy) {
             if (this.player.boom && this.cooldown > 100) {
                 if (this.player.hit(ent, 90) && ent.hitCD <= 0) {
+                    ent.sound.hit3.play();
                     ent.hurt = true;
                     ent.health -= 15;
                     ent.hitCD = 30;
@@ -264,6 +312,11 @@ BoomSpeaker.prototype.update = function () {
 
 function Lunge(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/lunge.png');
+    this.sound = new Audio('./sound/lunge.wav');
+    this.sound.volume = 0.2;
+    this.ding = new Audio('./sound/ding.wav');
+    this.ding.volume = 0.1;
+    this.ready = false;
     this.maxCD = 210;
     Ability.call(this, game, player, 150, 35);
 }
@@ -274,12 +327,18 @@ Lunge.prototype.constructor = Lunge;
 Lunge.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
+    if (this.ready && this.cooldown <= 0) {
+        this.ding.play();
+        this.ready = false;
+    }
     if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
         if (this.player.attacking) {
             this.player.attacking = false;
             this.player.anim.knifeAtk.elapsedTime = 0;
             this.player.atkCD = 9;
         }
+        this.sound.play();
+        this.ready = true;
         this.player.lunge = true;
         this.player.hitCD = this.player.anim.lunge.totalTime * 60;
         this.player.storedRot = this.player.rotation;
@@ -401,6 +460,9 @@ function FruitBat(game, player) {
     this.hit = false;
     this.mouse = {};
     this.spawnDist = Math.sqrt(Math.pow(127, 2) + Math.pow(26, 2));
+    this.ding = new Audio('./sound/ding.wav');
+    this.ding.volume = 0.1;
+    this.ready = false;
     Ability.call(this, game, player, 150, 35);
 }
 
@@ -410,12 +472,17 @@ FruitBat.prototype.constructor = FruitBat;
 FruitBat.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
+    if (this.ready && this.cooldown <= 0) {
+        this.ding.play();
+        this.ready = false;
+    }
     if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
         if (this.player.attacking) {
             this.player.attacking = false;
             this.player.anim.batAtk.elapsedTime = 0;
             this.player.atkCD = 18;
         }
+        this.ready = true;
         this.player.fruit = true;
         this.mouse.x = this.game.mouse.x;
         this.mouse.y = this.game.mouse.y;
@@ -432,6 +499,7 @@ FruitBat.prototype.update = function () {
             var spawnX = this.player.x + difX;
             var spawnY = this.player.y + difY;
             var spawnRot = Math.atan2(this.mouse.y - spawnY, this.mouse.x - spawnX);
+            this.player.sound.hit1.play();
             this.game.addEntity(new FruitBall(this.game, spawnX, spawnY, spawnRot, this.player.weapon.damage * 3));
         }
         if (this.player.anim.fruit.isDone()) {
@@ -495,6 +563,11 @@ LaserProj.prototype.draw = function (ctx) {
 
 function Laser(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/laser_icon.png');
+    this.sound = new Audio('./sound/laser.wav');
+    this.sound.volume = 0.18;
+    this.ding = new Audio('./sound/ding.wav');
+    this.ding.volume = 0.1;
+    this.ready = false;
     this.maxCD = 240;
     Ability.call(this, game, player, 150, 35);
 }
@@ -505,11 +578,17 @@ Laser.prototype.constructor = Laser;
 Laser.prototype.update = function () {
     if (this.iconCD > 0) this.iconCD--;
     if (this.cooldown > 0) this.cooldown--;
+    if (this.ready && this.cooldown <= 0) {
+        this.ding.play();
+        this.ready = false;
+    }
     if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
         if (this.player.attacking) {
             this.player.attacking = false;
             this.player.anim.gunAtk.elapsedTime = 0;
         }
+        this.sound.play();
+        this.ready = true;
         this.player.laser = true;
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD * 2;

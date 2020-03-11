@@ -40,6 +40,15 @@ function Enemy(game, x, y) {
     this.rotation = Math.random() * (Math.PI * 2) - Math.PI;
     this.velocity = { x: 0, y: 0 };
 
+    // Sounds
+    if (this.sound === undefined) this.sound = {};
+    this.sound.hit1 = new Audio('./sound/hit1.wav');
+    this.sound.hit1.volume = 0.1;
+    this.sound.hit2 = new Audio('./sound/hit2.wav');
+    this.sound.hit2.volume = 0.1;
+    this.sound.hit3 = new Audio('./sound/hit3.wav');
+    this.sound.hit3.volume = 0.1;
+
     this.atkCD = 0;
     this.slamCD = 0;
     this.stunCD = 0;
@@ -80,6 +89,12 @@ Enemy.prototype.update = function () {
 
         // Update animations
         if (this.hurt && this.anim.hit.isDone()) {
+            this.sound.hit1.pause();
+            this.sound.hit1.load();
+            this.sound.hit2.pause();
+            this.sound.hit2.load();
+            this.sound.hit3.pause();
+            this.sound.hit3.load();
             this.anim.hit.elapsedTime = 0;
             this.hurt = false;
         }
@@ -95,6 +110,8 @@ Enemy.prototype.update = function () {
         }
         if (this.attacking) {
             if (this.anim.atk.isDone() || this.stunCD > 0) {
+                this.sound.atk.pause();
+                this.sound.atk.load();
                 this.anim.atk.elapsedTime = 0;
                 this.attacking = false;
                 this.atkCD = this.endLag;
@@ -199,6 +216,7 @@ Enemy.prototype.update = function () {
                         this.slamCD = 150;
                     }
                     else if (distance(this, ent) < (this.range + ent.radius) && this.atkCD <= 0) {
+                        this.sound.atk.play();
                         this.attacking = true;
                         this.atkCD = this.begLag;
                     }
@@ -211,12 +229,15 @@ Enemy.prototype.update = function () {
                     }
                     if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 150)
                         && this.slamCD > 91 && this.slamCD <= 100) {
+                        ent.sound.hit2.play();
                         ent.hurt = true;
                         ent.health.current--;
                         ent.hitCD = 9;
                         ent.stunCD = 45;
                     }
                     else if (this.attacking && ent.hitCD <= 0 && this.hit(ent)) {
+                        if (this.weapon.type == 'knife') ent.sound.hit1.play();
+                        else ent.sound.hit2.play();
                         ent.hurt = true;
                         ent.health.current -= this.dmg;
                         ent.hitCD = 18;
@@ -337,6 +358,10 @@ function Dog(game, x, y) {
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 1000, 0, 200, 200, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 200, 0, 200, 200, 0.25, 2, false, false);
 
+    this.sound = {};
+    this.sound.atk = new Audio('./sound/attack.wav');
+    this.sound.atk.volume = 0.2;
+
     // Properties
     this.radius = 20;
     this.faces = 74;
@@ -374,6 +399,9 @@ function Thug(game, weapon, x, y) {
         this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 200, 200, 200, 0.1, 4, false, false);
         this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 400, 200, 200, 0.15, 1, false, false);
         this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 800, 200, 200, 400, (0.5 / 3), 3, false, false);
+        this.sound = {};
+        this.sound.atk = new Audio('./sound/knife_e.wav');
+        this.sound.atk.volume = 0.15;
         this.weapon.type = 'knife';
         this.faces = 38;
         this.begLag = 110;
@@ -387,6 +415,9 @@ function Thug(game, weapon, x, y) {
         this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 200, 200, 300, 0.15, 4, false, false);
         this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 500, 200, 200, 0.15, 1, false, false);
         this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 800, 200, 200, 400, (0.5 / 3), 3, false, false);
+        this.sound = {};
+        this.sound.atk = new Audio('./sound/bat_e.wav');
+        this.sound.atk.volume = 0.25;
         this.weapon.type = 'bat';
         this.faces = 28;
         this.begLag = 116;
@@ -425,6 +456,10 @@ function Bodyguard(game, x, y) {
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 1400, 400, 200, 200, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 600, 200, 700, 0.125, 4, false, false);
 
+    this.sound = {};
+    this.sound.atk = new Audio('./sound/attack.wav');
+    this.sound.atk.volume = 0.2;
+
     // Properties
     this.radius = 26;
     this.faces = 36;
@@ -460,6 +495,12 @@ function Police(game, x, y) {
     this.anim.rld = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 400, 0, 200, 200, 0.75, 2, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 800, 0, 200, 200, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 800, 0, 200, 200, 0.5, 1, false, false);
+
+    this.sound = {};
+    this.sound.atk = new Audio('./sound/gun.wav');
+    this.sound.atk.volume = 0.05;
+    this.sound.reload = new Audio('./sound/reload_e.wav');
+    this.sound.reload.volume = 0.05;
 
     this.weapon = {};
     this.weapon.type = 'gun';

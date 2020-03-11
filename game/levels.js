@@ -162,9 +162,9 @@ SceneManager.prototype.buildLevelOne = function (game) {
         }
     }
     // house 04
-    // this.levels[0].houses[4] = this.buildBossRoom(0, 3);
+    this.levels[0].houses[4] = this.buildBossRoom(0, 3);
     // this.levels[0].houses[4].enemies.push(new MageGuy(game));
-    this.fillBossRoom(0);
+    // this.fillBossRoom(0);
     // house 00
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
         new Weapon(game, this.player, 1, 0, null, { x: 1100, y: 380 }),
@@ -290,16 +290,16 @@ SceneManager.prototype.buildLevelOne = function (game) {
     this.levels[0].streets[5].neighbors[0] = this.levels[0].houses[4];
     this.levels[0].houses[4].neighbors[2] = this.levels[0].streets[5];
 
-    // generateEnemies(game, this.levels[0].streets[0], 2);
-    // generateEnemies(game, this.levels[0].streets[1], 2);
-    // generateEnemies(game, this.levels[0].streets[2], 2);
-    // generateEnemies(game, this.levels[0].streets[3], 2);
-    // generateEnemies(game, this.levels[0].streets[4], 2);
-    // generateEnemies(game, this.levels[0].streets[5], 2);
-    // generateEnemies(game, this.levels[0].houses[0], 4);
-    // generateEnemies(game, this.levels[0].houses[1], 4);
-    // generateEnemies(game, this.levels[0].houses[2], 5);
-    // generateEnemies(game, this.levels[0].houses[3], 5);
+    generateEnemies(game, this.levels[0].streets[0], 2);
+    generateEnemies(game, this.levels[0].streets[1], 2);
+    generateEnemies(game, this.levels[0].streets[2], 2);
+    generateEnemies(game, this.levels[0].streets[3], 2);
+    generateEnemies(game, this.levels[0].streets[4], 2);
+    generateEnemies(game, this.levels[0].streets[5], 2);
+    generateEnemies(game, this.levels[0].houses[0], 4);
+    generateEnemies(game, this.levels[0].houses[1], 4);
+    generateEnemies(game, this.levels[0].houses[2], 5);
+    generateEnemies(game, this.levels[0].houses[3], 5);
 
     console.log('loading complete!');
     this.buildLevelTwo(game);
@@ -473,8 +473,8 @@ SceneManager.prototype.buildLevelTwo = function (game) {
             new Weapon(game, this.player, Math.floor(Math.random() * 3), 1),
             new Door(game, 1254, 416, 22, 116), 'house', [], { x: 1200, y: 474 });
     }
-    // this.levels[1].houses[4] = this.buildBossRoom(1, 1);
-    this.fillBossRoom(1);
+    this.levels[1].houses[4] = this.buildBossRoom(1, 1);
+    // this.fillBossRoom(1);
 
     // walls + roofs
     // street 0
@@ -718,8 +718,8 @@ SceneManager.prototype.buildLevelThree = function (game) {
     this.levels[2].houses[2] = this.buildGarden(2, gardens[roll2]);
     gardens.splice(roll2, 1);
     this.levels[2].houses[3] = this.buildHouse(2, 1, parseInt(this.levels[2].houses[1].source.substring(24, 25)));
-    // this.levels[2].houses[4] = this.buildBossRoom(2, 2);
-    this.fillBossRoom(2);
+    this.levels[2].houses[4] = this.buildBossRoom(2, 2);
+    // this.fillBossRoom(2);
 
     // walls + roofs
     // street 0
