@@ -247,7 +247,12 @@ Arrow.prototype.update = function () {
         this.rotation = -Math.PI / 2;
     }
     else {
-        if (displayBG.spawn.x < 640) {
+        if (displayBG === this.manager.levels[this.manager.level.current].houses[4]) {
+            this.x = displayBG.spawn.x;
+            this.y = displayBG.spawn.y - 50;
+            this.rotation = Math.PI / 2;
+        }
+        else if (displayBG.spawn.x < 640) {
             this.x = displayBG.spawn.x + 50;
             this.y = displayBG.spawn.y;
             this.rotation = Math.PI;
@@ -331,7 +336,12 @@ Arrow2.prototype.update = function () {
         this.rotation = -Math.PI / 2;
     }
     else {
-        if (displayBG.spawn.x < 640) {
+        if (displayBG === this.manager.levels[this.manager.level.current].houses[4]) {
+            this.x = displayBG.spawn.x;
+            this.y = displayBG.spawn.y - 50;
+            this.rotation = Math.PI / 2;
+        }
+        else if (displayBG.spawn.x < 640) {
             this.x = displayBG.spawn.x + 50;
             this.y = displayBG.spawn.y;
             this.rotation = Math.PI;
