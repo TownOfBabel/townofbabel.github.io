@@ -171,23 +171,29 @@ SceneManager.prototype.buildLevelOne = function (game) {
         new Door(game, 1270, 176, 10, 96), 'house');
 
     // house00 - Lil' Frump's House
+    this.levels[0].houses[5].walls.push(new Wall(game, 1252, 0, 28, 176));
+    this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 1280, 28));
     this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 210, 720));
-    this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 548, 314));
-    this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 693, 175));
-    this.levels[0].houses[5].walls.push(new Wall(game, 0, 0, 1280, 127));
-    this.levels[0].houses[5].walls.push(new Wall(game, 627, 281, 68, 439));
-    this.levels[0].houses[5].walls.push(new Wall(game, 582, 437, 90, 282));
-    this.levels[0].houses[5].walls.push(new Wall(game, 200, 430, 86, 60));
-    this.levels[0].houses[5].walls.push(new Wall(game, 200, 483, 225, 256));
-    this.levels[0].houses[5].walls.push(new Wall(game, 0, 693, 1280, 20));
-    this.levels[0].houses[5].walls.push(new Column(game, 950, 270, 65));
-    this.levels[0].houses[5].walls.push(new Wall(game, 809, 274, 53, 61));
-    this.levels[0].houses[5].walls.push(new Wall(game, 1022, 227, 53, 61));
-    this.levels[0].houses[5].walls.push(new Wall(game, 1250, 0, 30, 176));
-    this.levels[0].houses[5].walls.push(new Wall(game, 1250, 272, 30, 450));
-    this.levels[0].houses[5].walls.push(new Wall(game, 1181, 447, 52, 200));
-    this.levels[0].houses[5].walls.push(new Wall(game, 989, 457, 94, 192));
-    this.levels[0].houses[5].walls.push(new Wall(game, 788, 427, 92, 248));
+    this.levels[0].houses[5].walls.push(new Wall(game, 0, 692, 1280, 28));
+    this.levels[0].houses[5].walls.push(new Wall(game, 1252, 272, 28, 448));
+    this.levels[0].houses[5].walls.push(new Wall(game, 180, 282, 368, 32));
+    this.levels[0].houses[5].walls.push(new Wall(game, 644, 282, 50, 438));
+    this.levels[0].houses[5].walls.push(new Wall(game, 634, 308, 10, 94));
+    this.levels[0].houses[5].walls.push(new Wall(game, 180, 490, 260, 230));
+    this.levels[0].houses[5].walls.push(new Wall(game, 224, 430, 62, 50));
+    this.levels[0].houses[5].walls.push(new Wall(game, 640, 0, 54, 176));
+    this.levels[0].houses[5].walls.push(new Wall(game, 504, 0, 54, 176));
+    this.levels[0].houses[5].walls.push(new Wall(game, 526, 174, 10, 110));
+    this.levels[0].houses[5].walls.push(new Wall(game, 556, 152, 86, 10));
+    this.levels[0].houses[5].walls.push(new Wall(game, 582, 438, 82, 256));
+    this.levels[0].houses[5].walls.push(new Wall(game, 694, 26, 560, 92));
+    this.levels[0].houses[5].walls.push(new Wall(game, 1182, 488, 48, 118));
+    this.levels[0].houses[5].walls.push(new Wall(game, 1198, 448, 8, 198));
+    this.levels[0].houses[5].walls.push(new Wall(game, 990, 458, 92, 192));
+    this.levels[0].houses[5].walls.push(new Wall(game, 789, 429, 88, 244));
+    this.levels[0].houses[5].walls.push(new Wall(game, 811, 275, 50, 58));
+    this.levels[0].houses[5].walls.push(new Wall(game, 1049, 229, 50, 58));
+    this.levels[0].houses[5].walls.push(new Column(game, 952, 274, 68));
     this.levels[0].houses[5].walls.push(new Roof(game, 0, 0, './img/backgrounds/house00shadow.png'));
     this.levels[0].houses[5].spawn = { x: 1240, y: 224 };
 
@@ -297,7 +303,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
 
     console.log('loading complete!');
     this.buildLevelTwo(game);
-}
+};
 
 SceneManager.prototype.buildLevelTwo = function (game) {
     this.levels[1] = { streets: [], houses: [] };
@@ -587,7 +593,7 @@ SceneManager.prototype.buildLevelTwo = function (game) {
 
     console.log('loading complete!');
     this.buildLevelThree(game);
-}
+};
 
 SceneManager.prototype.buildLevelThree = function (game) {
     this.levels[2] = { streets: [], houses: [] };
@@ -784,7 +790,7 @@ SceneManager.prototype.buildLevelThree = function (game) {
     generateEnemies(game, this.levels[2].houses[3], 9);
 
     console.log('loading complete!');
-}
+};
 
 SceneManager.prototype.buildHouse = function (lvl, side, prev) {
     var walls = [];
@@ -972,7 +978,7 @@ SceneManager.prototype.buildHouse = function (lvl, side, prev) {
     }
 
     return new Background(this.game, './img/backgrounds/house' + side + index + '.png', weapon, door, 'house', walls, spawn, spawns);
-}
+};
 
 SceneManager.prototype.fillBossRoom = function (lvl) {
     var index = Math.floor(Math.random() * this.bosses.length);
@@ -1008,7 +1014,7 @@ SceneManager.prototype.fillBossRoom = function (lvl) {
         this.levels[lvl].houses[4].enemies.push(new Police(this.game, 1100, 250));
         this.levels[lvl].houses[4].enemies.push(new MageGuy(this.game, lvl));
     }
-}
+};
 
 SceneManager.prototype.buildBossRoom = function (lvl, boss) {
     var walls = [];
@@ -1122,7 +1128,7 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
     }
 
     return new Background(this.game, './img/backgrounds/boss0' + (boss + 1) + '.png', weapon, door, 'house', walls, spawn);
-}
+};
 
 SceneManager.prototype.buildGarden = function (lvl, index) {
     var walls = [];
@@ -1176,4 +1182,4 @@ SceneManager.prototype.buildGarden = function (lvl, index) {
     }
 
     return new Background(this.game, './img/backgrounds/garden0' + index + '.png', weapon, door, 'house', walls, spawn);
-}
+};

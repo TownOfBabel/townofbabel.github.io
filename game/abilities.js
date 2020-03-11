@@ -10,7 +10,7 @@ Ability.prototype = new Entity();
 Ability.prototype.constructor = Ability;
 
 Ability.prototype.update = function () {
-}
+};
 
 Ability.prototype.draw = function (ctx) {
     if (this.iconCD <= 0)
@@ -23,7 +23,7 @@ Ability.prototype.draw = function (ctx) {
         ctx.drawImage(this.icon, 60, 0, 60, 60, this.x, this.y, 40, 40);
     else
         ctx.drawImage(this.icon, 0, 0, 60, 60, this.x, this.y, 40, 40);
-}
+};
 
 function Dash(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
@@ -72,7 +72,7 @@ Dash.prototype.update = function () {
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD;
     }
-}
+};
 
 function SuperDash(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/super_dash.png');
@@ -127,7 +127,7 @@ SuperDash.prototype.update = function () {
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD;
     }
-}
+};
 
 function BlingStun(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/bling.png');
@@ -185,7 +185,7 @@ BlingStun.prototype.update = function () {
             }
         }
     }
-}
+};
 
 function BoomSpeaker(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/boombox.png');
@@ -260,7 +260,7 @@ BoomSpeaker.prototype.update = function () {
             }
         }
     }
-}
+};
 
 function Lunge(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/lunge.png');
@@ -313,7 +313,7 @@ Lunge.prototype.update = function () {
             }
         }
     }
-}
+};
 
 Lunge.prototype.hit = function (other) {
     var atan2 = Math.atan2(other.y - this.player.y, other.x - this.player.x);
@@ -345,7 +345,7 @@ Lunge.prototype.hit = function (other) {
             return distance(this.player, other) < this.range + other.sides;
     }
     else return false;
-}
+};
 
 function FruitBall(game, x, y, rot, dmg) {
     this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/apple.png'), 0, 0, 22, 24, 1, 1, true, false);
@@ -389,11 +389,11 @@ FruitBall.prototype.update = function () {
     }
     this.x += this.velocity.x * this.game.clockTick;
     this.y += this.velocity.y * this.game.clockTick;
-}
+};
 
 FruitBall.prototype.draw = function (ctx) {
     this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-}
+};
 
 function FruitBat(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/fruit_bat.png');
@@ -442,7 +442,7 @@ FruitBat.prototype.update = function () {
             this.iconCD = this.maxCD;
         }
     }
-}
+};
 
 function LaserProj(game, x, y, rot, dmg) {
     this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/laser.png'), 0, 0, 12, 38, 0.1, 4, true, false);
@@ -487,11 +487,11 @@ LaserProj.prototype.update = function () {
     }
     this.x += this.velocity.x * this.game.clockTick;
     this.y += this.velocity.y * this.game.clockTick;
-}
+};
 
 LaserProj.prototype.draw = function (ctx) {
     this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-}
+};
 
 function Laser(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/laser_icon.png');
@@ -532,4 +532,4 @@ Laser.prototype.update = function () {
             this.iconCD = this.maxCD;
         }
     }
-}
+};

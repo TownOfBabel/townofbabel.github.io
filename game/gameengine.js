@@ -26,7 +26,7 @@ Timer.prototype.tick = function () {
     var gameDelta = Math.min(wallDelta, this.maxStep);
     this.gameTime += gameDelta;
     return gameDelta;
-}
+};
 
 function GameEngine() {
     this.entities = [];
@@ -49,7 +49,7 @@ GameEngine.prototype.init = function (ctx) {
     this.startInput();
     this.timer = new Timer();
     console.log('game initialized');
-}
+};
 
 GameEngine.prototype.start = function () {
     console.log('starting game');
@@ -58,7 +58,7 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.ctx.canvas);
     })();
-}
+};
 
 GameEngine.prototype.startInput = function () {
     console.log('starting input');
@@ -101,12 +101,12 @@ GameEngine.prototype.startInput = function () {
     }, false);
 
     console.log('input started');
-}
+};
 
 GameEngine.prototype.addEntity = function (entity) {
     console.log('added entity');
     this.entities.push(entity);
-}
+};
 
 GameEngine.prototype.draw = function () {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -115,7 +115,7 @@ GameEngine.prototype.draw = function () {
         this.entities[i].draw(this.ctx);
     }
     this.ctx.restore();
-}
+};
 
 GameEngine.prototype.update = function () {
     var entitiesCount = this.entities.length;
@@ -132,7 +132,7 @@ GameEngine.prototype.update = function () {
             this.entities.splice(i, 1);
         }
     }
-}
+};
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
@@ -143,7 +143,7 @@ GameEngine.prototype.loop = function () {
     this.enter = null;
     this.player.space = null;
     this.player.reload = null;
-}
+};
 
 function distance(a, b, c) {
     if (c === undefined) {
@@ -166,7 +166,7 @@ function Entity(game, x, y) {
 }
 
 Entity.prototype.update = function () {
-}
+};
 
 Entity.prototype.draw = function (ctx) {
     if (this.game.showOutlines && this.radius) {
@@ -177,7 +177,7 @@ Entity.prototype.draw = function (ctx) {
         this.game.ctx.closePath();
         this.game.ctx.arc();
     }
-}
+};
 
 Entity.prototype.collide = function (other) {
     if (other.wall || other.door) {
@@ -223,27 +223,27 @@ Entity.prototype.collide = function (other) {
         }
     }
     else return distance(this, other) < this.radius + other.radius;
-}
+};
 
 Entity.prototype.collideLeft = function () {
     if (this.caged) return (this.x - this.radius) < 1075;
     else return (this.x - this.radius) < 0;
-}
+};
 
 Entity.prototype.collideRight = function () {
     if (this.caged) return (this.x + this.radius) > 1235
     else return (this.x + this.radius) > 1280;
-}
+};
 
 Entity.prototype.collideTop = function () {
     if (this.caged) return (this.y - this.radius) < 40;
     else return (this.y - this.radius) < 0;
-}
+};
 
 Entity.prototype.collideBottom = function () {
     if (this.caged) return (this.y + this.radius) > 200;
     else return (this.y + this.radius) > 720;
-}
+};
 
 Entity.prototype.rotateAndCache = function (image, angle) {
     var offscreenCanvas = document.createElement('canvas');
@@ -260,4 +260,4 @@ Entity.prototype.rotateAndCache = function (image, angle) {
     //offscreenCtx.strokeStyle = 'red';
     //offscreenCtx.strokeRect(0,0,size,size);
     return offscreenCanvas;
-}
+};
