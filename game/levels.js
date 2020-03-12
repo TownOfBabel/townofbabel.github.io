@@ -470,7 +470,7 @@ SceneManager.prototype.buildLevelTwo = function (game) {
                 new Weapon(game, this.player, Math.floor(Math.random() * 3), 1, Math.floor(Math.random() * 4)),
                 new Door(game, 1254, 416, 22, 116), 'house', [], { x: 1200, y: 474 }, [{ x: 225, y: 200 }, { x: 640, y: 360 }, { x: 1060, y: 180 }]);
         else this.levels[1].houses[3] = new Background(game, './img/backgrounds/apartment03.png',
-            new Weapon(game, this.player, Math.floor(Math.random() * 3), 1), new Door(game, 1254, 416, 22, 116), 
+            new Weapon(game, this.player, Math.floor(Math.random() * 3), 1), new Door(game, 1254, 416, 22, 116),
             'house', [], { x: 1200, y: 474 }, [{ x: 225, y: 200 }, { x: 640, y: 360 }, { x: 1060, y: 180 }]);
     }
     // this.levels[1].houses[4] = this.buildBossRoom(1, 1);
@@ -1022,28 +1022,20 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
     var door = null;
     var spawn = null;
     var weapon = null;
-    var rarityPct = 0;
     var abilityPct = 0;
-    if (lvl == 0) {
-        rarityPct = 25;
-        abilityPct = 50;
-    } else if (lvl == 1) {
-        rarityPct = 35;
-        abilityPct = 60;
-    } else if (lvl == 2) {
-        rarityPct = 45;
-        abilityPct = 70;
-    }
+    if (lvl == 0)  abilityPct = 50;
+    else if (lvl == 1) abilityPct = 60;
+    else if (lvl == 2) abilityPct = 70;
+    else abilityPct = 80;
     if (boss == 0) {
-        if (Math.random() * 100 < rarityPct) {
-            if (Math.random() * 100 < abilityPct)
-                weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2) + 1, lvl + 1, Math.floor(Math.random() * 7));
-            else weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2) + 1, lvl + 1);
-        } else {
+        if (lvl == 3) {
             if (Math.random() * 100 < abilityPct)
                 weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2) + 1, lvl, Math.floor(Math.random() * 7));
             else weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2) + 1, lvl);
         }
+        if (Math.random() * 100 < abilityPct)
+            weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2) + 1, lvl + 1, Math.floor(Math.random() * 7));
+        else weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2) + 1, lvl + 1);
         walls[0] = new Wall(this.game, 692, 690, 588, 30);
         walls[1] = new Wall(this.game, 1250, 0, 30, 720);
         walls[2] = new Wall(this.game, 0, 0, 1280, 30);
@@ -1059,15 +1051,14 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
         door = new Door(this.game, 576, 694, 116, 22);
         spawn = { x: 634, y: 640 };
     } else if (boss == 1) {
-        if (Math.random() * 100 < rarityPct) {
-            if (Math.random() * 100 < abilityPct)
-                weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2), lvl + 1, Math.floor(Math.random() * 7));
-            else weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2), lvl + 1);
-        } else {
+        if (lvl == 3) {
             if (Math.random() * 100 < abilityPct)
                 weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2), lvl, Math.floor(Math.random() * 7));
             else weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2), lvl);
         }
+        if (Math.random() * 100 < abilityPct)
+            weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2), lvl + 1, Math.floor(Math.random() * 7));
+        else weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2), lvl + 1);
         walls[0] = new Wall(this.game, 692, 690, 588, 30);
         walls[1] = new Wall(this.game, 1250, 0, 30, 720);
         walls[2] = new Wall(this.game, 0, 0, 1280, 30);
@@ -1082,15 +1073,15 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
         door = new Door(this.game, 576, 694, 116, 22);
         spawn = { x: 634, y: 640 };
     } else if (boss == 2) {
-        if (Math.random() * 100 < rarityPct) {
-            if (Math.random() * 100 < abilityPct)
-                weapon = new Weapon(this.game, this.player, 0, lvl + 1, Math.floor(Math.random() * 7));
-            else weapon = new Weapon(this.game, this.player, 0, lvl + 1);
-        } else {
+        if (lvl == 3) {
             if (Math.random() * 100 < abilityPct)
                 weapon = new Weapon(this.game, this.player, 0, lvl, Math.floor(Math.random() * 7));
             else weapon = new Weapon(this.game, this.player, 0, lvl);
         }
+        else if (Math.random() * 100 < abilityPct)
+            weapon = new Weapon(this.game, this.player, 0, lvl + 1, Math.floor(Math.random() * 7));
+        else weapon = new Weapon(this.game, this.player, 0, lvl + 1);
+
         walls[0] = new Wall(this.game, 692, 690, 588, 30);
         walls[1] = new Wall(this.game, 1250, 0, 30, 720);
         walls[2] = new Wall(this.game, 0, 0, 1280, 30);
@@ -1104,26 +1095,23 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
         door = new Door(this.game, 576, 694, 116, 22);
         spawn = { x: 634, y: 640 };
     } else {
-        if (Math.random() * 100 < rarityPct) {
-            if (Math.random() * 100 < abilityPct)
-                weapon = new Weapon(this.game, this.player, 2, lvl + 1, Math.floor(Math.random() * 7));
-            else weapon = new Weapon(this.game, this.player, 2, lvl + 1);
-        } else {
+        if (lvl == 3) {
             if (Math.random() * 100 < abilityPct)
                 weapon = new Weapon(this.game, this.player, 2, lvl, Math.floor(Math.random() * 7));
             else weapon = new Weapon(this.game, this.player, 2, lvl);
         }
+        else if (Math.random() * 100 < abilityPct)
+            weapon = new Weapon(this.game, this.player, 2, lvl + 1, Math.floor(Math.random() * 7));
+        else weapon = new Weapon(this.game, this.player, 2, lvl + 1);
         walls[0] = new Wall(this.game, 692, 690, 588, 30);
         walls[1] = new Wall(this.game, 1250, 0, 30, 720);
         walls[2] = new Wall(this.game, 0, 0, 1280, 30);
         walls[3] = new Wall(this.game, 0, 0, 30, 720);
         walls[4] = new Wall(this.game, 0, 690, 576, 30);
         walls[5] = new Column(this.game, 351, 169, 42);
-        walls[6] = new Column(this.game, 351, 360, 42);
-        walls[7] = new Column(this.game, 351, 551, 42);
-        walls[8] = new Column(this.game, 929, 169, 42);
-        walls[9] = new Column(this.game, 929, 360, 42);
-        walls[10] = new Column(this.game, 929, 551, 42);
+        walls[6] = new Column(this.game, 351, 551, 42);
+        walls[7] = new Column(this.game, 929, 169, 42);
+        walls[8] = new Column(this.game, 929, 551, 42);
         door = new Door(this.game, 576, 694, 116, 22);
         spawn = { x: 634, y: 640 };
     }

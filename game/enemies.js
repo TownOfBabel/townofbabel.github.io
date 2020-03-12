@@ -56,6 +56,8 @@ function Enemy(game, x, y) {
     this.slamCD = 0;
     this.stunCD = 0;
     this.knockBack = 0;
+    this.knocked = false;
+    this.barkCD = Math.floor(Math.random() * 45) + 45;
     this.hitCD = 0;
     this.ctr = 0;
 
@@ -88,7 +90,16 @@ Enemy.prototype.update = function () {
         if (this.hitCD > 0) this.hitCD--;
         if (this.hurt) this.engage = true;
         if (this.knockBack > 0) this.knockBack--;
-        else this.maxSpeed = this.mSpeed_init;
+        else if (this.knocked) {
+            this.maxSpeed = this.mSpeed_init;
+            this.knocked = false;
+        }
+        if (this.barkCD > 0) this.barkCD--;
+        else if (this.sound.bark) {
+            this.sound.bark.load();
+            this.sound.bark.play();
+            this.barkCD = Math.floor(Math.random() * 60) + 120;
+        }
 
         // Update animations
         if (this.hurt && this.anim.hit.isDone()) {
@@ -118,8 +129,8 @@ Enemy.prototype.update = function () {
                 this.attacking = false;
                 this.atkCD = this.endLag;
                 if (this.weapon.type == 'bite') {
-                    this.acceleration = 200;
-                    this.maxSpeed = 200;
+                    this.acceleration = 120;
+                    this.maxSpeed = this.mSpeed_init;
                 }
             }
         }
@@ -204,12 +215,22 @@ Enemy.prototype.update = function () {
                     }
                     else {
                         if (this.knockBack > 0) {
-                            this.velocity.x -= Math.cos(atan) * this.acceleration * 5;
-                            this.velocity.y -= Math.sin(atan) * this.acceleration * 5;
+                            this.knocked = true;
+                            this.velocity.x -= (Math.cos(atan) + 0.01) * this.acceleration * 5;
+                            this.velocity.y -= (Math.sin(atan) + 0.01) * this.acceleration * 5;
                             this.maxSpeed *= 1.3;
                         } else {
-                            this.velocity.x += Math.cos(this.rotation) * this.acceleration;
-                            this.velocity.y += Math.sin(this.rotation) * this.acceleration;
+                            if (this.weapon.type == 'bite' && this.attacking) {
+                                this.velocity.x += Math.cos(this.rotation) * this.acceleration * 5;
+                                this.velocity.y += Math.sin(this.rotation) * this.acceleration * 5;
+                            }
+                            else if (distance(this, ent) < this.ideal - 5) {
+                                this.velocity.x -= Math.cos(this.rotation) * this.acceleration * 0.4;
+                                this.velocity.y -= Math.sin(this.rotation) * this.acceleration * 0.4;
+                            } else if (distance(this, ent) > this.ideal + 15) {
+                                this.velocity.x += Math.cos(this.rotation) * this.acceleration;
+                                this.velocity.y += Math.sin(this.rotation) * this.acceleration;
+                            }
                         }
                     }
                     // Attack calculations
@@ -225,11 +246,10 @@ Enemy.prototype.update = function () {
                         this.atkCD = this.begLag;
                     }
                     else if (this.weapon.type == 'bite' && this.atkCD <= 0
-                        && distance(this, ent) < (this.range * 1.75 + ent.range)) {
+                        && distance(this, ent) < (this.ideal + ent.radius + 10)) {
                         this.attacking = true;
-                        this.atkCD = this.begLag;
-                        this.acceleration = 400;
-                        this.maxSpeed = 400;
+                        this.acceleration = 250;
+                        this.maxSpeed = 425;
                     }
                     if (this.slamming && this.slamCD == 100) this.sound.hit.play();
                     if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 150)
@@ -360,21 +380,23 @@ function Dog(game, x, y) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 200, 200, 200, 0.1, 6, true, false);
-    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 600, 200, 200, 0.05, 5, false, false);
+    this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 600, 200, 200, 0.06, 5, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 1000, 0, 200, 200, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 200, 0, 200, 200, 0.25, 2, false, false);
 
     this.sound = {};
-    this.sound.atk = new Audio('./sound/attack.wav');
+    this.sound.atk = new Audio('./sound/dog_a.wav');
     this.sound.atk.volume = 0.2;
+    this.sound.bark = new Audio('./sound/bark.wav');
+    this.sound.bark.volume = 0.2;
 
     // Properties
     this.radius = 20;
     this.faces = 74;
     this.sides = 18;
     this.rotationLag = 10;
-    this.acceleration = 210;
-    this.maxSpeed = 210;
+    this.acceleration = 90;
+    this.maxSpeed = 200;
     this.mSpeed_init = 200;
     this.weapon = {};
     this.weapon.type = 'bite';
@@ -382,7 +404,8 @@ function Dog(game, x, y) {
     this.endLag = 120;
     this.hitDur = 6;
     this.range = 75;
-    this.sight = 500;
+    this.ideal = 140;
+    this.sight = 350;
     this.fov = Math.PI;
     this.hpDrop = 1;
     this.health = 60;
@@ -414,6 +437,7 @@ function Thug(game, weapon, x, y) {
         this.endLag = 45;
         this.hitDur = 14;
         this.range = 90;
+        this.ideal = 85;
     }
     else {
         this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 1, true, false);
@@ -430,6 +454,7 @@ function Thug(game, weapon, x, y) {
         this.endLag = 65;
         this.hitDur = 20;
         this.range = 100;
+        this.ideal = 100;
     }
 
     // Properties
@@ -484,6 +509,7 @@ function Bodyguard(game, x, y) {
     this.endLag = 85;
     this.hitDur = 12;
     this.range = 60;
+    this.ideal = 50;
     this.sight = 200;
     this.fov = Math.PI * 4 / 9;
     this.hpDrop = Math.floor(Math.random() * 2) + 2;
@@ -518,11 +544,12 @@ function Police(game, x, y) {
     this.faces = 32;
     this.sides = 38;
     this.range = 250;
+    this.ideal = 250;
     this.rotationLag = 20;
     this.acceleration = 80;
     this.maxSpeed = 120;
     this.mSpeed_init = 120;
-    this.sight = 420;
+    this.sight = 400;
     this.fov = Math.PI / 2;
     this.hpDrop = Math.floor(Math.random() * 2) + 1;
     this.health = 120;
@@ -646,8 +673,8 @@ Police.prototype.update = function () {
                     }
                     else {
                         if (this.knockBack > 0) {
-                            this.velocity.x -= difX * this.acceleration * 5;
-                            this.velocity.y -= difY * this.acceleration * 5;
+                            this.velocity.x -= (difX + 0.001) * this.acceleration * 5;
+                            this.velocity.y -= (difY + 0.001) * this.acceleration * 5;
                             this.maxSpeed *= 1.2;
                         }
                         else {

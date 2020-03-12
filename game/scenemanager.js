@@ -1,8 +1,7 @@
 function Menu(game, image) {
     this.menu = true;
     this.image = image;
-
-    Entity.call(this, game, 320, 180);
+    Entity.call(this, game, 0, 0);
 }
 
 Menu.prototype = new Entity();
@@ -12,7 +11,7 @@ Menu.prototype.update = function () {
 };
 
 Menu.prototype.draw = function (ctx) {
-    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), 0, 0);
+    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
 };
 
 function TitleScreen(game) {
@@ -31,6 +30,23 @@ TitleScreen.prototype.update = function () {
 
 TitleScreen.prototype.draw = function (ctx) {
     this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+};
+
+function Credits(game, manager) {
+    this.manager = manager;
+    Menu.call(this, game, './img/menus/credits.png');
+}
+
+Credits.prototype = new Menu();
+Credits.prototype.constructor = Credits;
+
+Credits.prototype.update = function () {
+    var hover = false;
+    if (this.game.mouse.x > 1010 && this.game.mouse.x < 1060
+        && this.game.mouse.y > 119 && this.game.mouse.y < 169)
+        hover = true;
+    if (this.game.click && hover)
+        this.manager.changeBackground(this.manager.menus.title);
 };
 
 function Fade(game, tofrom) {
@@ -105,9 +121,37 @@ SelectDif.prototype.draw = function (ctx) {
         ctx.drawImage(this.none, 0, 0);
 };
 
-function CreditsBtn(game) {
-    
+function CreditsBtn(game, manager) {
+    this.image = ASSET_MANAGER.getAsset('./img/menus/creditsbutton.png');
+    this.credits = new Credits(game, manager);
+    this.manager = manager;
+    this.hover = false;
+    Entity.call(this, game, 0, 0);
 }
+
+CreditsBtn.prototype = new Entity();
+CreditsBtn.prototype.constructor = CreditsBtn;
+
+CreditsBtn.prototype.update = function () {
+    this.hover = false;
+    if (this.game.mouse.x > 40 && this.game.mouse.x < 170
+        && this.game.mouse.y > 650 && this.game.mouse.y < 700)
+        this.hover = true;
+    if (this.game.click && this.hover) {
+        this.click = true;
+        this.manager.changeBackground(this.credits);
+    }
+    else this.click = false;
+};
+
+CreditsBtn.prototype.draw = function (ctx) {
+    if (this.click)
+        ctx.drawImage(this.image, 2560, 0, 1280, 720, 0, 0, 1280, 720);
+    else if (this.hover)
+        ctx.drawImage(this.image, 1280, 0, 1280, 720, 0, 0, 1280, 720);
+    else
+        ctx.drawImage(this.image, 0, 0, 1280, 720, 0, 0, 1280, 720);
+};
 
 function getTrans(weapon) {
     return (71.4 - (weapon.scale * 71.4)) / 2;
@@ -161,10 +205,10 @@ function SceneManager(game) {
     this.menus = {};
     this.menus.title = new TitleScreen(game);
     this.menus.dif = new SelectDif(game);
-    this.menus.win = new Menu(game, './img/menus/roomclear.png');
+    this.menus.win = new Menu(game, './img/menus/win.png');
     this.menus.lose = new Menu(game, './img/menus/game over.png');
     this.menus.cont = new Menu(game, './img/menus/continued.png');
-    this.menus.credits = new Menu(game, './img/menus/credits.png');
+    this.menus.creditsBtn = new CreditsBtn(game, this);
     this.menus.intro = [];
     this.menus.street = [];
     this.menus.boss = [];
@@ -246,8 +290,12 @@ SceneManager.prototype.update = function () {
         }
         else if (this.activeBG === this.menus.win && this.game.enter)
             this.changeBackground(this.menus.title);
-        else if (this.activeBG === this.menus.lose && this.game.click)
+        else if (this.activeBG === this.menus.lose && this.game.enter) {
+            this.sound.menus.load();
+            this.sound.menus.volume = 0.2;
+            this.sound.menus.play();
             this.changeBackground(this.menus.title);
+        }
         // for difficulty selection - not fully implemented
         // if (this.activeBG === this.menus.title && this.game.click) {
         //     this.game.addEntity(this.menus.dif);
@@ -260,8 +308,11 @@ SceneManager.prototype.update = function () {
         // }
     }
     else {
-        if (!this.player.alive && !this.player.die)
+        if (!this.player.alive && !this.player.die) {
+            this.sound.game.pause();
+            this.sound.game.load();
             this.changeBackground(this.menus.lose);
+        }
         if (!this.activeBG.menu) {
             for (var i = this.activeBG.enemies.length - 1; i >= 0; --i) {
                 var ent = this.activeBG.enemies[i];
@@ -299,7 +350,7 @@ SceneManager.prototype.update = function () {
                 this.sound.menus.play();
                 this.changeBackground(this.menus.boss[this.bossArray[this.level.current] * 2]);
             }
-            
+
         }
         if (!this.activeBG.menu) {
             if (this.activeBG.enemies.length == 0) {
@@ -349,7 +400,7 @@ SceneManager.prototype.updateBackground = function () {
         for (var i = 0; i < this.prevBG.enemies.length; i++)
             this.prevBG.enemies[i].removeFromWorld = false;
         this.prevBG.drop.removeFromWorld = false;
-    }
+    } else this.menus.creditsBtn.removeFromWorld = false;
     this.arrow.removeFromWorld = false;
     this.arrow2.removeFromWorld = false;
     this.player.removeFromWorld = false;
@@ -380,6 +431,8 @@ SceneManager.prototype.updateBackground = function () {
         this.game.addEntity(this.arrow2);
         this.game.addEntity(this.arrow);
     }
+    else if (this.activeBG === this.menus.title)
+        this.game.addEntity(this.menus.creditsBtn);
     if (this.level.clear)
         this.game.addEntity(this.menus.cont);
     this.changedBG = false;
@@ -387,6 +440,7 @@ SceneManager.prototype.updateBackground = function () {
 
 SceneManager.prototype.startGame = function () {
     this.game.addEntity(this.activeBG);
+    this.game.addEntity(this.menus.creditsBtn);
     this.sound.menus.volume = 0.2;
     this.sound.menus.loop = true;
     this.sound.menus.play();
@@ -470,7 +524,7 @@ SceneManager.prototype.changeBackground = function (nextBG) {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.activeBG.enemies[i].removeFromWorld = true;
         this.activeBG.drop.removeFromWorld = true;
-    }
+    } else this.menus.creditsBtn.removeFromWorld = true;
     this.activeBG.removeFromWorld = true;
     this.arrow.removeFromWorld = true;
     this.arrow2.removeFromWorld = true;
