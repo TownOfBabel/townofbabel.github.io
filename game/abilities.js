@@ -106,6 +106,7 @@ SuperDash.prototype.update = function () {
         this.ding.play();
         this.ready = false;
     }
+    if (!this.player.alive) this.removeFromWorld = true;
     if (this.game.player.dash && this.player.supDash) {
         this.player.supDash = false;
         this.player.anim.supDash.elapsedTime = 0;
@@ -172,6 +173,7 @@ BlingStun.prototype.update = function () {
         this.ding.play();
         this.ready = false;
     }
+    if (!this.player.alive) this.removeFromWorld = true;
     if (this.game.player.dash && this.player.bling) {
         this.player.bling = false;
         this.player.anim.bling.elapsedTime = 0;
@@ -242,6 +244,7 @@ BoomSpeaker.prototype.update = function () {
         this.ding.play();
         this.ready = false;
     }
+    if (!this.player.alive) this.removeFromWorld = true;
     if (this.game.player.dash && this.player.boom) {
         this.player.boom = false;
         this.player.anim.boom.elapsedTime = 0;
@@ -333,6 +336,7 @@ Lunge.prototype.update = function () {
         this.ding.play();
         this.ready = false;
     }
+    if (!this.player.alive) this.removeFromWorld = true;
     if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
         if (this.player.attacking) {
             this.player.attacking = false;
@@ -480,6 +484,7 @@ FruitBat.prototype.update = function () {
         this.ding.play();
         this.ready = false;
     }
+    if (!this.player.alive) this.removeFromWorld = true;
     if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
         if (this.player.attacking) {
             this.player.attacking = false;
@@ -587,6 +592,7 @@ Laser.prototype.update = function () {
         this.ding.play();
         this.ready = false;
     }
+    if (!this.player.alive) this.removeFromWorld = true;
     if (this.game.shift && this.cooldown <= 0 && this.player.stunCD <= 0 && !this.player.dash) {
         if (this.player.attacking) {
             this.player.attacking = false;

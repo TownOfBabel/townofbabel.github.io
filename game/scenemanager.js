@@ -191,6 +191,7 @@ function SceneManager(game) {
     this.levels = [];
     this.level = { current: 0, clear: false };
     this.player = new Frump(game);
+    this.oldWeapon = null;
     this.arrow = new Arrow(game, this);
     this.arrow2 = new Arrow2(game, this);
     this.bosses = [0, 1, 2, 3];
@@ -264,11 +265,17 @@ SceneManager.prototype.update = function () {
             this.buildLevelOne(this.game);
             this.bossDead = false;
             this.player.weapon = new Weapon(this.game, this.player, 0, 0);
+            this.player.weapon.hidden = false;
+            this.player.weapon.floating = false;
+            var dif = getTrans(this.player.weapon);
+            this.player.weapon.x = dif - 5;
+            this.player.weapon.y = 15 + dif;
             this.player.x = 515;
             this.player.y = 470;
             this.player.health.current = this.player.health.max;
             this.player.alive = true;
             this.changeBackground(this.levels[0].houses[5]);
+            this.saveWeapon(this.player.weapon);
             this.game.addEntity(new Fade(this.game, 'fromBlack'));
             this.sound.game.volume = 0.1;
             this.sound.game.loop = true;
@@ -308,12 +315,20 @@ SceneManager.prototype.update = function () {
         // }
     }
     else {
-        if (!this.player.alive && !this.player.die) {
-            this.sound.game.pause();
-            this.sound.game.load();
-            this.changeBackground(this.menus.lose);
-        }
         if (!this.activeBG.menu) {
+            if (!this.player.alive && !this.player.die && this.timer.init == 0) {
+                this.sound.game.pause();
+                this.sound.game.load();
+                this.sound.menus.pause();
+                this.sound.menus.load();
+                this.game.addEntity(new Fade(this.game, 'toBlack'));
+                this.timer.start();
+            }
+            else if (!this.player.alive && this.timer.check() >= 1) {
+                this.timer.stop();
+                this.reload(this.level.current);
+                this.sound.game.play();
+            }
             for (var i = this.activeBG.enemies.length - 1; i >= 0; --i) {
                 var ent = this.activeBG.enemies[i];
                 if (!ent.alive && !ent.die) {
@@ -329,14 +344,16 @@ SceneManager.prototype.update = function () {
             }
         }
         if (!this.activeBG.menu) {
-            if (this.timer.check() >= 1 && this.activeBG === this.levels[2].houses[4]) {
-                this.timer.stop();
-                this.sound.game.pause();
-                this.sound.game.load();
-                this.sound.menus.volume = 0.2;
-                this.sound.menus.load();
-                this.sound.menus.play();
-                this.changeBackground(this.menus.win);
+            if (this.levels[2]) {
+                if (this.timer.check() >= 1 && this.activeBG === this.levels[2].houses[4]) {
+                    this.timer.stop();
+                    this.sound.game.pause();
+                    this.sound.game.load();
+                    this.sound.menus.volume = 0.2;
+                    this.sound.menus.load();
+                    this.sound.menus.play();
+                    this.changeBackground(this.menus.win);
+                }
             }
             else if (this.timer.check() >= 1 && this.activeBG === this.levels[this.level.current].houses[4]) {
                 this.timer.stop();
@@ -449,8 +466,13 @@ SceneManager.prototype.startGame = function () {
 
 SceneManager.prototype.checkBounds = function () {
     if (this.activeBG === this.levels[this.level.current].streets[5] && this.player.collideRight()) {
+        if (!this.activeBG.neighbors[1] && this.level.current < 3) {
+            if (this.level.current == 0) this.buildLevelTwo(this.game);
+            else if (this.level.current == 1) this.buildLevelThree(this.game);
+        }
         if (this.activeBG.neighbors[0].enemies.length == 0 && this.activeBG.enemies.length == 0
             && this.activeBG.neighbors[1]) {
+            this.saveWeapon(this.player.weapon);
             this.level.current++;
             this.player.x = 640;
             this.player.y = 640;
@@ -543,4 +565,35 @@ SceneManager.prototype.changeBackground = function (nextBG) {
     // add new background
     this.game.addEntity(this.activeBG);
     this.changedBG = true;
+};
+
+SceneManager.prototype.saveWeapon = function (weapon) {
+    this.oldWeapon = {};
+    this.oldWeapon.floating = weapon.floating;
+    this.oldWeapon.hidden = weapon.hidden;
+    this.oldWeapon.type = weapon.type;
+    this.oldWeapon.ability = weapon.abilityNum;
+    this.oldWeapon.rarity = weapon.rarity;
+    this.oldWeapon.spawn = { x: weapon.x, y: weapon.y };
+};
+
+SceneManager.prototype.loadWeapon = function () {
+    if (this.oldWeapon.type == 'knife') {
+        this.player.weapon = new Weapon(this.game, this.player, 0, this.oldWeapon.rarity,
+            this.oldWeapon.ability, this.oldWeapon.spawn);
+        this.player.weapon.floating = this.oldWeapon.floating;
+        this.player.weapon.hidden = this.oldWeapon.hidden;
+    }
+    else if (this.oldWeapon.type == 'bat') {
+        this.player.weapon = new Weapon(this.game, this.player, 1, this.oldWeapon.rarity,
+            this.oldWeapon.ability, this.oldWeapon.spawn);
+        this.player.weapon.floating = this.oldWeapon.floating;
+        this.player.weapon.hidden = this.oldWeapon.hidden;
+    }
+    else {
+        this.player.weapon = new Weapon(this.game, this.player, 2, this.oldWeapon.rarity,
+            this.oldWeapon.ability, this.oldWeapon.spawn);
+        this.player.weapon.floating = this.oldWeapon.floating;
+        this.player.weapon.hidden = this.oldWeapon.hidden;
+    }
 };

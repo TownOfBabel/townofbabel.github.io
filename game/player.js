@@ -90,6 +90,7 @@ function Weapon(game, player, type, rarity, ability, spawn) {
     this.hidden = true;
     this.floating = true;
     this.hover = false;
+    this.rarity = rarity;
     if (type == 0) {
         this.type = 'knife';
         this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
@@ -115,7 +116,8 @@ function Weapon(game, player, type, rarity, ability, spawn) {
     else if (ability == 2) this.ability = new BoomSpeaker(game, player);
     else if (ability >= 3) { }
     else this.ability = false;
-    this.abilityNum = ability;
+    if (ability === undefined) this.abilityNum = null;
+    else this.abilityNum = ability;
     this.radius = 10;
     calcDmg(this);
     if (type == 2) this.damage /= 2;
@@ -271,7 +273,7 @@ Frump.prototype.constructor = Frump;
 
 Frump.prototype.update = function () {
     if (this.stunCD > 0) this.stunCD--;
-    if (this.health.current <= 0) {
+    if (this.health.current <= 0 && this.alive) {
         this.die = true;
         this.alive = false;
     }

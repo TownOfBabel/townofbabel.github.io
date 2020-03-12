@@ -230,21 +230,18 @@ Arrow.prototype.update = function () {
                 this.rotation = -Math.PI / 2;
             }
         }
-        else if (displayBG === this.manager.levels[1].streets[2]) {
-            this.x = displayBG.spawn.x + 50;
-            this.y = displayBG.spawn.y;
-            this.rotation = Math.PI;
-        }
         else {
             this.x = 640;
             this.y = 100;
             this.rotation = -Math.PI / 2;
         }
-    }
-    else if (displayBG === this.manager.levels[1].houses[1] || displayBG === this.manager.levels[1].houses[2]) {
-        this.x = 575;
-        this.y = 100;
-        this.rotation = -Math.PI / 2;
+        if (this.manager.levels[1]) {
+            if (displayBG === this.manager.levels[1].streets[2]) {
+                this.x = displayBG.spawn.x + 50;
+                this.y = displayBG.spawn.y;
+                this.rotation = Math.PI;
+            }
+        }
     }
     else {
         if (displayBG === this.manager.levels[this.manager.level.current].houses[4]) {
@@ -261,6 +258,13 @@ Arrow.prototype.update = function () {
             this.x = displayBG.spawn.x - 50;
             this.y = displayBG.spawn.y;
             this.rotation = 0;
+        }
+    }
+    if (this.manager.levels[1]) {
+        if (displayBG === this.manager.levels[1].houses[1] || displayBG === this.manager.levels[1].houses[2]) {
+            this.x = 575;
+            this.y = 100;
+            this.rotation = -Math.PI / 2;
         }
     }
 };
@@ -295,11 +299,6 @@ Arrow2.prototype.update = function () {
                 this.rotation = -Math.PI / 2;
             }
         }
-        else if (displayBG === this.manager.levels[1].streets[2]) {
-            this.x = displayBG.spawn.x + 50;
-            this.y = displayBG.spawn.y;
-            this.rotation = Math.PI;
-        }
         else if (displayBG.neighbors[1]) {
             if (displayBG.neighbors[1].enemies.length > 0) {
                 this.x = displayBG.spawn.x - 50;
@@ -329,11 +328,13 @@ Arrow2.prototype.update = function () {
             this.y = 100;
             this.rotation = -Math.PI / 2;
         }
-    }
-    else if (displayBG === this.manager.levels[1].houses[1] || displayBG === this.manager.levels[1].houses[2]) {
-        this.x = 575;
-        this.y = 100;
-        this.rotation = -Math.PI / 2;
+        if (this.manager.levels[1]) {
+            if (displayBG === this.manager.levels[1].streets[2]) {
+                this.x = displayBG.spawn.x + 50;
+                this.y = displayBG.spawn.y;
+                this.rotation = Math.PI;
+            }
+        }
     }
     else {
         if (displayBG === this.manager.levels[this.manager.level.current].houses[4]) {
@@ -350,6 +351,13 @@ Arrow2.prototype.update = function () {
             this.x = displayBG.spawn.x - 50;
             this.y = displayBG.spawn.y;
             this.rotation = 0;
+        }
+    }
+    if (this.manager.levels[1]) {
+        if (displayBG === this.manager.levels[1].houses[1] || displayBG === this.manager.levels[1].houses[2]) {
+            this.x = 575;
+            this.y = 100;
+            this.rotation = -Math.PI / 2;
         }
     }
 };

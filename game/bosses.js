@@ -37,6 +37,7 @@ function SlowDogg(game, dogs, lvl) {
     this.maxSpeed = 65;
     this.mSpeed_init = 65;
     this.range = 130;
+    this.ideal = 140;
     this.health = lvl * 125 + 250;
     this.maxHealth = this.health;
     this.hpDrop = Math.floor(Math.random() * 2) + 3;
@@ -154,15 +155,19 @@ SlowDogg.prototype.update = function () {
                     ent.y += difY * delta / 2;
                 }
                 else {
-                    if (this.knockBack <= 0) {
-                        this.velocity.x += Math.cos(this.rotation) * this.acceleration;
-                        this.velocity.y += Math.sin(this.rotation) * this.acceleration;
-                        this.maxSpeed = this.mSpeed_init;
-                    }
-                    else {
+                    if (this.knockBack > 0) {
                         this.velocity.x -= difX * this.acceleration * 6;
                         this.velocity.y -= difY * this.acceleration * 6;
                         this.maxSpeed *= 1.13;
+                    }
+                    else {
+                        if (distance(this, ent) < this.ideal - 5) {
+                            this.velocity.x -= Math.cos(this.rotation) * this.acceleration * 0.6;
+                            this.velocity.y -= Math.sin(this.rotation) * this.acceleration * 0.6;
+                        } else if (distance(this, ent) > this.ideal + 15) {
+                            this.velocity.x += Math.cos(this.rotation) * this.acceleration;
+                            this.velocity.y += Math.sin(this.rotation) * this.acceleration;
+                        }
                     }
                 }
                 var dist = distance(this, ent);

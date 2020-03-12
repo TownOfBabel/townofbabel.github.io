@@ -52,8 +52,8 @@ function Enemy(game, x, y) {
     this.sound.hit3 = new Audio('./sound/hit3.wav');
     this.sound.hit3.volume = 0.1;
 
-    this.atkCD = 0;
-    this.slamCD = 0;
+    this.atkCD = Math.floor(Math.random() * 20) + 15;
+    this.slamCD = Math.floor(Math.random() * 20) + 30;
     this.stunCD = 0;
     this.knockBack = 0;
     this.knocked = false;
@@ -536,7 +536,7 @@ function Police(game, x, y) {
     this.sound.atk = new Audio('./sound/gun.wav');
     this.sound.atk.volume = 0.05;
     this.sound.reload = new Audio('./sound/reload_e.wav');
-    this.sound.reload.volume = 0.05;
+    this.sound.reload.volume = 0.06;
 
     this.weapon = {};
     this.weapon.type = 'gun';
@@ -699,7 +699,10 @@ Police.prototype.update = function () {
                         this.attacking = true;
                         this.atkCD = 45;
                         this.bullets--;
-                        if (this.bullets == 0) this.reload = true;
+                        if (this.bullets == 0) {
+                            this.reload = true;
+                            this.sound.reload.play();
+                        }
                         var gunRot = this.rotation + Math.atan(7 / 85);
                         var difX = Math.cos(gunRot) * 85;
                         var difY = Math.sin(gunRot) * 85;
