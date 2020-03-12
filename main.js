@@ -63,10 +63,11 @@ var ASSET_MANAGER = new AssetManager();
 // menus
 ASSET_MANAGER.queueDownload('./img/menus/title_orig.png');
 ASSET_MANAGER.queueDownload('./img/menus/title.png');
+ASSET_MANAGER.queueDownload('./img/menus/creditsbutton.png');
 ASSET_MANAGER.queueDownload('./img/menus/none_dif.png');
 ASSET_MANAGER.queueDownload('./img/menus/casual_dif.png');
 ASSET_MANAGER.queueDownload('./img/menus/classic_dif.png');
-ASSET_MANAGER.queueDownload('./img/menus/roomclear.png');
+ASSET_MANAGER.queueDownload('./img/menus/win.png');
 ASSET_MANAGER.queueDownload('./img/menus/game over.png');
 ASSET_MANAGER.queueDownload('./img/menus/continued.png');
 ASSET_MANAGER.queueDownload('./img/menus/fadeblack.png');

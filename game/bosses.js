@@ -408,8 +408,8 @@ BigGuy.prototype.update = function () {
                 }
                 else {
                     if (this.knockBack > 0) {
-                        this.velocity.x -= difX * this.acceleration * 5;
-                        this.velocity.y -= difY * this.acceleration * 5;
+                        this.velocity.x -= (difX + 0.001) * this.acceleration * 5;
+                        this.velocity.y -= (difY + 0.001) * this.acceleration * 5;
                         this.maxSpeed *= 1.1;
                     } else {
                         var left = atan - Math.PI / 2;
