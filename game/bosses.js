@@ -1064,7 +1064,7 @@ MageGuy.prototype.update = function () {
                         }
                     }
                 }
-                else if (this.cast && this.ballCD == 210) {
+                else if (this.cast && this.ballCD == 225) {
                     this.sound.fire.play();
                     var direction = Math.atan2(ent.y - (this.y + difY * 75), ent.x - (this.x + difY * 75));
                     if (Math.floor(Math.random() * 4) == 0)
@@ -1122,6 +1122,7 @@ Fruit.prototype.update = function () {
                         ent.sound.hit3.play();
                         ent.hurt = true;
                         ent.health.current -= this.damage;
+                        ent.hitCD = 4;
                         this.removeFromWorld = true;
                     } else this.removeFromWorld = true;
                 }
@@ -1209,6 +1210,7 @@ Orbital.prototype.update = function () {
                     ent.sound.hit3.play();
                     ent.hurt = true;
                     ent.health.current -= this.damage;
+                    ent.hitCD = 6;
                     this.center.orbitals--;
                     this.removeFromWorld = true;
                 } else this.removeFromWorld = true;
