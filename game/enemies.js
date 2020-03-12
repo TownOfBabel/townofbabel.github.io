@@ -5,7 +5,7 @@ function HealthDrop(game, x, y, heal) {
     this.sound = new Audio('./sound/eating.wav');
     this.sound.volume = 0.15;
     this.heal = heal;
-    this.radius = 10;
+    this.radius = 20;
     Entity.call(this, game, x, y);
 }
 
@@ -165,7 +165,7 @@ Enemy.prototype.update = function () {
         for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
             if (ent.enemy) {
-                if (ent.engage && distance(this, ent) < this.sight)
+                if (ent.engage && distance(this, ent) < this.sight * 1.5)
                     this.engage = true;
                 if (!ent.boss && this.collide(ent)) {
                     var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
@@ -235,37 +235,42 @@ Enemy.prototype.update = function () {
                     }
                     // Attack calculations
                     if (this.weapon.type == 'swing' && distance(this, ent) < 140 && this.slamCD <= 0 && !this.attacking) {
+                        this.landedBlow = false;
                         this.sound.slam.play();
                         this.slamming = true;
                         this.slamCD = 142;
                         this.storedRot = this.rotation;
                     }
-                    else if (distance(this, ent) < (this.range + ent.radius) && this.atkCD <= 0 && !this.slamming) {
-                        this.sound.atk.play();
-                        this.attacking = true;
-                        this.atkCD = this.begLag;
-                    }
                     else if (this.weapon.type == 'bite' && this.atkCD <= 0
                         && distance(this, ent) < (this.ideal + ent.radius + 10)) {
+                        this.landedBlow = false;
+                        this.sound.atk.play();
                         this.attacking = true;
                         this.acceleration = 250;
                         this.maxSpeed = 425;
+                    }
+                    else if (distance(this, ent) < (this.ideal + ent.radius) && this.atkCD <= 0 && !this.slamming) {
+                        this.landedBlow = false;
+                        this.sound.atk.play();
+                        this.attacking = true;
+                        this.atkCD = this.begLag;
                     }
                     if (this.slamming && this.slamCD == 100) this.sound.hit.play();
                     if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 150)
                         && this.slamCD > 91 && this.slamCD <= 100) {
                         ent.sound.hit2.play();
+                        this.landedBlow = true;
                         ent.hurt = true;
                         ent.health.current--;
-                        ent.hitCD = 9;
+                        ent.hitCD = 10;
                         ent.stunCD = 45;
                     }
                     else if (this.attacking && ent.hitCD <= 0 && this.hit(ent)) {
                         if (this.weapon.type == 'knife') ent.sound.hit1.play();
                         else ent.sound.hit2.play();
+                        this.landedBlow = true;
                         ent.hurt = true;
                         ent.health.current -= this.dmg;
-                        ent.hitCD = 18;
                     }
                 }
             }
@@ -307,6 +312,7 @@ Enemy.prototype.draw = function (ctx) {
 
 Enemy.prototype.hit = function (other, range) {
     if (range === undefined) {
+        if (this.landedBlow) return false;
         var acc = 1;
         var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
         var orien = Math.abs(this.rotation - other.rotation);
@@ -578,6 +584,7 @@ Police.prototype.update = function () {
         this.die = false;
     }
     if (this.alive && !this.die) {
+        if (this.hurt) this.engage = true;
         if (this.atkCD > 0) this.atkCD--;
         if (this.stunCD > 0) this.stunCD--;
         if (this.hitCD > 0) this.hitCD--;

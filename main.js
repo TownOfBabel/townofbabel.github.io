@@ -74,19 +74,15 @@ ASSET_MANAGER.queueDownload('./img/menus/fadeblack.png');
 ASSET_MANAGER.queueDownload('./img/menus/credits.png');
 ASSET_MANAGER.queueDownload('./img/menus/intro1.png');
 ASSET_MANAGER.queueDownload('./img/menus/intro2.png');
-ASSET_MANAGER.queueDownload('./img/menus/street1.png');
-ASSET_MANAGER.queueDownload('./img/menus/street2.png');
+ASSET_MANAGER.queueDownload('./img/menus/intro3.png');
+ASSET_MANAGER.queueDownload('./img/menus/story0.png');
+ASSET_MANAGER.queueDownload('./img/menus/story1.png');
+ASSET_MANAGER.queueDownload('./img/menus/story2.png');
+ASSET_MANAGER.queueDownload('./img/menus/story3.png');
+ASSET_MANAGER.queueDownload('./img/menus/boss0.png');
 ASSET_MANAGER.queueDownload('./img/menus/boss1.png');
 ASSET_MANAGER.queueDownload('./img/menus/boss2.png');
 ASSET_MANAGER.queueDownload('./img/menus/boss3.png');
-ASSET_MANAGER.queueDownload('./img/menus/boss4.png');
-ASSET_MANAGER.queueDownload('./img/menus/boss5.png');
-ASSET_MANAGER.queueDownload('./img/menus/boss6.png');
-ASSET_MANAGER.queueDownload('./img/menus/boss7.png');
-ASSET_MANAGER.queueDownload('./img/menus/boss8.png');
-ASSET_MANAGER.queueDownload('./img/menus/final1.png');
-ASSET_MANAGER.queueDownload('./img/menus/final2.png');
-ASSET_MANAGER.queueDownload('./img/menus/final3.png');
 
 // backgrounds
 ASSET_MANAGER.queueDownload('./img/backgrounds/street00.png');
