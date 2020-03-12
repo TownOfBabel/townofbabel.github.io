@@ -60,13 +60,11 @@ function Popup(game, weapon) {
     this.startX = 0;
     this.startY = 0;
     if (weapon.type == 'gun') this.startY += 300;
-    if (weapon.rarity == 1) this.startX += 150;
-    else if (weapon.rarity == 2) this.startX += 300;
-    else if (weapon.rarity == 3) this.startX += 450;
+    for (var i = 0; i < weapon.rarity; i++) this.startX += 150;
     if (weapon.abilityNum == 0) this.startY += 200;
     else if (weapon.abilityNum == 1) this.startY += 150;
     else if (weapon.abilityNum == 2) this.startY += 100;
-    else if (weapon.abilityNum == 3) {
+    else if (weapon.abilityNum >= 3) {
         this.startY += 50;
         if (weapon.type == 'knife') this.startY += 200;
     }
@@ -90,6 +88,7 @@ function Weapon(game, player, type, rarity, ability, spawn) {
     this.hidden = true;
     this.floating = true;
     this.hover = false;
+    this.rarity = rarity;
     if (type == 0) {
         this.type = 'knife';
         this.static = ASSET_MANAGER.getAsset('./img/weapons/knife' + rarity + '0.png');
@@ -115,7 +114,8 @@ function Weapon(game, player, type, rarity, ability, spawn) {
     else if (ability == 2) this.ability = new BoomSpeaker(game, player);
     else if (ability >= 3) { }
     else this.ability = false;
-    this.abilityNum = ability;
+    if (ability === undefined) this.abilityNum = null;
+    else this.abilityNum = ability;
     this.radius = 10;
     calcDmg(this);
     if (type == 2) this.damage /= 2;
@@ -170,7 +170,6 @@ Bullet.prototype.update = function () {
                 ent.sound.hit3.play();
                 ent.hurt = true;
                 ent.health -= this.damage;
-                ent.hitCD = 6;
                 this.removeFromWorld = true;
             }
             else if (ent.player) {
@@ -207,6 +206,7 @@ function Frump(game) {
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1300, 200, 200, 0.15, 1, false, false);
     this.anim.dash = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1600, 200, 200, 0.05, 5, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 200, 1300, 200, 300, 0.2, 5, false, false);
+    this.anim.dead = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 1000, 1300, 200, 300, 1, 1, true, false);
     this.anim.knifeIdle = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 600, 200, 200, 0.4, 2, true, false);
     this.anim.knifeMove = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 400, 200, 200, 0.1, 8, true, false);
     this.anim.knifeAtk = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 400, 600, 200, 200, 0.05, 4, false, false);
@@ -271,7 +271,7 @@ Frump.prototype.constructor = Frump;
 
 Frump.prototype.update = function () {
     if (this.stunCD > 0) this.stunCD--;
-    if (this.health.current <= 0) {
+    if (this.health.current <= 0 && this.alive) {
         this.die = true;
         this.alive = false;
     }
@@ -285,6 +285,8 @@ Frump.prototype.update = function () {
         if (this.stunCD <= 0) {
             // Player faces mouse pointer
             this.rotation = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x - this.x);
+
+            if (this.game.heal) this.health.current = this.health.max;
 
             // Movement control
             if (this.dashing || this.supDash || this.lunge || this.fruit) {
@@ -462,6 +464,7 @@ Frump.prototype.update = function () {
 
 Frump.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (!this.alive) this.anim.dead.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.dashing) this.anim.dash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.supDash) this.anim.supDash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);

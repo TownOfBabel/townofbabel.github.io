@@ -1,4 +1,6 @@
 function generateEnemies(game, room, max) {
+    for (var i = room.enemies.length - 1; i >= 0; i--)
+        room.enemies.splice(i, 1);
     if (room.type == 'street') {
         var dogs = 0, police = 0;
         var total = max - Math.floor(Math.random() * 2);
@@ -162,8 +164,7 @@ SceneManager.prototype.buildLevelOne = function (game) {
         }
     }
     // house 04
-    // this.levels[0].houses[4] = this.buildBossRoom(0, 3);
-    // this.levels[0].houses[4].enemies.push(new MageGuy(game, 0));
+    // this.levels[0].houses[4] = this.buildBossRoom(0, 0);
     this.fillBossRoom(0);
     // house 00
     this.levels[0].houses[5] = new Background(game, ('./img/backgrounds/house00.png'),
@@ -302,7 +303,6 @@ SceneManager.prototype.buildLevelOne = function (game) {
     generateEnemies(game, this.levels[0].houses[3], 5);
 
     console.log('loading complete!');
-    this.buildLevelTwo(game);
 };
 
 SceneManager.prototype.buildLevelTwo = function (game) {
@@ -583,7 +583,6 @@ SceneManager.prototype.buildLevelTwo = function (game) {
     generateEnemies(game, this.levels[1].streets[0], 3);
     generateEnemies(game, this.levels[1].streets[1], 3);
     generateEnemies(game, this.levels[1].streets[2], 3);
-    generateEnemies(game, this.levels[1].streets[3], 3);
     generateEnemies(game, this.levels[1].streets[4], 3);
     generateEnemies(game, this.levels[1].streets[5], 3);
     generateEnemies(game, this.levels[1].houses[0], 6);
@@ -592,7 +591,6 @@ SceneManager.prototype.buildLevelTwo = function (game) {
     generateEnemies(game, this.levels[1].houses[3], 7);
 
     console.log('loading complete!');
-    this.buildLevelThree(game);
 };
 
 SceneManager.prototype.buildLevelThree = function (game) {
@@ -790,6 +788,41 @@ SceneManager.prototype.buildLevelThree = function (game) {
     generateEnemies(game, this.levels[2].houses[3], 9);
 
     console.log('loading complete!');
+};
+
+SceneManager.prototype.reload = function (lvl) {
+    if (lvl > 0) this.loadProgress(lvl - 1);
+    this.player.health.current = this.player.health.max;
+    this.player.alive = true;
+    if (lvl == 0) {
+        this.level.current = 0;
+        this.bosses = [0, 1, 2, 3];
+        this.buildLevelOne(this.game);
+        this.player.x = 515;
+        this.player.y = 470;
+        this.changeBackground(this.levels[0].houses[5]);
+        this.game.addEntity(new Fade(this.game, 'fromBlack'));
+    }
+    else if (lvl == 1) {
+        this.level.current = 0;
+        var boss = this.bossArray.pop();
+        this.bosses.push(boss);
+        this.buildLevelTwo(this.game);
+        this.player.x = 640;
+        this.player.y = 360;
+        this.changeBackground(this.levels[0].houses[4]);
+        this.game.addEntity(new Fade(this.game, 'fromBlack'));
+    }
+    else if (lvl == 2) {
+        this.level.current = 1;
+        var boss = this.bossArray.pop();
+        this.bosses.push(boss);
+        this.buildLevelThree(this.game);
+        this.player.x = 640;
+        this.player.y = 360;
+        this.changeBackground(this.levels[1].houses[4]);
+        this.game.addEntity(new Fade(this.game, 'fromBlack'));
+    }
 };
 
 SceneManager.prototype.buildHouse = function (lvl, side, prev) {
@@ -1023,7 +1056,7 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
     var spawn = null;
     var weapon = null;
     var abilityPct = 0;
-    if (lvl == 0)  abilityPct = 50;
+    if (lvl == 0) abilityPct = 50;
     else if (lvl == 1) abilityPct = 60;
     else if (lvl == 2) abilityPct = 70;
     else abilityPct = 80;

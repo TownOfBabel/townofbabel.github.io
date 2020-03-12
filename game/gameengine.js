@@ -72,23 +72,24 @@ GameEngine.prototype.startInput = function () {
 
     this.ctx.canvas.addEventListener('keydown', function (e) {
         if (String.fromCharCode(e.which) === ' ') that.player.space = true;
-        if (event.shiftKey) that.shift = true;
-        if (e.keyCode == '13') that.enter = true;
-        if (e.keyCode == '87') that.player.up = true;
-        if (e.keyCode == '83') that.player.down = true;
-        if (e.keyCode == '65') that.player.left = true;
-        if (e.keyCode == '68') that.player.right = true;
-        if (e.keyCode == '69') that.player.interact = true;
-        if (e.keyCode == '82') that.player.reload = true;
+        if (e.key == 'Shift') that.shift = true;
+        if (e.key == 'x') that.heal = true;
+        if (e.key == 'Enter') that.enter = true;
+        if (e.key == 'w') that.player.up = true, Date.now();
+        if (e.key == 'a') that.player.left = true, Date.now();
+        if (e.key == 's') that.player.down = true, Date.now();
+        if (e.key == 'd') that.player.right = true, Date.now();
+        if (e.key == 'e') that.player.interact = true;
+        if (e.key == 'r') that.player.reload = true;
         e.preventDefault();
     }, false);
 
     this.ctx.canvas.addEventListener('keyup', function (e) {
-        if (e.keyCode == '87') that.player.up = false;
-        if (e.keyCode == '83') that.player.down = false;
-        if (e.keyCode == '65') that.player.left = false;
-        if (e.keyCode == '68') that.player.right = false;
-        if (e.keyCode == '69') that.player.interact = false;
+        if (e.key == 'w') that.player.up = false;
+        if (e.key == 'a') that.player.left = false;
+        if (e.key == 's') that.player.down = false;
+        if (e.key == 'd') that.player.right = false;
+        if (e.key == 'e') that.player.interact = false;
         e.preventDefault();
     }, false);
 
@@ -141,6 +142,7 @@ GameEngine.prototype.loop = function () {
     this.click = null;
     this.shift = null;
     this.enter = null;
+    this.heal = null;
     this.player.space = null;
     this.player.reload = null;
 };
