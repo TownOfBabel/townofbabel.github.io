@@ -519,8 +519,8 @@ function Bodyguard(game, x, y) {
     this.sight = 200;
     this.fov = Math.PI * 4 / 9;
     this.hpDrop = Math.floor(Math.random() * 2) + 2;
-    this.health = 140;
-    this.initHP = 140;
+    this.health = 180;
+    this.initHP = 180;
     this.dmg = 3;
 
     Enemy.call(this, game, (x + Math.random() * 150 - 75), (y + Math.random() * 150 - 75));
@@ -558,8 +558,8 @@ function Police(game, x, y) {
     this.sight = 400;
     this.fov = Math.PI / 2;
     this.hpDrop = Math.floor(Math.random() * 2) + 1;
-    this.health = 120;
-    this.initHP = 120;
+    this.health = 140;
+    this.initHP = 140;
     this.bullets = 6;
     this.dmg = 1;
     this.lrCD = 0;

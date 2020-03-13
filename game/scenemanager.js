@@ -378,7 +378,7 @@ SceneManager.prototype.update = function () {
             }
         }
         if (!this.activeBG.menu && this.timer.init > 0 && this.player.alive) {
-            if (this.levels[2] && this.activeBG.enemies.length == 0) {
+            if (this.level.current == 2 && this.activeBG.enemies.length == 0) {
                 if (this.timer.check() >= 0.5 && this.activeBG === this.levels[2].houses[4]) {
                     this.timer.stop();
                     this.sound.game.pause();
@@ -389,12 +389,13 @@ SceneManager.prototype.update = function () {
                     this.changeBackground(this.menus.win);
                 }
                 else if (this.timer.check() >= 0.5 && this.activeBG === this.levels[2].streets[5]) {
-                    this.timer.stop();
                     this.sound.game.pause();
+                    this.sound.game.load();
                     this.sound.menus.load();
                     this.sound.menus.volume = 0.15;
                     this.sound.menus.play();
-                    this.changeBackground(this.menus.boss[this.bossArray[this.level.current]]);
+                    this.changeBackground(this.menus.boss[this.bossArray[2]]);
+                    this.timer.reset();
                 }
             }
             else if (this.timer.check() >= 0.5 && this.activeBG.enemies.length == 0) {
