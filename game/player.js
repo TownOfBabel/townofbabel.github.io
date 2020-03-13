@@ -286,7 +286,7 @@ Frump.prototype.update = function () {
             // Player faces mouse pointer
             this.rotation = Math.atan2(this.game.mouse.y - this.y, this.game.mouse.x - this.x);
 
-            if (this.game.heal) this.health.current = this.health.max;
+            // if (this.game.heal) this.health.current = this.health.max;
 
             // Movement control
             if (this.dashing || this.supDash || this.lunge || this.fruit) {
