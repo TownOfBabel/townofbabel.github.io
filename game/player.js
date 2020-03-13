@@ -227,19 +227,19 @@ function Frump(game) {
     // Sounds
     this.sound = {};
     this.sound.bat = new Audio('./sound/bat_p.wav');
-    this.sound.bat.volume = 0.3;
+    this.sound.bat.volume = 0.45;
     this.sound.knife = new Audio('./sound/knife_p.wav');
-    this.sound.knife.volume = 0.2;
+    this.sound.knife.volume = 0.3;
     this.sound.gun = new Audio('./sound/gun.wav');
-    this.sound.gun.volume = 0.08;
+    this.sound.gun.volume = 0.12;
     this.sound.reload = new Audio('./sound/reload_p.wav');
-    this.sound.reload.volume = 0.08;
+    this.sound.reload.volume = 0.12;
     this.sound.hit1 = new Audio('./sound/hit1.wav');
-    this.sound.hit1.volume = 0.15;
+    this.sound.hit1.volume = 0.225;
     this.sound.hit2 = new Audio('./sound/hit2.wav');
-    this.sound.hit2.volume = 0.15;
+    this.sound.hit2.volume = 0.225;
     this.sound.hit3 = new Audio('./sound/hit3.wav');
-    this.sound.hit3.volume = 0.2;
+    this.sound.hit3.volume = 0.3;
 
     // Properties
     this.player = true;

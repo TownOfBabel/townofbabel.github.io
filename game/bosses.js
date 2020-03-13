@@ -17,17 +17,17 @@ function SlowDogg(game, dogs, lvl) {
 
     this.sound = {};
     this.sound.cane = new Audio('./sound/bat_p.wav');
-    this.sound.cane.volume = 0.25;
+    this.sound.cane.volume = 0.375;
     this.sound.shotgun = new Audio('./sound/shotgun.wav');
-    this.sound.shotgun.volume = 0.15;
+    this.sound.shotgun.volume = 0.2;
     this.sound.whistle = new Audio('./sound/whistle.wav');
-    this.sound.whistle.volume = 0.2;
+    this.sound.whistle.volume = 0.3;
     this.sound.hit1 = new Audio('./sound/hit1.wav');
-    this.sound.hit1.volume = 0.1;
+    this.sound.hit1.volume = 0.16;
     this.sound.hit2 = new Audio('./sound/hit2.wav');
-    this.sound.hit2.volume = 0.1;
+    this.sound.hit2.volume = 0.16;
     this.sound.hit3 = new Audio('./sound/hit3.wav');
-    this.sound.hit3.volume = 0.1;
+    this.sound.hit3.volume = 0.16;
 
     // properties
     this.alive = true;
@@ -284,17 +284,17 @@ function BigGuy(game, lvl) {
 
     this.sound = {};
     this.sound.jab = new Audio('./sound/bat_p.wav');
-    this.sound.jab.volume = 0.25;
+    this.sound.jab.volume = 0.375;
     this.sound.slam1 = new Audio('./sound/slam_swing.wav');
-    this.sound.slam1.volume = 0.25;
+    this.sound.slam1.volume = 0.375;
     this.sound.slam2 = new Audio('./sound/big_slam.wav');
-    this.sound.slam2.volume = 0.2;
+    this.sound.slam2.volume = 0.3;
     this.sound.hit1 = new Audio('./sound/hit1.wav');
-    this.sound.hit1.volume = 0.1;
+    this.sound.hit1.volume = 0.17;
     this.sound.hit2 = new Audio('./sound/hit2.wav');
-    this.sound.hit2.volume = 0.1;
+    this.sound.hit2.volume = 0.17;
     this.sound.hit3 = new Audio('./sound/hit3.wav');
-    this.sound.hit3.volume = 0.1;
+    this.sound.hit3.volume = 0.17;
 
     // properties
     this.alive = true;
@@ -565,17 +565,17 @@ function NinjaGuy(game, lvl) {
 
     this.sound = {};
     this.sound.slash = new Audio('./sound/slash.wav');
-    this.sound.slash.volume = 0.2;
+    this.sound.slash.volume = 0.3;
     this.sound.throw = new Audio('./sound/throw.wav');
-    this.sound.throw.volume = 0.2;
+    this.sound.throw.volume = 0.3;
     this.sound.hit = new Audio('./sound/ninja_hit.wav');
-    this.sound.hit.volume = 0.15;
+    this.sound.hit.volume = 0.225;
     this.sound.hit1 = new Audio('./sound/hit1.wav');
-    this.sound.hit1.volume = 0.1;
+    this.sound.hit1.volume = 0.15;
     this.sound.hit2 = new Audio('./sound/hit2.wav');
-    this.sound.hit2.volume = 0.1;
+    this.sound.hit2.volume = 0.15;
     this.sound.hit3 = new Audio('./sound/hit3.wav');
-    this.sound.hit3.volume = 0.1;
+    this.sound.hit3.volume = 0.15;
 
     this.alive = true;
     this.boss = true;
@@ -878,17 +878,17 @@ function MageGuy(game, lvl) {
 
     this.sound = {};
     this.sound.summon = new Audio('./sound/summon.mp3');
-    this.sound.summon.volume = 0.4;
+    this.sound.summon.volume = 0.6;
     this.sound.orbital = new Audio('./sound/orbital.wav');
-    this.sound.orbital.volume = 0.14;
+    this.sound.orbital.volume = 0.21;
     this.sound.fire = new Audio('./sound/fruit.wav');
-    this.sound.fire.volume = 0.12;
+    this.sound.fire.volume = 0.18;
     this.sound.hit1 = new Audio('./sound/hit1.wav');
-    this.sound.hit1.volume = 0.1;
+    this.sound.hit1.volume = 0.15;
     this.sound.hit2 = new Audio('./sound/hit2.wav');
-    this.sound.hit2.volume = 0.1;
+    this.sound.hit2.volume = 0.15;
     this.sound.hit3 = new Audio('./sound/hit3.wav');
-    this.sound.hit3.volume = 0.1;
+    this.sound.hit3.volume = 0.15;
 
     this.alive = true;
     this.enemy = true;

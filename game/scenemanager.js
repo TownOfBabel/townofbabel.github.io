@@ -208,7 +208,7 @@ function SceneManager(game) {
     this.sound.menus = new Audio('./sound/menus.mp3');
     this.sound.game = new Audio('./sound/game.mp3');
     this.sound.swap = new Audio('./sound/weapon_swap.wav');
-    this.sound.swap.volume = 0.15;
+    this.sound.swap.volume = 0.2;
     this.menus = {};
     this.menus.title = new TitleScreen(game);
     this.menus.dif = new SelectDif(game);
@@ -282,7 +282,7 @@ SceneManager.prototype.update = function () {
             }
             else if (!this.wait && this.timer.check() >= 0.5) {
                 this.changeBackground(this.menus.intro[2]);
-                this.sound.game.volume = 0.1;
+                this.sound.game.volume = 0.15;
                 this.sound.game.loop = true;
                 this.sound.game.play();
                 this.timer.reset();
@@ -325,7 +325,7 @@ SceneManager.prototype.update = function () {
             && this.game.click && this.timer.check() >= 1) {
             this.timer.stop();
             this.sound.menus.pause();
-            this.sound.menus.volume = 0.2;
+            this.sound.menus.volume = 0.3;
             this.sound.game.play();
             this.changeBackground(this.levels[this.level.current].houses[4]);
         }
@@ -333,7 +333,7 @@ SceneManager.prototype.update = function () {
             this.changeBackground(this.menus.title);
         else if (this.activeBG === this.menus.lose && this.game.enter) {
             this.sound.menus.load();
-            this.sound.menus.volume = 0.2;
+            this.sound.menus.volume = 0.3;
             this.sound.menus.play();
             this.changeBackground(this.menus.title);
         }
@@ -383,7 +383,7 @@ SceneManager.prototype.update = function () {
                     this.timer.stop();
                     this.sound.game.pause();
                     this.sound.game.load();
-                    this.sound.menus.volume = 0.2;
+                    this.sound.menus.volume = 0.3;
                     this.sound.menus.load();
                     this.sound.menus.play();
                     this.changeBackground(this.menus.win);
@@ -392,7 +392,7 @@ SceneManager.prototype.update = function () {
                     this.timer.stop();
                     this.sound.game.pause();
                     this.sound.menus.load();
-                    this.sound.menus.volume = 0.1;
+                    this.sound.menus.volume = 0.15;
                     this.sound.menus.play();
                     this.changeBackground(this.menus.boss[this.bossArray[this.level.current]]);
                 }
@@ -407,7 +407,7 @@ SceneManager.prototype.update = function () {
                 else if (this.activeBG === this.levels[this.level.current].streets[5]) {
                     this.sound.game.pause();
                     this.sound.menus.load();
-                    this.sound.menus.volume = 0.1;
+                    this.sound.menus.volume = 0.15;
                     this.sound.menus.play();
                     this.changeBackground(this.menus.boss[this.bossArray[this.level.current]]);
                     this.timer.reset();
@@ -457,7 +457,7 @@ SceneManager.prototype.draw = function (ctx) {
 SceneManager.prototype.startGame = function () {
     this.game.addEntity(this.activeBG);
     this.game.addEntity(this.menus.creditsBtn);
-    this.sound.menus.volume = 0.2;
+    this.sound.menus.volume = 0.3;
     this.sound.menus.loop = true;
     this.sound.menus.play();
     this.start = false;

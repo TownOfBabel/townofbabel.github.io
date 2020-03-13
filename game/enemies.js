@@ -3,7 +3,7 @@ function HealthDrop(game, x, y, heal) {
     this.healTwo = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 40, 40, 40, 0.2, 4, true, false);
     this.healThree = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 80, 40, 40, 0.2, 4, true, false);
     this.sound = new Audio('./sound/eating.wav');
-    this.sound.volume = 0.15;
+    this.sound.volume = 0.2;
     this.heal = heal;
     this.radius = 20;
     Entity.call(this, game, x, y);
@@ -46,11 +46,11 @@ function Enemy(game, x, y) {
     // Sounds
     if (this.sound === undefined) this.sound = {};
     this.sound.hit1 = new Audio('./sound/hit1.wav');
-    this.sound.hit1.volume = 0.1;
+    this.sound.hit1.volume = 0.15;
     this.sound.hit2 = new Audio('./sound/hit2.wav');
-    this.sound.hit2.volume = 0.1;
+    this.sound.hit2.volume = 0.15;
     this.sound.hit3 = new Audio('./sound/hit3.wav');
-    this.sound.hit3.volume = 0.1;
+    this.sound.hit3.volume = 0.15;
 
     this.atkCD = Math.floor(Math.random() * 20) + 15;
     this.slamCD = Math.floor(Math.random() * 20) + 30;
@@ -392,9 +392,9 @@ function Dog(game, x, y) {
 
     this.sound = {};
     this.sound.atk = new Audio('./sound/dog_a.wav');
-    this.sound.atk.volume = 0.2;
+    this.sound.atk.volume = 0.3;
     this.sound.bark = new Audio('./sound/bark.wav');
-    this.sound.bark.volume = 0.2;
+    this.sound.bark.volume = 0.3;
 
     // Properties
     this.radius = 20;
@@ -436,7 +436,7 @@ function Thug(game, weapon, x, y) {
         this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 800, 200, 200, 400, (0.5 / 3), 3, false, false);
         this.sound = {};
         this.sound.atk = new Audio('./sound/knife_e.wav');
-        this.sound.atk.volume = 0.15;
+        this.sound.atk.volume = 0.225;
         this.weapon.type = 'knife';
         this.faces = 38;
         this.begLag = 110;
@@ -453,7 +453,7 @@ function Thug(game, weapon, x, y) {
         this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 800, 200, 200, 400, (0.5 / 3), 3, false, false);
         this.sound = {};
         this.sound.atk = new Audio('./sound/bat_e.wav');
-        this.sound.atk.volume = 0.25;
+        this.sound.atk.volume = 0.375;
         this.weapon.type = 'bat';
         this.faces = 28;
         this.begLag = 116;
@@ -495,11 +495,11 @@ function Bodyguard(game, x, y) {
 
     this.sound = {};
     this.sound.atk = new Audio('./sound/attack.wav');
-    this.sound.atk.volume = 0.12;
+    this.sound.atk.volume = 0.18;
     this.sound.slam = new Audio('./sound/slam_swing.wav');
-    this.sound.slam.volume = 0.15;
+    this.sound.slam.volume = 0.225;
     this.sound.hit = new Audio('./sound/slam.wav');
-    this.sound.hit.volume = 0.2;
+    this.sound.hit.volume = 0.3;
 
     // Properties
     this.radius = 26;
@@ -540,9 +540,9 @@ function Police(game, x, y) {
 
     this.sound = {};
     this.sound.atk = new Audio('./sound/gun.wav');
-    this.sound.atk.volume = 0.05;
+    this.sound.atk.volume = 0.07;
     this.sound.reload = new Audio('./sound/reload_e.wav');
-    this.sound.reload.volume = 0.06;
+    this.sound.reload.volume = 0.09;
 
     this.weapon = {};
     this.weapon.type = 'gun';
