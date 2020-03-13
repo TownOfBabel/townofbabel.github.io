@@ -28,9 +28,9 @@ Ability.prototype.draw = function (ctx) {
 function Dash(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/dash.png');
     this.sound = new Audio('./sound/dash.wav');
-    this.sound.volume = 0.3;
+    this.sound.volume = 0.45;
     this.ding = new Audio('./sound/ding2.wav');
-    this.ding.volume = 0.03;
+    this.ding.volume = 0.05;
     this.ready = false;
     this.maxCD = 90;
     Ability.call(this, game, player, 75, 35);
@@ -88,9 +88,9 @@ Dash.prototype.update = function () {
 function SuperDash(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/super_dash.png');
     this.sound = new Audio('./sound/dash.wav');
-    this.sound.volume = 0.35;
+    this.sound.volume = 0.5;
     this.ding = new Audio('./sound/ding.wav');
-    this.ding.volume = 0.1;
+    this.ding.volume = 0.12;
     this.ready = false;
     this.maxCD = 120;
     Ability.call(this, game, player, 150, 35);
@@ -155,9 +155,9 @@ SuperDash.prototype.update = function () {
 function BlingStun(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/bling.png');
     this.sound = new Audio('./sound/bling.mp3');
-    this.sound.volume = 0.1;
+    this.sound.volume = 0.15;
     this.ding = new Audio('./sound/ding.wav');
-    this.ding.volume = 0.1;
+    this.ding.volume = 0.12;
     this.ready = false;
     this.maxCD = 240;
     Ability.call(this, game, player, 150, 35);
@@ -226,9 +226,9 @@ BlingStun.prototype.update = function () {
 function BoomSpeaker(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/boombox.png');
     this.sound = new Audio('./sound/boom.mp3');
-    this.sound.volume = 0.1;
+    this.sound.volume = 0.15;
     this.ding = new Audio('./sound/ding.wav');
-    this.ding.volume = 0.1;
+    this.ding.volume = 0.12;
     this.ready = false;
     this.maxCD = 275;
     Ability.call(this, game, player, 150, 35);
@@ -316,11 +316,11 @@ BoomSpeaker.prototype.update = function () {
 function Lunge(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/lunge.png');
     this.sound = new Audio('./sound/lunge.wav');
-    this.sound.volume = 0.2;
+    this.sound.volume = 0.3;
     this.sound.hit = new Audio('./sound/ninja_hit.wav');
-    this.sound.volume = 0.18;
+    this.sound.volume = 0.27;
     this.ding = new Audio('./sound/ding.wav');
-    this.ding.volume = 0.1;
+    this.ding.volume = 0.12;
     this.ready = false;
     this.maxCD = 210;
     Ability.call(this, game, player, 150, 35);
@@ -469,7 +469,7 @@ function FruitBat(game, player) {
     this.mouse = {};
     this.spawnDist = Math.sqrt(Math.pow(127, 2) + Math.pow(26, 2));
     this.ding = new Audio('./sound/ding.wav');
-    this.ding.volume = 0.1;
+    this.ding.volume = 0.12;
     this.ready = false;
     Ability.call(this, game, player, 150, 35);
 }
@@ -574,9 +574,9 @@ LaserProj.prototype.draw = function (ctx) {
 function Laser(game, player) {
     this.icon = ASSET_MANAGER.getAsset('./img/entities/laser_icon.png');
     this.sound = new Audio('./sound/laser.wav');
-    this.sound.volume = 0.18;
+    this.sound.volume = 0.27;
     this.ding = new Audio('./sound/ding.wav');
-    this.ding.volume = 0.1;
+    this.ding.volume = 0.15;
     this.ready = false;
     this.maxCD = 240;
     Ability.call(this, game, player, 150, 35);
