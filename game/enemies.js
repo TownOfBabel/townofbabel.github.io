@@ -440,10 +440,12 @@ function Thug(game, weapon, x, y) {
         this.weapon.type = 'knife';
         this.faces = 38;
         this.begLag = 110;
-        this.endLag = 45;
+        this.endLag = 35;
         this.hitDur = 14;
         this.range = 90;
         this.ideal = 85;
+        this.maxSpeed = 150;
+        this.mSpeed_init = 150;
     }
     else {
         this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 1, true, false);
@@ -457,10 +459,12 @@ function Thug(game, weapon, x, y) {
         this.weapon.type = 'bat';
         this.faces = 28;
         this.begLag = 116;
-        this.endLag = 65;
+        this.endLag = 75;
         this.hitDur = 20;
         this.range = 100;
         this.ideal = 100;
+        this.maxSpeed = 130;
+        this.mSpeed_init = 130;
     }
 
     // Properties
@@ -468,8 +472,6 @@ function Thug(game, weapon, x, y) {
     this.sides = 38;
     this.rotationLag = 15;
     this.acceleration = 100;
-    this.maxSpeed = 140;
-    this.mSpeed_init = 140;
     this.sight = 250;
     this.fov = Math.PI * 2 / 5;
     this.hpDrop = Math.floor(Math.random() * 2) + 1;
