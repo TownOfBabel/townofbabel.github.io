@@ -3,8 +3,8 @@ March 34th of 2020, the town had just finished building the tallest tower the wo
 
 ## Team:
 #### Lead Designers:
-    Dylan Hill
     James McHugh
+    Dylan Hill
 **Lead Programmer:** Dylan Hill
 
 **Lead Artist:** James McHugh
