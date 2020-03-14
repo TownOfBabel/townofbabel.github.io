@@ -216,6 +216,7 @@ function SceneManager(game) {
     this.menus.lose = new Menu(game, './img/menus/game over.png');
     this.menus.cont = new Menu(game, './img/menus/continued.png');
     this.menus.creditsBtn = new CreditsBtn(game, this);
+    this.menus.warning = new Menu(game, './img/menus/warning.png');
     this.menus.intro = [];
     this.menus.street = [];
     this.menus.boss = [];
@@ -258,8 +259,23 @@ SceneManager.prototype.update = function () {
             }
             if (this.timer.check() >= 0.5) {
                 this.sound.menus.pause();
-                this.changeBackground(this.menus.intro[0]);
+                this.changeBackground(this.menus.warning);
                 this.timer.reset();
+            }
+        }
+        else if (this.activeBG === this.menus.warning) {
+            if (this.game.click && this.timer.check() >= 1) {
+                this.game.addEntity(new Fade(this.game, 'toBlack'));
+                this.timer.reset();
+                this.wait = false;
+            }
+            else if (!this.wait && this.timer.check() >= 0.5) {
+                this.changeBackground(this.menus.intro[0]);
+                this.sound.game.volume = 0.15;
+                this.sound.game.loop = true;
+                this.sound.game.play();
+                this.timer.reset();
+                this.wait = true;
             }
         }
         else if (this.activeBG === this.menus.intro[0]) {
@@ -282,9 +298,6 @@ SceneManager.prototype.update = function () {
             }
             else if (!this.wait && this.timer.check() >= 0.5) {
                 this.changeBackground(this.menus.intro[2]);
-                this.sound.game.volume = 0.15;
-                this.sound.game.loop = true;
-                this.sound.game.play();
                 this.timer.reset();
                 this.wait = true;
             }
