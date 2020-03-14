@@ -1,5 +1,5 @@
 # Town of Babel
-March 34th of 2020, the town had just finished building the tallest tower the world had seen. When lil' Frump decides to check up on an owed payment, chaos ensues.
+March 34th of 2020, the town had just finished building the tallest tower the world had seen. When lil' Frump decides to check up on an owed payment, the tower's effects cause chaos to ensue.
 
 ## Team:
 #### Lead Designers:
