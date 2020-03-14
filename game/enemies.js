@@ -16,7 +16,8 @@ HealthDrop.prototype.update = function () {
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
         if (ent.player) {
-            if (this.collide(ent)) {
+            if (ent.removeFromWorld) this.removeFromWorld = true;
+            else if (this.collide(ent)) {
                 ent.health.current += (this.heal * 2);
                 if (ent.health.current > ent.health.max)
                     ent.health.current = ent.health.max;
