@@ -1019,7 +1019,7 @@ SceneManager.prototype.fillBossRoom = function (lvl) {
     this.bossArray[lvl] = select;
     this.bosses.splice(index, 1);
     if (select == 0) {
-        this.levels[lvl].houses[4] = this.buildBossRoom(0, 0);
+        this.levels[lvl].houses[4] = this.buildBossRoom(lvl, 0);
         var dogs = [new Dog(this.game, 1163, 115),
         new Dog(this.game, 1163, 115),
         new Dog(this.game, 1163, 115),
@@ -1048,6 +1048,7 @@ SceneManager.prototype.fillBossRoom = function (lvl) {
         this.levels[lvl].houses[4].enemies.push(new Police(this.game, 1100, 250));
         this.levels[lvl].houses[4].enemies.push(new MageGuy(this.game, lvl));
     }
+    console.log(this.levels[lvl].houses[4].enemies);
 };
 
 SceneManager.prototype.buildBossRoom = function (lvl, boss) {
@@ -1121,8 +1122,8 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
         walls[3] = new Wall(this.game, 0, 0, 30, 720);
         walls[4] = new Wall(this.game, 0, 690, 576, 30);
         walls[5] = new Column(this.game, 214, 518, 42);
-        walls[7] = new Column(this.game, 600, 293, 42);
-        walls[9] = new Column(this.game, 1030, 210, 42);
+        walls[6] = new Column(this.game, 600, 293, 42);
+        walls[7] = new Column(this.game, 1030, 210, 42);
         door = new Door(this.game, 576, 694, 116, 22);
         spawn = { x: 634, y: 640 };
     } else {

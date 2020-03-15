@@ -217,6 +217,7 @@ function SceneManager(game) {
     this.menus.cont = new Menu(game, './img/menus/continued.png');
     this.menus.creditsBtn = new CreditsBtn(game, this);
     this.menus.warning = new Menu(game, './img/menus/warning.png');
+    this.menus.autosave = new Menu(game, './img/menus/autosave.png');
     this.menus.intro = [];
     this.menus.street = [];
     this.menus.boss = [];
@@ -265,6 +266,18 @@ SceneManager.prototype.update = function () {
         }
         else if (this.activeBG === this.menus.warning) {
             if (this.game.click && this.timer.check() >= 1) {
+                this.game.addEntity(new Fade(this.game, 'toBlack'));
+                this.timer.reset();
+                this.wait = false;
+            }
+            else if (!this.wait && this.timer.check() >= 0.5) {
+                this.changeBackground(this.menus.autosave);
+                this.timer.reset();
+                this.wait = true;
+            }
+        }
+        else if (this.activeBG === this.menus.autosave) {
+            if (this.game.click && this.timer.check() >= 0.5) {
                 this.game.addEntity(new Fade(this.game, 'toBlack'));
                 this.timer.reset();
                 this.wait = false;
@@ -485,19 +498,17 @@ SceneManager.prototype.changeBackground = function (nextBG) {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.activeBG.enemies[i].removeFromWorld = true;
         this.activeBG.drop.removeFromWorld = true;
+        this.arrow.removeFromWorld = true;
+        this.arrow2.removeFromWorld = true;
+        this.player.removeFromWorld = true;
+        this.player.UI.removeFromWorld = true;
+        this.player.dashInd.removeFromWorld = true;
+        this.player.weapon.removeFromWorld = true;
+        if (this.player.weapon.ability)
+            this.player.weapon.ability.removeFromWorld = true;
+        this.player.health.removeFromWorld = true;
     } else this.menus.creditsBtn.removeFromWorld = true;
     this.activeBG.removeFromWorld = true;
-    this.arrow.removeFromWorld = true;
-    this.arrow2.removeFromWorld = true;
-    this.player.removeFromWorld = true;
-    this.player.UI.removeFromWorld = true;
-    this.player.dashInd.removeFromWorld = true;
-    this.player.weapon.removeFromWorld = true;
-    if (this.player.weapon.ability)
-        this.player.weapon.ability.removeFromWorld = true;
-    this.player.health.removeFromWorld = true;
-    if (this.level.clear)
-        this.menus.cont.removeFromWorld = true;
 
     this.prevBG = this.activeBG;
     this.activeBG = nextBG;
@@ -527,8 +538,6 @@ SceneManager.prototype.updateBackground = function () {
     this.player.health.removeFromWorld = false;
 
     // add entities back into game engine
-    if (this.prevBG.menu)
-        this.game.addEntity(this.activeBG);
     if (!this.activeBG.menu) {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.game.addEntity(this.activeBG.enemies[i]);

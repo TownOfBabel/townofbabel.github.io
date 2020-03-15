@@ -290,14 +290,14 @@ BoomSpeaker.prototype.update = function () {
                     ent.hurt = true;
                     ent.health -= 15;
                     ent.hitCD = 30;
-                    ent.knockBack = 11;
+                    ent.knockBack = 10;
                 }
             }
             else if (this.player.boom && this.cooldown > 82) {
                 if (this.player.hit(ent, 130) && ent.hitCD <= 0) {
                     ent.hurt = true;
                     ent.health -= 15;
-                    ent.hitCD = 24;
+                    ent.hitCD = 21;
                     ent.knockBack = 9;
                 }
             }
