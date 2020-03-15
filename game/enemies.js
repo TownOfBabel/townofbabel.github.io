@@ -247,6 +247,7 @@ Enemy.prototype.update = function () {
                         this.landedBlow = false;
                         this.sound.atk.play();
                         this.attacking = true;
+                        this.atkCD = this.begLag;
                         this.acceleration = 250;
                         this.maxSpeed = 425;
                     }
@@ -312,8 +313,8 @@ Enemy.prototype.draw = function (ctx) {
 };
 
 Enemy.prototype.hit = function (other, range) {
-    if (range === undefined) {
-        if (this.landedBlow) return false;
+    if (this.landedBlow) return false;
+    else if (range === undefined) {
         var acc = 1;
         var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
         var orien = Math.abs(this.rotation - other.rotation);

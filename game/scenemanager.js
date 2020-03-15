@@ -485,19 +485,17 @@ SceneManager.prototype.changeBackground = function (nextBG) {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.activeBG.enemies[i].removeFromWorld = true;
         this.activeBG.drop.removeFromWorld = true;
+        this.arrow.removeFromWorld = true;
+        this.arrow2.removeFromWorld = true;
+        this.player.removeFromWorld = true;
+        this.player.UI.removeFromWorld = true;
+        this.player.dashInd.removeFromWorld = true;
+        this.player.weapon.removeFromWorld = true;
+        if (this.player.weapon.ability)
+            this.player.weapon.ability.removeFromWorld = true;
+        this.player.health.removeFromWorld = true;
     } else this.menus.creditsBtn.removeFromWorld = true;
     this.activeBG.removeFromWorld = true;
-    this.arrow.removeFromWorld = true;
-    this.arrow2.removeFromWorld = true;
-    this.player.removeFromWorld = true;
-    this.player.UI.removeFromWorld = true;
-    this.player.dashInd.removeFromWorld = true;
-    this.player.weapon.removeFromWorld = true;
-    if (this.player.weapon.ability)
-        this.player.weapon.ability.removeFromWorld = true;
-    this.player.health.removeFromWorld = true;
-    if (this.level.clear)
-        this.menus.cont.removeFromWorld = true;
 
     this.prevBG = this.activeBG;
     this.activeBG = nextBG;
@@ -527,8 +525,6 @@ SceneManager.prototype.updateBackground = function () {
     this.player.health.removeFromWorld = false;
 
     // add entities back into game engine
-    if (this.prevBG.menu)
-        this.game.addEntity(this.activeBG);
     if (!this.activeBG.menu) {
         for (var i = 0; i < this.activeBG.enemies.length; i++)
             this.game.addEntity(this.activeBG.enemies[i]);

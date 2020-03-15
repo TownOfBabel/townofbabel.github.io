@@ -46,7 +46,6 @@ function SlowDogg(game, dogs, lvl) {
     this.ideal = 140;
     this.health = getDamage(lvl) * 11 + lvl;
     this.maxHealth = this.health;
-    this.hpDrop = Math.floor(Math.random() * 2) + 3;
 
     this.engage = true;
     this.atkCD = 0;
@@ -248,7 +247,6 @@ SlowDogg.prototype.draw = function (ctx) {
 };
 
 SlowDogg.prototype.hit = function (other) {
-    if (this.landedBlow) return false;
     var acc = 1;
     var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
     var orien = Math.abs(this.rotation - other.rotation);
@@ -262,7 +260,8 @@ SlowDogg.prototype.hit = function (other) {
         if (acc > Math.PI) acc = (Math.PI * 2) - acc;
     }
 
-    if (acc < 0.25) {
+    if (this.landedBlow) return false;
+    else if (acc < 0.25) {
         if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
             return distance(this, other) < this.range + other.faces;
         else
@@ -312,7 +311,6 @@ function BigGuy(game, lvl) {
     this.mSpeed_init = 120;
     this.health = getDamage(lvl) * 14 + lvl;
     this.maxHealth = this.health;
-    this.hpDrop = Math.floor(Math.random() * 2) + 3;
     this.storedRot = 0;
     this.engage = true;
     this.knockBack = 0;
@@ -507,7 +505,7 @@ BigGuy.prototype.draw = function (ctx) {
 
 BigGuy.prototype.hit = function (other) {
     if (this.landedBlow) return false;
-    if (this.slam) {
+    else if (this.slam) {
         var ctr_x = this.x + Math.cos(this.rotation) * 110;
         var ctr_y = this.y + Math.sin(this.rotation) * 110;
         var center = { x: ctr_x, y: ctr_y };
@@ -590,7 +588,6 @@ function NinjaGuy(game, lvl) {
     this.mSpeed_init = 180;
     this.health = getDamage(lvl) * 10 + lvl;
     this.maxHealth = this.health;
-    this.hpDrop = Math.floor(Math.random * 2) + 3;
     this.range = 250;
     this.engage = true;
     this.knockBack = 0;
@@ -782,7 +779,7 @@ NinjaGuy.prototype.draw = function (ctx) {
 
 NinjaGuy.prototype.hit = function (other) {
     if (this.landedBlow) return false;
-    if (this.slash) {
+    else if (this.slash) {
         var acc = 1;
         var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
         var orien = Math.abs(this.rotation - other.rotation);
@@ -904,7 +901,6 @@ function MageGuy(game, lvl) {
     this.mSpeed_init = 90;
     this.health = getDamage(lvl) * 9 + lvl;
     this.maxHealth = this.health;
-    this.hpDrop = Math.floor(Math.random() * 2) + 3;
     this.storedRot = 0;
     this.engage = true;
 
