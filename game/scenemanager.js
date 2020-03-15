@@ -217,6 +217,7 @@ function SceneManager(game) {
     this.menus.cont = new Menu(game, './img/menus/continued.png');
     this.menus.creditsBtn = new CreditsBtn(game, this);
     this.menus.warning = new Menu(game, './img/menus/warning.png');
+    this.menus.autosave = new Menu(game, './img/menus/autosave.png');
     this.menus.intro = [];
     this.menus.street = [];
     this.menus.boss = [];
@@ -265,6 +266,18 @@ SceneManager.prototype.update = function () {
         }
         else if (this.activeBG === this.menus.warning) {
             if (this.game.click && this.timer.check() >= 1) {
+                this.game.addEntity(new Fade(this.game, 'toBlack'));
+                this.timer.reset();
+                this.wait = false;
+            }
+            else if (!this.wait && this.timer.check() >= 0.5) {
+                this.changeBackground(this.menus.autosave);
+                this.timer.reset();
+                this.wait = true;
+            }
+        }
+        else if (this.activeBG === this.menus.autosave) {
+            if (this.game.click && this.timer.check() >= 0.5) {
                 this.game.addEntity(new Fade(this.game, 'toBlack'));
                 this.timer.reset();
                 this.wait = false;

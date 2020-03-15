@@ -84,6 +84,7 @@ ASSET_MANAGER.queueDownload('./img/menus/boss1.png');
 ASSET_MANAGER.queueDownload('./img/menus/boss2.png');
 ASSET_MANAGER.queueDownload('./img/menus/boss3.png');
 ASSET_MANAGER.queueDownload('./img/menus/warning.png');
+ASSET_MANAGER.queueDownload('./img/menus/autosave.png');
 
 // backgrounds
 ASSET_MANAGER.queueDownload('./img/backgrounds/street00.png');
