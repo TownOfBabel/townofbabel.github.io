@@ -1,5 +1,5 @@
 # Town of Babel
-March 34th of 2020, the town had just finished building the tallest tower the world had seen. When lil' Frump decides to check up on an owed payment, the tower's effects cause chaos to ensue.&nbsp  
+March 34th of 2020, the town had just finished building the tallest tower the world had seen. When lil' Frump decides to check up on an owed payment, the tower's effects cause chaos to ensue.&nbsp;  
 
 ## Team:
 #### Lead Designers:
@@ -9,7 +9,7 @@ March 34th of 2020, the town had just finished building the tallest tower the wo
 
 **Lead Artist:** James McHugh&nbsp;  
 &nbsp;  
-
+&nbsp;  
 
 ## News
 ### March 18, 2020
@@ -22,7 +22,7 @@ Hey guys it's Dylan again, here with another update. This update brings with it 
 Along with these new abilites I've heavily tweaked 8ight 9ine's ability cooldowns so that (I hope) the player doesn't feel overwhelmed when facing him.
 
 **NOTE:** Going forward this game has become a passion project. This means updates, while semi-frequent now, will most likely completely stop once once I reach what I consider complete for my first real game.&nbsp;  
-
+&nbsp;  
 
 ### March 14, 2020
 Well the due date is here and this is what we've got. Only things done after actual due date are a disclaimer and some tweaks.
@@ -66,6 +66,7 @@ Whenever you load up a level for the first time, it will select one of the avail
 And now the fun part, what our plans from here are. We do in fact have a final boss planned and with him a fourth level. I don't want to give away too much but I will say he's going to have two phases! Either before him or immediately following (depends on James), the currently existing bosses will get new abilities and redone decision trees. I personally would like to see another enemy added to game (we were thinking suicide bomber) but I don't know that I can squeeze any more out of James than what he's already drawn and will be drawing. I also have plans to add a hard mode to our game, as several veteran gamers like myself find the current iteration too easy. If I can get James to send resources to me I may end up eventually adding a procedurally generated endless mode for the roguelike fans out there, as it was originally intended. Of course along with all of these updates I will be optimizing what I can and changing how things are done because I think it'll work better some new way. If you're really that curious you can follow the updates more closely at [my fork](https://github.com/dhill30/townofbabel.github.io, "dhill30/townofbabel").
 
 **NOTE:** Going forward this game has become a passion project, as the assignment portion of it is complete. This means updates, while semi-frequent at first, will most likely completely stop once once I reach what I consider complete for my first real game.&nbsp;  
+&nbsp;  
 &nbsp;  
 
 ##### Developing Town of Babel since Jan 2020
