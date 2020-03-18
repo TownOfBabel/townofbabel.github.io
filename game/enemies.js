@@ -539,8 +539,8 @@ function Police(game, x, y) {
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 0, 200, 200, 200, 0.12, 8, true, false);
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 200, 0, 200, 200, 0.25, 1, false, false);
     this.anim.rld = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 400, 0, 200, 200, 0.75, 2, false, false);
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 800, 0, 200, 200, 0.15, 1, false, false);
-    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 800, 0, 200, 200, 0.5, 1, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 0, 500, 200, 200, 0.15, 1, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 200, 400, 200, 400, (0.5 / 3), 3, false, false);
 
     this.sound = {};
     this.sound.atk = new Audio('./sound/gun.wav');

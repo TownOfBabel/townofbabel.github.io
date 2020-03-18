@@ -101,6 +101,9 @@ GameEngine.prototype.startInput = function () {
         that.click = true;
     }, false);
 
+    // disabling right-click (causes 'sticky' keys)
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
     console.log('input started');
 };
 

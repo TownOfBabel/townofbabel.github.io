@@ -389,18 +389,21 @@ Lunge.prototype.hit = function (other) {
     if (this.player.anim.lunge.currentFrame() == 0) {
         var angle = this.player.rotation + Math.atan(42 / 64);
         acc = Math.abs(angle - atan2);
+        while (acc > Math.PI * 2) acc -= (Math.PI * 2);
         if (acc > Math.PI) acc = (Math.PI * 2) - acc;
         this.range = 76;
     }
     else if (this.player.anim.lunge.currentFrame() == 1 || this.player.anim.lunge.currentFrame() == 2) {
         var angle = this.player.rotation + Math.atan(44 / 144);
         acc = Math.abs(angle - atan2);
+        while (acc > Math.PI * 2) acc -= (Math.PI * 2);
         if (acc > Math.PI) acc = (Math.PI * 2) - acc;
         this.range = 150;
     }
     else if (this.player.anim.lunge.currentFrame() == 3) {
         var angle = this.player.rotation + Math.atan(38 / 58);
         acc = Math.abs(angle - atan2);
+        while (acc > Math.PI * 2) acc -= (Math.PI * 2);
         if (acc > Math.PI) acc = (Math.PI * 2) - acc;
         this.range = 70;
     }

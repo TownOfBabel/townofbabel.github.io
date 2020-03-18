@@ -556,16 +556,22 @@ function NinjaGuy(game, lvl) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 0, 300, 300, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 0, 300, 300, 0.11, 8, true, false);
-    this.anim.slash = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 300, 300, 300, 0.06, 6, false, false);
-    this.anim.throw = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 1800, 300, 300, 300, 0.25, 2, false, false)
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 600, 300, 300, 0.15, 1, false, false);
-    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 600, 300, 300, 0.5, 1, false, false);
+    this.anim.dash = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 600, 300, 300, 0.08, 5, false, false);
+    this.anim.slash = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 300, 300, 300, 0.1, 4, false, false);
+    this.anim.throw = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 1200, 300, 300, 300, 0.25, 2, false, false);
+    this.anim.lunge = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 900, 300, 400, 0.1, 6, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 1400, 300, 300, 0.15, 1, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 300, 1200, 300, 500, (0.5 / 3), 1, false, false);
 
     this.sound = {};
+    this.sound.dash = new Audio('./sound/dash.wav');
+    this.sound.dash.volume = 0.35;
     this.sound.slash = new Audio('./sound/slash.wav');
     this.sound.slash.volume = 0.3;
     this.sound.throw = new Audio('./sound/throw.wav');
     this.sound.throw.volume = 0.3;
+    this.sound.lunge = new Audio('./sound/lunge.wav');
+    this.sound.lunge.volume = 0.25;
     this.sound.hit = new Audio('./sound/ninja_hit.wav');
     this.sound.hit.volume = 0.225;
     this.sound.hit1 = new Audio('./sound/hit1.wav');
@@ -582,6 +588,7 @@ function NinjaGuy(game, lvl) {
     this.faces = 50;
     this.sides = 50;
     this.rotation = Math.PI / 2;
+    this.storedRot = this.rotation;
     this.velocity = { x: 0, y: 0 };
     this.acceleration = 150;
     this.maxSpeed = 180;
@@ -591,6 +598,8 @@ function NinjaGuy(game, lvl) {
     this.range = 250;
     this.engage = true;
     this.knockBack = 0;
+    this.dashCD = 0;
+    this.lungeCD = 0;
     this.slashCD = 0;
     this.throwCD = 60;
     this.stunCD = 0;
@@ -616,6 +625,8 @@ NinjaGuy.prototype.update = function () {
     }
     if (this.alive && !this.die) {
         if (this.knockBack > 0) this.knockBack--;
+        if (this.dashCD > 0) this.dashCD--;
+        if (this.lungeCD > 0) this.lungeCD--;
         if (this.slashCD > 0) this.slashCD--;
         if (this.throwCD > 0) this.throwCD--;
         if (this.stunCD > 0) this.stunCD--;
@@ -636,25 +647,46 @@ NinjaGuy.prototype.update = function () {
             this.sound.hit3.load();
             this.hurt = false;
         }
-        if (this.slash) {
-            this.maxSpeed = 160;
-            if (this.anim.slash.isDone()) {
-                this.anim.slash.elapsedTime = 0;
-                this.sound.slash.pause();
-                this.sound.slash.load();
+        if (this.dash && this.anim.dash.isDone()) {
+            this.anim.dash.elapsedTime = 0;
+            this.sound.dash.load();
+            this.maxSpeed = this.mSpeed_init;
+            this.acceleration = 150;
+            this.dash = false;
+        }
+        if (this.lunge) {
+            if (this.anim.lunge.elapsedTime > 0.5)
+                this.maxSpeed = 85;
+            else if (this.anim.lunge.elapsedTime > 0.2) {
+                this.maxSpeed = 750;
+                if (!this.setRot) {
+                    this.sound.lunge.play();
+                    this.storedRot = this.rotation;
+                    this.setRot = true;
+                }
+            }
+            if (this.anim.lunge.isDone()) {
+                this.anim.lunge.elapsedTime = 0;
+                this.sound.lunge.pause();
+                this.sound.lunge.load();
                 this.maxSpeed = this.mSpeed_init;
-                this.slash = false;
+                this.acceleration = 150;
+                this.lunge = false;
             }
         }
-        if (this.throw) {
-            this.maxSpeed = 100;
-            if (this.anim.throw.isDone()) {
-                this.anim.throw.elapsedTime = 0;
-                this.sound.throw.pause();
-                this.sound.throw.load();
-                this.maxSpeed = this.mSpeed_init;
-                this.throw = false;
-            }
+        if (this.slash && this.anim.slash.isDone()) {
+            this.anim.slash.elapsedTime = 0;
+            this.sound.slash.pause();
+            this.sound.slash.load();
+            this.maxSpeed = this.mSpeed_init;
+            this.slash = false;
+        }
+        if (this.throw && this.anim.throw.isDone()) {
+            this.anim.throw.elapsedTime = 0;
+            this.sound.throw.pause();
+            this.sound.throw.load();
+            this.maxSpeed = this.mSpeed_init;
+            this.throw = false;
         }
         if (this.collideLeft() || this.collideRight()) {
             this.velocity.x = -this.velocity.x / friction;
@@ -703,6 +735,11 @@ NinjaGuy.prototype.update = function () {
                         this.velocity.x -= difX * this.acceleration * 5;
                         this.velocity.y -= difY * this.acceleration * 5;
                         this.maxSpeed *= 1.13;
+                    } else if (this.dash || this.lunge) {
+                        this.velocity.x += Math.cos(this.storedRot) * this.acceleration;
+                        this.velocity.y += Math.sin(this.storedRot) * this.acceleration;
+                        if (this.lunge && this.anim.lunge.elapsedTime > 0.2)
+                            this.rotation = this.storedRot;
                     } else {
                         var left = atan - Math.PI / 2;
                         var right = atan + Math.PI / 2;
@@ -722,17 +759,46 @@ NinjaGuy.prototype.update = function () {
                         }
                     }
                 }
-                if (dist > 150 && this.throwCD <= 0 && !this.slash) {
-                    this.throw = true;
-                    this.throwCD = 150;
+                if (this.dashCD <= 0 && !this.lunge && !this.slash && !this.throw) {
+                    this.sound.dash.play();
+                    this.dash = true;
+                    this.dashCD = Math.floor(Math.random() * 75) + 115;
+                    this.acceleration = 300;
+                    this.maxSpeed = 700;
+                    this.hitCD = 30;
+                    var pointy = this.y + this.velocity.y;
+                    var pointx = this.x + this.velocity.x;
+                    this.storedRot = Math.atan2(pointy - this.y, pointx - this.x);
                 }
-                else if (dist < 150 && this.slashCD <= 0 && !this.throw) {
+                else if (dist < 275 && this.lungeCD <= 0 && !this.dash && !this.throw && !this.slash) {
+                    this.landedBlow = false;
+                    this.lunge = true;
+                    this.lungeCD = Math.floor(Math.random() * 45) + 435;
+                    this.acceleration = 225;
+                    this.maxSpeed = 0;
+                    this.hitCD = 24;
+                    this.setRot = false;
+                }
+                else if (dist > 150 && this.throwCD <= 0 && !this.dash && !this.lunge && !this.slash) {
+                    this.throw = true;
+                    this.throwCD = 210;
+                    this.maxSpeed = 100;
+                }
+                else if (dist < 150 && this.slashCD <= 0 && !this.dash && !this.lunge && !this.throw) {
                     this.landedBlow = false;
                     this.sound.slash.play();
                     this.slash = true;
-                    this.slashCD = 105;
+                    this.slashCD = Math.floor(Math.random() * 35) + 95;
+                    this.maxSpeed = 160;
                 }
-                if (this.throw && this.throwCD == 135) {
+                if (this.lunge && this.hit(ent) && ent.hitCD <= 0) {
+                    this.landedBlow = true;
+                    this.sound.hit.play();
+                    ent.hurt = true;
+                    ent.hitCD = 10;
+                    ent.health.current -= 3;
+                }
+                else if (this.throw && this.throwCD == 195) {
                     this.sound.throw.play();
                     var throwRot = this.rotation - Math.atan(23 / 130);
                     var difX = Math.cos(throwRot) * 132;
@@ -768,6 +834,8 @@ NinjaGuy.prototype.update = function () {
 NinjaGuy.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.dash) this.anim.dash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.lunge) this.anim.lunge.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.throw) this.anim.throw.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.slash) this.anim.slash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else {
@@ -779,6 +847,35 @@ NinjaGuy.prototype.draw = function (ctx) {
 
 NinjaGuy.prototype.hit = function (other) {
     if (this.landedBlow) return false;
+    else if (this.lunge) {
+        var acc = 1;
+        var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
+        var orien = Math.abs(this.rotation - other.rotation);
+        if (orien > Math.PI) orien = (Math.PI * 2) - orien;
+
+        if (this.anim.lunge.currentFrame() == 2 || this.anim.lunge.currentFrame() == 5) {
+            var angle = this.rotation + Math.atan(80 / 38);
+            acc = Math.abs(angle - atan2);
+            while (acc > Math.PI * 2) acc -= (Math.PI * 2);
+            if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+            this.range = 89;
+        }
+        else if (this.anim.lunge.currentFrame() == 3 || this.anim.lunge.currentFrame() == 4) {
+            var angle = this.rotation + Math.atan(46 / 160);
+            acc = Math.abs(angle - atan2);
+            while (acc > Math.PI * 2) acc -= (Math.PI * 2);
+            if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+            this.range = 167;
+        }
+
+        if (acc < 0.7) {
+            if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
+                return distance(this, other) < this.range + other.faces;
+            else
+                return distance(this, other) < this.range + other.sides;
+        }
+        else return false;
+    }
     else if (this.slash) {
         var acc = 1;
         var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
@@ -786,20 +883,13 @@ NinjaGuy.prototype.hit = function (other) {
         if (orien > Math.PI) orien = (Math.PI * 2) - orien;
 
         if (this.anim.slash.currentFrame() == 0) {
-            var dagAngle = this.rotation + Math.atan(120 / 13);
-            while (dagAngle > Math.PI * 2) dagAngle -= Math.PI * 2;
-            if (dagAngle > Math.PI) dagAngle = (Math.PI * 2) - dagAngle;
-            acc = Math.abs(dagAngle - atan2);
-            if (acc > Math.PI) acc = (Math.PI * 2) - acc;
-        }
-        else if (this.anim.slash.currentFrame() == 1) {
             var dagAngle = this.rotation + Math.atan(89 / 63);
             while (dagAngle > Math.PI * 2) dagAngle -= Math.PI * 2;
             if (dagAngle > Math.PI) dagAngle = (Math.PI * 2) - dagAngle;
             acc = Math.abs(dagAngle - atan2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
         }
-        else if (this.anim.slash.currentFrame() == 2) {
+        else if (this.anim.slash.currentFrame() == 1) {
             var dagAngle = this.rotation - Math.atan(5 / 112);
             while (dagAngle > Math.PI * 2) dagAngle -= Math.PI * 2;
             if (dagAngle > Math.PI) dagAngle = (Math.PI * 2) - dagAngle;
@@ -812,8 +902,10 @@ NinjaGuy.prototype.hit = function (other) {
                 return distance(this, other) < 116 + other.faces;
             else
                 return distance(this, other) < 116 + other.sides;
-        } else return false;
-    } else return false;
+        }
+        else return false;
+    }
+    else return false;
 };
 
 function Shuriken(game, x, y, rot) {
