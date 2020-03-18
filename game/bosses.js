@@ -560,7 +560,7 @@ function NinjaGuy(game, lvl) {
     this.anim.slash = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 300, 300, 300, 0.1, 4, false, false);
     this.anim.throw = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 1200, 300, 300, 300, 0.25, 2, false, false);
     this.anim.lunge = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 900, 300, 400, 0.1, 6, false, false);
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 1400, 300, 300, 0.15, 1, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 1300, 300, 300, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 300, 1200, 300, 500, (0.5 / 3), 1, false, false);
 
     this.sound = {};
