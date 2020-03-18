@@ -762,7 +762,7 @@ NinjaGuy.prototype.update = function () {
                 if (this.dashCD <= 0 && !this.lunge && !this.slash && !this.throw) {
                     this.sound.dash.play();
                     this.dash = true;
-                    this.dashCD = Math.floor(Math.random() * 75) + 105;
+                    this.dashCD = Math.floor(Math.random() * 75) + 115;
                     this.acceleration = 300;
                     this.maxSpeed = 700;
                     this.hitCD = 30;
@@ -781,14 +781,14 @@ NinjaGuy.prototype.update = function () {
                 }
                 else if (dist > 150 && this.throwCD <= 0 && !this.dash && !this.lunge && !this.slash) {
                     this.throw = true;
-                    this.throwCD = 150;
+                    this.throwCD = 210;
                     this.maxSpeed = 100;
                 }
                 else if (dist < 150 && this.slashCD <= 0 && !this.dash && !this.lunge && !this.throw) {
                     this.landedBlow = false;
                     this.sound.slash.play();
                     this.slash = true;
-                    this.slashCD = 105;
+                    this.slashCD = Math.floor(Math.random() * 35) + 95;
                     this.maxSpeed = 160;
                 }
                 if (this.lunge && this.hit(ent) && ent.hitCD <= 0) {
@@ -798,7 +798,7 @@ NinjaGuy.prototype.update = function () {
                     ent.hitCD = 10;
                     ent.health.current -= 3;
                 }
-                else if (this.throw && this.throwCD == 135) {
+                else if (this.throw && this.throwCD == 195) {
                     this.sound.throw.play();
                     var throwRot = this.rotation - Math.atan(23 / 130);
                     var difX = Math.cos(throwRot) * 132;
