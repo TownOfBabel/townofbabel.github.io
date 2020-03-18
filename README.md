@@ -11,6 +11,18 @@ March 34th of 2020, the town had just finished building the tallest tower the wo
 
 
 ## News
+### March 18, 2020
+Hey guys it's Dylan again, here with another update. This update brings with it a small change, but exciting nonetheless. That's right, this update marks the completion of Itachi 8ight 9ine. He now has two more abilities in addition to his shuriken throw and basic attack.
+
+#### NEW Abilities (8ight 9ine)
+- **Dash:** Better than the player's dash, but worse than super dash.
+- **Lunge:** The origin of the player's lunge, basically just a better version.
+
+Along with these new abilites I've heavily tweaked 8ight 9ine's ability cooldowns so that (I hope) the player doesn't feel overwhelmed when facing him.
+
+**NOTE:** Going forward this game has become a passion project. This means updates, while semi-frequent now, will most likely completely stop once once I reach what I consider complete for my first real game.
+
+
 ### March 14, 2020
 Well the due date is here and this is what we've got. Only things done after actual due date are a disclaimer and some tweaks.
 
