@@ -1048,7 +1048,6 @@ SceneManager.prototype.fillBossRoom = function (lvl) {
         this.levels[lvl].houses[4].enemies.push(new Police(this.game, 1100, 250));
         this.levels[lvl].houses[4].enemies.push(new MageGuy(this.game, lvl));
     }
-    console.log(this.levels[lvl].houses[4].enemies);
 };
 
 SceneManager.prototype.buildBossRoom = function (lvl, boss) {

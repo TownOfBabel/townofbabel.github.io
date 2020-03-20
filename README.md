@@ -12,6 +12,14 @@ March 34th of 2020, the town had just finished building the tallest tower the wo
 &nbsp;  
 
 ## News
+### March 19, 2020
+Back again this time with another boss complete! This time it's J. Swole and he only got one more ability, a generic swing. It comes out slower and has less reach than jab, but hits a much wider range and does more damage. Our thoughts behind this stem from Swole's character being a bodybuilder rapper. Seeing as we designed him as a not-too-smart bodybuilder, the idea was that he really doesn't know how to do much, but still hits pretty hard.
+
+As far as game tweaks go, there's a bit to talk about. All bosses got their cooldowns reworked to have variance (instead of exact timing every time), hopefully making for a slightly more fair game. 8ight 9ine got yet another tweak, this time to increase his lunge startup time from basically non-existent to half a second. The final tweak is very small and should really only affect Slow Dogg's boss fight, and it is a change to the way dog collisions are handled. Before the change, dogs in Slow Dogg's cage would get stuck behind each other even when called by Slow Dogg. Now when he whistles the dogs will no longer get stuck behind other dogs!
+
+**NOTE:** Going forward this game has become a passion project. This means updates, while semi-frequent now, will most likely completely stop once once I reach what I consider complete for my first real game.&nbsp;  
+&nbsp;  
+
 ### March 18, 2020
 Hey guys it's Dylan again, here with another update. This update brings with it a small change, but exciting nonetheless. That's right, this update marks the completion of Itachi 8ight 9ine. He now has two more abilities in addition to his shuriken throw and basic attack.
 

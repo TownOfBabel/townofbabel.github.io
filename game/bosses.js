@@ -99,19 +99,19 @@ SlowDogg.prototype.update = function () {
             if (this.anim.wsl.isDone()) {
                 this.anim.wsl.elapsedTime = 0;
                 this.whistle = false;
-                this.wslCD = 720;
+                this.wslCD = Math.floor(Math.random() * 60) + 510;
             }
             if (this.anim.sht.isDone()) {
                 this.anim.sht.elapsedTime = 0;
                 this.shoot = false;
-                this.shtCD = 90;
+                this.shtCD = Math.floor(Math.random() * 30) + 120;
             }
         }
         if (this.attack) {
             if (this.anim.atk.isDone() || this.stunCD > 0) {
                 this.anim.atk.elapsedTime = 0;
                 this.attack = false;
-                this.atkCD = 60;
+                this.atkCD = Math.floor(Math.random() * 30) + 60;
             }
         }
 
@@ -275,15 +275,18 @@ function BigGuy(game, lvl) {
     // animations
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 0, 600, 600, 1, 1, true, false);
-    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 0, 600, 600, 0.13, 8, true, false);
-    this.anim.jab = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 600, 600, 600, 0.13, 4, false, false);
+    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 0, 600, 600, 0.125, 8, true, false);
+    this.anim.jab = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 600, 600, 600, 0.125, 4, false, false);
+    this.anim.swp = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 1800, 600, 600, 0.125, 6, false, false);
     this.anim.slm = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 1200, 600, 600, 0.25, 6, false, false);
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 2400, 600, 600, 600, 0.15, 1, false, false);
-    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 2400, 600, 600, 600, 0.5, 1, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 0, 2400, 600, 600, 0.15, 1, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/big_guy.png'), 600, 2400, 600, 600, (0.5 / 3), 3, false, false);
 
     this.sound = {};
     this.sound.jab = new Audio('./sound/bat_p.wav');
     this.sound.jab.volume = 0.375;
+    this.sound.swipe = new Audio('./sound/slash.wav');
+    this.sound.swipe.volume = 0.3;
     this.sound.slam1 = new Audio('./sound/slam_swing.wav');
     this.sound.slam1.volume = 0.375;
     this.sound.slam2 = new Audio('./sound/big_slam.wav');
@@ -315,7 +318,7 @@ function BigGuy(game, lvl) {
     this.engage = true;
     this.knockBack = 0;
     this.stunCD = 0;
-    this.jabCD = 0;
+    this.atkCD = 0;
     this.slmCD = 0;
     this.hitCD = 0;
     this.lrCD = 0;
@@ -341,7 +344,7 @@ BigGuy.prototype.update = function () {
         if (this.knockBack > 0) this.knockBack--;
         else this.maxSpeed = this.mSpeed_init;
         if (this.stunCD > 0) this.stunCD--;
-        if (this.jabCD > 0) this.jabCD--;
+        if (this.atkCD > 0) this.atkCD--;
         if (this.slmCD > 0) this.slmCD--;
         if (this.hitCD > 0) this.hitCD--;
         if (this.lrCD > 0) this.lrCD--;
@@ -360,7 +363,16 @@ BigGuy.prototype.update = function () {
             this.sound.hit3.load();
             this.hurt = false;
         }
-        if (this.jab || this.slam) {
+        if (this.slam) {
+            this.maxSpeed = 0;
+            if (this.anim.slm.isDone() || this.stunCD > 0) {
+                this.anim.slm.elapsedTime = 0;
+                this.maxSpeed = this.mSpeed_init;
+                this.slam = false;
+                this.slmCD = Math.floor(Math.random() * 60) + 270;
+            }
+        }
+        if (this.jab || this.swipe) {
             this.maxSpeed = 60;
             if (this.anim.jab.isDone() || this.stunCD > 0) {
                 this.anim.jab.elapsedTime = 0;
@@ -368,13 +380,15 @@ BigGuy.prototype.update = function () {
                 this.sound.jab.pause();
                 this.sound.jab.load();
                 this.jab = false;
-                this.jabCD = 75;
+                this.atkCD = Math.floor(Math.random() * 30) + 60;
             }
-            if (this.anim.slm.isDone() || this.stunCD > 0) {
-                this.anim.slm.elapsedTime = 0;
+            if (this.anim.swp.isDone() || this.stunCD > 0) {
+                this.anim.swp.elapsedTime = 0;
                 this.maxSpeed = this.mSpeed_init;
-                this.slam = false;
-                this.slmCD = 300;
+                this.sound.swipe.pause();
+                this.sound.swipe.load();
+                this.swipe = false;
+                this.atkCD = Math.floor(Math.random() * 30) + 90;
             }
         }
         if (this.collideLeft() || this.collideRight()) {
@@ -443,18 +457,24 @@ BigGuy.prototype.update = function () {
                         }
                     }
                 }
-                if (this.slmCD <= 0 && dist < 200 && !this.jab) {
+                if (this.slmCD <= 0 && dist < 200 && !this.jab && !this.swipe) {
                     this.landedBlow = false;
                     this.sound.slam1.play();
                     this.slam = true;
                     this.slmCD = 145;
                     this.storedRot = this.rotation;
                 }
-                else if (this.jabCD <= 0 && dist < this.ideal + 10 && !this.slam) {
+                else if (this.atkCD <= 0 && dist < 110 && !this.slam && !this.jab) {
+                    this.landedBlow = false;
+                    this.sound.swipe.play();
+                    this.swipe = true;
+                    this.atkCD = 100;
+                }
+                else if (this.atkCD <= 0 && dist < 150 && !this.slam && !this.swipe) {
                     this.landedBlow = false;
                     this.sound.jab.play();
                     this.jab = true;
-                    this.atkCD = 106;
+                    this.atkCD = 100;
                 }
                 if (this.slam && this.slmCD == 100) this.sound.slam2.play();
                 if (this.slam && this.hit(ent) && ent.hitCD <= 0) {
@@ -462,8 +482,15 @@ BigGuy.prototype.update = function () {
                     ent.sound.hit3.play();
                     ent.hurt = true;
                     ent.health.current--;
-                    ent.hitCD = 15;
+                    ent.hitCD = 20;
                     ent.stunCD = 75;
+                }
+                else if (this.swipe && this.hit(ent) && ent.hitCD <= 0) {
+                    this.landedBlow = true;
+                    ent.sound.hit2.play();
+                    ent.hurt = true;
+                    ent.health.current -= 3;
+                    ent.hitCD = 10;
                 }
                 else if (this.jab && this.hit(ent) && ent.hitCD <= 0) {
                     this.landedBlow = true;
@@ -495,6 +522,7 @@ BigGuy.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.slam) this.anim.slm.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.swipe) this.anim.swp.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.jab) this.anim.jab.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else {
         if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5)
@@ -515,6 +543,36 @@ BigGuy.prototype.hit = function (other) {
             return distance(center, other) < 130 + other.radius;
         else return false;
     }
+    else if (this.swipe) {
+        var acc = 1;
+        var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
+        var orien = Math.abs(this.rotation - other.rotation);
+        if (orien > Math.PI) orien = (Math.PI * 2) - orien;
+
+        if (this.anim.swp.currentFrame() == 2 || this.anim.swp.currentFrame() == 5) {
+            var angle = this.rotation + Math.atan(20 / 88);
+            acc = Math.abs(angle - atan2);
+            while (angle > Math.PI * 2) angle -= Math.PI * 2;
+            if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+            this.range = 90;
+        }
+        else if (this.anim.swp.currentFrame() == 3 || this.anim.swp.currentFrame() == 4) {
+            var angle = this.rotation - Math.atan(42 / 78);
+            acc = Math.abs(angle - atan2);
+            while (angle > Math.PI * 2) angle -= Math.PI * 2;
+            if (acc > Math.PI) acc = (Math.PI * 2) - acc;
+            this.range = 88;
+        }
+        
+        if (acc < 0.8) {
+            if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
+                return distance(this, other) < this.range + other.faces;
+            else
+                return distance(this, other) < this.range + other.sides;
+        }
+        else
+            return false;
+    }
     else if (this.jab) {
         var acc = 1;
         var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
@@ -524,18 +582,21 @@ BigGuy.prototype.hit = function (other) {
         if (this.anim.jab.currentFrame() == 0) {
             var angle = this.rotation + Math.atan(44 / 56);
             acc = Math.abs(angle - atan2);
+            while (angle > Math.PI * 2) angle -= Math.PI * 2;
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 72;
         }
         else if (this.anim.jab.currentFrame() == 1) {
             var angle = this.rotation + Math.atan(38 / 90);
             acc = Math.abs(angle - atan2);
+            while (angle > Math.PI * 2) angle -= Math.PI * 2;
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 98;
         }
         else if (this.anim.jab.currentFrame() == 2) {
             var angle = this.rotation + Math.atan(40 / 128);
             acc = Math.abs(angle - atan2);
+            while (angle > Math.PI * 2) angle -= Math.PI * 2;
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 134;
         }
@@ -599,6 +660,7 @@ function NinjaGuy(game, lvl) {
     this.engage = true;
     this.knockBack = 0;
     this.dashCD = 0;
+    this.lungingCD = 0;
     this.lungeCD = 0;
     this.slashCD = 0;
     this.throwCD = 60;
@@ -627,6 +689,7 @@ NinjaGuy.prototype.update = function () {
         if (this.knockBack > 0) this.knockBack--;
         if (this.dashCD > 0) this.dashCD--;
         if (this.lungeCD > 0) this.lungeCD--;
+        if (this.lungingCD > 0) this.lungingCD--;
         if (this.slashCD > 0) this.slashCD--;
         if (this.throwCD > 0) this.throwCD--;
         if (this.stunCD > 0) this.stunCD--;
@@ -653,16 +716,17 @@ NinjaGuy.prototype.update = function () {
             this.maxSpeed = this.mSpeed_init;
             this.acceleration = 150;
             this.dash = false;
+            this.dashCD = Math.floor(Math.random() * 90) + 150;
         }
-        if (this.lunge) {
+        if (this.lunging) {
             if (this.anim.lunge.elapsedTime > 0.5)
                 this.maxSpeed = 85;
             else if (this.anim.lunge.elapsedTime > 0.2) {
                 this.maxSpeed = 750;
-                if (!this.setRot) {
+                if (this.setRot) {
                     this.sound.lunge.play();
-                    this.storedRot = this.rotation;
-                    this.setRot = true;
+                    this.storedRot = this.rotation + 0.2;
+                    this.setRot = false;
                 }
             }
             if (this.anim.lunge.isDone()) {
@@ -671,7 +735,8 @@ NinjaGuy.prototype.update = function () {
                 this.sound.lunge.load();
                 this.maxSpeed = this.mSpeed_init;
                 this.acceleration = 150;
-                this.lunge = false;
+                this.lunging = false;
+                this.lungingCD = Math.floor(Math.random() * 45) + 435;
             }
         }
         if (this.slash && this.anim.slash.isDone()) {
@@ -680,6 +745,7 @@ NinjaGuy.prototype.update = function () {
             this.sound.slash.load();
             this.maxSpeed = this.mSpeed_init;
             this.slash = false;
+            this.slashCD = Math.floor(Math.random() * 35) + 95;
         }
         if (this.throw && this.anim.throw.isDone()) {
             this.anim.throw.elapsedTime = 0;
@@ -687,6 +753,7 @@ NinjaGuy.prototype.update = function () {
             this.sound.throw.load();
             this.maxSpeed = this.mSpeed_init;
             this.throw = false;
+            this.throwCD = Math.floor(Math.random() * 60) + 195;
         }
         if (this.collideLeft() || this.collideRight()) {
             this.velocity.x = -this.velocity.x / friction;
@@ -735,10 +802,10 @@ NinjaGuy.prototype.update = function () {
                         this.velocity.x -= difX * this.acceleration * 5;
                         this.velocity.y -= difY * this.acceleration * 5;
                         this.maxSpeed *= 1.13;
-                    } else if (this.dash || this.lunge) {
+                    } else if (this.dash || this.lunging) {
                         this.velocity.x += Math.cos(this.storedRot) * this.acceleration;
                         this.velocity.y += Math.sin(this.storedRot) * this.acceleration;
-                        if (this.lunge && this.anim.lunge.elapsedTime > 0.2)
+                        if (this.lunging && this.anim.lunge.elapsedTime > 0.2)
                             this.rotation = this.storedRot;
                     } else {
                         var left = atan - Math.PI / 2;
@@ -759,10 +826,10 @@ NinjaGuy.prototype.update = function () {
                         }
                     }
                 }
-                if (this.dashCD <= 0 && !this.lunge && !this.slash && !this.throw) {
+                if (this.dashCD <= 0 && !this.lunging && !this.lunge && !this.slash && !this.throw) {
                     this.sound.dash.play();
                     this.dash = true;
-                    this.dashCD = Math.floor(Math.random() * 75) + 115;
+                    this.dashCD = 100;
                     this.acceleration = 300;
                     this.maxSpeed = 700;
                     this.hitCD = 30;
@@ -770,35 +837,40 @@ NinjaGuy.prototype.update = function () {
                     var pointx = this.x + this.velocity.x;
                     this.storedRot = Math.atan2(pointy - this.y, pointx - this.x);
                 }
-                else if (dist < 275 && this.lungeCD <= 0 && !this.dash && !this.throw && !this.slash) {
-                    this.landedBlow = false;
+                else if (dist < 275 && this.lungingCD <= 0 && !this.lunge && !this.dash && !this.throw && !this.slash) {
                     this.lunge = true;
-                    this.lungeCD = Math.floor(Math.random() * 45) + 435;
+                    this.lungeCD = 30;
                     this.acceleration = 225;
                     this.maxSpeed = 0;
-                    this.hitCD = 24;
-                    this.setRot = false;
                 }
-                else if (dist > 150 && this.throwCD <= 0 && !this.dash && !this.lunge && !this.slash) {
+                else if (dist > 150 && this.throwCD <= 0 && !this.dash && !this.lunge && !this.lunging && !this.slash) {
                     this.throw = true;
-                    this.throwCD = 210;
+                    this.throwCD = 115;
                     this.maxSpeed = 100;
                 }
-                else if (dist < 150 && this.slashCD <= 0 && !this.dash && !this.lunge && !this.throw) {
+                else if (dist < 150 && this.slashCD <= 0 && !this.dash && !this.lunge && !this.lunging && !this.throw) {
                     this.landedBlow = false;
                     this.sound.slash.play();
                     this.slash = true;
-                    this.slashCD = Math.floor(Math.random() * 35) + 95;
+                    this.slashCD = 100;
                     this.maxSpeed = 160;
                 }
-                if (this.lunge && this.hit(ent) && ent.hitCD <= 0) {
+                if (this.lunge && this.lungeCD <= 0) {
+                    this.landedBlow = false;
+                    this.lunge = false;
+                    this.lunging = true;
+                    this.lungingCD = 100;
+                    this.hitCD = 24;
+                    this.setRot = true;
+                }
+                if (this.lunging && this.hit(ent) && ent.hitCD <= 0) {
                     this.landedBlow = true;
                     this.sound.hit.play();
                     ent.hurt = true;
                     ent.hitCD = 10;
                     ent.health.current -= 3;
                 }
-                else if (this.throw && this.throwCD == 195) {
+                else if (this.throw && this.throwCD == 100) {
                     this.sound.throw.play();
                     var throwRot = this.rotation - Math.atan(23 / 130);
                     var difX = Math.cos(throwRot) * 132;
@@ -835,7 +907,7 @@ NinjaGuy.prototype.draw = function (ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.dash) this.anim.dash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-    else if (this.lunge) this.anim.lunge.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.lunging) this.anim.lunge.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.throw) this.anim.throw.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.slash) this.anim.slash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else {
@@ -847,7 +919,7 @@ NinjaGuy.prototype.draw = function (ctx) {
 
 NinjaGuy.prototype.hit = function (other) {
     if (this.landedBlow) return false;
-    else if (this.lunge) {
+    else if (this.lunging) {
         var acc = 1;
         var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
         var orien = Math.abs(this.rotation - other.rotation);

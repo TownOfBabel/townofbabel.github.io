@@ -165,10 +165,24 @@ Enemy.prototype.update = function () {
         // Wall and Player/Enemy collisions
         for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
-            if (ent.enemy) {
+            if (this.dog && ent.enemy) {
                 if (ent.engage && distance(this, ent) < this.sight * 1.5)
                     this.engage = true;
-                if (!ent.boss && this.collide(ent)) {
+                if (!ent.boss && this.caged && this.collide(ent)) {
+                    var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
+                    var difX = Math.cos(atan);
+                    var difY = Math.sin(atan);
+                    var delta = this.radius + ent.radius - distance(this, ent);
+                    this.x -= difX * delta / 2;
+                    this.y -= difY * delta / 2;
+                    ent.x += difX * delta / 2;
+                    ent.y += difY * delta / 2;
+                }
+            }
+            else if (ent.enemy) {
+                if (ent.engage && distance(this, ent) < this.sight * 1.5)
+                    this.engage = true;
+                if (!ent.boss && !ent.dog && this.collide(ent)) {
                     var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                     var difX = Math.cos(atan);
                     var difY = Math.sin(atan);
@@ -399,7 +413,8 @@ function Dog(game, x, y) {
     this.sound.bark.volume = 0.3;
 
     // Properties
-    this.radius = 20;
+    this.dog = true;
+    this.radius = 22;
     this.faces = 74;
     this.sides = 18;
     this.rotationLag = 10;
