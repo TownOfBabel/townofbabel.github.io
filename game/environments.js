@@ -18,10 +18,9 @@ function Background(game, image, weapon, door, type, walls, spawn, spawns) {
 Background.prototype = new Entity();
 Background.prototype.constructor = Background;
 
-Background.prototype.update = function () {
-};
+Background.prototype.update = function() {};
 
-Background.prototype.draw = function (ctx) {
+Background.prototype.draw = function(ctx) {
     ctx.drawImage(this.image, 0, 0);
 };
 
@@ -33,10 +32,9 @@ function Roof(game, x, y, image) {
 Roof.prototype = new Entity();
 Roof.prototype.constructor = Roof;
 
-Roof.prototype.update = function () {
-};
+Roof.prototype.update = function() {};
 
-Roof.prototype.draw = function (ctx) {
+Roof.prototype.draw = function(ctx) {
     ctx.drawImage(this.image, this.x, this.y);
 };
 
@@ -50,7 +48,7 @@ function Wall(game, x, y, w, h) {
 Wall.prototype = new Entity();
 Wall.prototype.constructor = Wall;
 
-Wall.prototype.update = function () {
+Wall.prototype.update = function() {
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
         if ((ent.player || ent.enemy) && !ent.manager && !ent.ability) {
@@ -59,44 +57,37 @@ Wall.prototype.update = function () {
                     ent.velocity.x = 0;
                     if (this.side == 'left') ent.x = this.x - ent.radius;
                     else ent.x = this.x + this.w + ent.radius;
-                }
-                else if (this.side == 'top' || this.side == 'bottom') {
+                } else if (this.side == 'top' || this.side == 'bottom') {
                     ent.velocity.y = 0;
                     if (this.side == 'top') ent.y = this.y - ent.radius;
                     else ent.y = this.y + this.h + ent.radius;
-                }
-                else if (this.side == 'topleft' || this.side == 'topright'
-                    || this.side == 'bottomleft' || this.side == 'bottomright') {
+                } else if (this.side == 'topleft' || this.side == 'topright' ||
+                    this.side == 'bottomleft' || this.side == 'bottomright') {
                     if (this.side == 'topleft') {
                         var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                         ent.x = this.x + ent.radius * Math.cos(atan);
                         ent.y = this.y + ent.radius * Math.sin(atan);
-                    }
-                    else if (this.side == 'topright') {
+                    } else if (this.side == 'topright') {
                         var atan = Math.atan2(ent.y - this.y, ent.x - (this.x + this.w));
                         ent.x = this.x + this.w + ent.radius * Math.cos(atan);
                         ent.y = this.y + ent.radius * Math.sin(atan);
-                    }
-                    else if (this.side == 'bottomleft') {
+                    } else if (this.side == 'bottomleft') {
                         var atan = Math.atan2(ent.y - (this.y + this.h), ent.x - this.x);
                         ent.x = this.x + ent.radius * Math.cos(atan);
                         ent.y = this.y + this.h + ent.radius * Math.sin(atan);
-                    }
-                    else {
+                    } else {
                         var atan = Math.atan2(ent.y - (this.y + this.h), ent.x - (this.x + this.w));
                         ent.x = this.x + this.w + ent.radius * Math.cos(atan);
                         ent.y = this.y + this.h + ent.radius * Math.sin(atan);
                     }
-                }
-                else {
+                } else {
                     if (this.w < this.h) {
                         ent.velocity.x = 0;
                         if (ent.x < 640)
                             ent.x = this.x + this.w + ent.radius;
                         else
                             ent.x = this.x - ent.radius;
-                    }
-                    else {
+                    } else {
                         ent.velocity.y = 0;
                         if (ent.y < 360)
                             ent.y = this.y - ent.radius;
@@ -109,49 +100,40 @@ Wall.prototype.update = function () {
     }
 };
 
-Wall.prototype.draw = function (ctx) {
-};
+Wall.prototype.draw = function(ctx) {};
 
-Wall.prototype.collide = function (other) {
+Wall.prototype.collide = function(other) {
     if (other.player || other.enemy) {
         if (this.x > other.x) {
             if (this.y > other.y) {
                 this.side = 'topleft';
                 return distance(this, other) < other.radius;
-            }
-            else if (other.y > this.y + this.h) {
+            } else if (other.y > this.y + this.h) {
                 this.side = 'bottomleft';
                 return distance(other, this.x, this.y + this.h) < other.radius;
-            }
-            else {
+            } else {
                 this.side = 'left';
                 return distance(other, this.x, other.y) <= other.radius;
             }
-        }
-        else if (other.x > this.x + this.w) {
+        } else if (other.x > this.x + this.w) {
             if (this.y > other.y) {
                 this.side = 'topright';
                 return distance(other, this.x + this.w, this.y) < other.radius;
-            }
-            else if (other.y > this.y + this.h) {
+            } else if (other.y > this.y + this.h) {
                 this.side = 'bottomright';
                 return distance(other, this.x + this.w, this.y + this.h) < other.radius;
-            }
-            else {
+            } else {
                 this.side = 'right';
                 return distance(other, this.x + this.w, other.y) <= other.radius;
             }
-        }
-        else {
+        } else {
             if (this.y > other.y) {
                 this.side = 'top';
                 return distance(other, other.x, this.y) <= other.radius;
-            }
-            else if (other.y > this.y + this.h) {
+            } else if (other.y > this.y + this.h) {
                 this.side = 'bottom';
                 return distance(other, other.x, this.y + this.h) <= other.radius;
-            }
-            else
+            } else
                 return true;
         }
     }
@@ -168,7 +150,7 @@ function Column(game, x, y, radius, image) {
 Column.prototype = new Entity();
 Column.prototype.constructor = Column;
 
-Column.prototype.update = function () {
+Column.prototype.update = function() {
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
         if ((ent.player || ent.enemy) && !ent.manager && !ent.ability) {
@@ -184,7 +166,7 @@ Column.prototype.update = function () {
     }
 };
 
-Column.prototype.draw = function (ctx) {
+Column.prototype.draw = function(ctx) {
     if (this.image)
         ctx.drawImage(this.image, this.x, this.y);
 };
@@ -199,11 +181,9 @@ function Door(game, x, y, w, h) {
 Door.prototype = new Entity();
 Door.prototype.constructor = Door;
 
-Door.prototype.update = function () {
-};
+Door.prototype.update = function() {};
 
-Door.prototype.draw = function (ctx) {
-};
+Door.prototype.draw = function(ctx) {};
 
 function Arrow(game, manager) {
     this.image = new Animation(ASSET_MANAGER.getAsset('./img/backgrounds/arrow.png'), 0, 0, 50, 50, 0.25, 4, true, false);
@@ -215,7 +195,7 @@ function Arrow(game, manager) {
 Arrow.prototype = new Entity();
 Arrow.prototype.constructor = Arrow;
 
-Arrow.prototype.update = function () {
+Arrow.prototype.update = function() {
     var displayBG = this.manager.activeBG;
     if (displayBG.type == 'street') {
         if (displayBG === this.manager.levels[this.manager.level.current].streets[5]) {
@@ -223,14 +203,12 @@ Arrow.prototype.update = function () {
                 this.x = 1200;
                 this.y = 500;
                 this.rotation = 0;
-            }
-            else {
+            } else {
                 this.x = displayBG.spawn.x;
                 this.y = displayBG.spawn.y + 50;
                 this.rotation = -Math.PI / 2;
             }
-        }
-        else {
+        } else {
             this.x = 640;
             this.y = 100;
             this.rotation = -Math.PI / 2;
@@ -242,19 +220,16 @@ Arrow.prototype.update = function () {
                 this.rotation = Math.PI;
             }
         }
-    }
-    else {
+    } else {
         if (displayBG === this.manager.levels[this.manager.level.current].houses[4]) {
             this.x = displayBG.spawn.x;
             this.y = displayBG.spawn.y - 50;
             this.rotation = Math.PI / 2;
-        }
-        else if (displayBG.spawn.x < 640) {
+        } else if (displayBG.spawn.x < 640) {
             this.x = displayBG.spawn.x + 50;
             this.y = displayBG.spawn.y;
             this.rotation = Math.PI;
-        }
-        else {
+        } else {
             this.x = displayBG.spawn.x - 50;
             this.y = displayBG.spawn.y;
             this.rotation = 0;
@@ -269,7 +244,7 @@ Arrow.prototype.update = function () {
     }
 };
 
-Arrow.prototype.draw = function (ctx) {
+Arrow.prototype.draw = function(ctx) {
     if (this.manager.activeBG.enemies.length == 0)
         this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
 };
@@ -284,7 +259,7 @@ function Arrow2(game, manager) {
 Arrow2.prototype = new Entity();
 Arrow2.prototype.constructor = Arrow2;
 
-Arrow2.prototype.update = function () {
+Arrow2.prototype.update = function() {
     var displayBG = this.manager.activeBG;
     if (displayBG.type == 'street') {
         if (displayBG === this.manager.levels[this.manager.level.current].streets[5]) {
@@ -292,38 +267,32 @@ Arrow2.prototype.update = function () {
                 this.x = 1200;
                 this.y = 500;
                 this.rotation = 0;
-            }
-            else {
+            } else {
                 this.x = displayBG.spawn.x;
                 this.y = displayBG.spawn.y + 50;
                 this.rotation = -Math.PI / 2;
             }
-        }
-        else if (displayBG.neighbors[1]) {
+        } else if (displayBG.neighbors[1]) {
             if (displayBG.neighbors[1].enemies.length > 0) {
                 this.x = displayBG.spawn.x - 50;
                 this.y = displayBG.spawn.y;
                 this.rotation = 0;
-            }
-            else {
+            } else {
                 this.x = 640;
                 this.y = 100;
                 this.rotation = -Math.PI / 2;
             }
-        }
-        else if (displayBG.neighbors[3]) {
+        } else if (displayBG.neighbors[3]) {
             if (displayBG.neighbors[3].enemies.length > 0) {
                 this.x = displayBG.spawn.x + 50;
                 this.y = displayBG.spawn.y;
                 this.rotation = Math.PI;
-            }
-            else {
+            } else {
                 this.x = 640;
                 this.y = 100;
                 this.rotation = -Math.PI / 2;
             }
-        }
-        else {
+        } else {
             this.x = 640;
             this.y = 100;
             this.rotation = -Math.PI / 2;
@@ -335,19 +304,16 @@ Arrow2.prototype.update = function () {
                 this.rotation = Math.PI;
             }
         }
-    }
-    else {
+    } else {
         if (displayBG === this.manager.levels[this.manager.level.current].houses[4]) {
             this.x = displayBG.spawn.x;
             this.y = displayBG.spawn.y - 50;
             this.rotation = Math.PI / 2;
-        }
-        else if (displayBG.spawn.x < 640) {
+        } else if (displayBG.spawn.x < 640) {
             this.x = displayBG.spawn.x + 50;
             this.y = displayBG.spawn.y;
             this.rotation = Math.PI;
-        }
-        else {
+        } else {
             this.x = displayBG.spawn.x - 50;
             this.y = displayBG.spawn.y;
             this.rotation = 0;
@@ -362,7 +328,7 @@ Arrow2.prototype.update = function () {
     }
 };
 
-Arrow2.prototype.draw = function (ctx) {
+Arrow2.prototype.draw = function(ctx) {
     if (this.manager.activeBG.enemies.length == 0)
         this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
 };

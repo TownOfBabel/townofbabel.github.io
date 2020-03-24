@@ -6,10 +6,9 @@ function InfoUI(game) {
 InfoUI.prototype = new Entity();
 InfoUI.prototype.constructor = InfoUI;
 
-InfoUI.prototype.update = function () {
-};
+InfoUI.prototype.update = function() {};
 
-InfoUI.prototype.draw = function (ctx) {
+InfoUI.prototype.draw = function(ctx) {
     ctx.drawImage(this.image, 0, 0);
 };
 
@@ -27,10 +26,9 @@ function Health(game, hp) {
 Health.prototype = new Entity();
 Health.prototype.constructor = Health;
 
-Health.prototype.update = function () {
-};
+Health.prototype.update = function() {};
 
-Health.prototype.draw = function (ctx) {
+Health.prototype.draw = function(ctx) {
     if (this.current < 0) this.health[0].drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     else this.health[this.current].drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
 };
@@ -74,13 +72,13 @@ function Popup(game, weapon) {
 Popup.prototype = new Entity();
 Popup.prototype.constructor = Popup;
 
-Popup.prototype.update = function () {
+Popup.prototype.update = function() {
     if (!this.weapon.floating) this.removeFromWorld = true;
     if (!this.weapon.hover) this.removeFromWorld = true;
     if (this.weapon.removeFromWorld) this.removeFromWorld = true;
 };
 
-Popup.prototype.draw = function (ctx) {
+Popup.prototype.draw = function(ctx) {
     ctx.drawImage(this.image, this.startX, this.startY, 150, 50, this.x, this.y, 150, 50);
 };
 
@@ -112,8 +110,7 @@ function Weapon(game, player, type, rarity, ability, spawn) {
     if (ability == 0) this.ability = new SuperDash(game, player);
     else if (ability == 1) this.ability = new BlingStun(game, player);
     else if (ability == 2) this.ability = new BoomSpeaker(game, player);
-    else if (ability >= 3) { }
-    else this.ability = false;
+    else if (ability >= 3) {} else this.ability = false;
     if (ability === undefined) this.abilityNum = null;
     else this.abilityNum = ability;
     this.radius = 10;
@@ -126,18 +123,16 @@ function Weapon(game, player, type, rarity, ability, spawn) {
 Weapon.prototype = new Entity();
 Weapon.prototype.constructor = Weapon;
 
-Weapon.prototype.update = function () {
+Weapon.prototype.update = function() {
     if (distance(this, this.game.mouse) < 40 && !this.hover && !this.hidden) {
         this.hover = true;
         this.game.addEntity(new Popup(this.game, this));
-    }
-    else if (distance(this, this.game.mouse) > 40 && this.hover)
+    } else if (distance(this, this.game.mouse) > 40 && this.hover)
         this.hover = false;
 };
 
-Weapon.prototype.draw = function (ctx) {
-    if (this.hidden) { }
-    else if (this.floating)
+Weapon.prototype.draw = function(ctx) {
+    if (this.hidden) {} else if (this.floating)
         this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     else
         ctx.drawImage(this.static, 0, 0, 100, 100, this.x, this.y, 71.4 * this.scale, 71.4 * this.scale);
@@ -159,7 +154,7 @@ function Bullet(game, x, y, rot, dmg) {
 Bullet.prototype = new Entity();
 Bullet.prototype.constructor = Bullet;
 
-Bullet.prototype.update = function () {
+Bullet.prototype.update = function() {
     if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
         this.removeFromWorld = true;
 
@@ -171,14 +166,12 @@ Bullet.prototype.update = function () {
                 ent.hurt = true;
                 ent.health -= this.damage;
                 this.removeFromWorld = true;
-            }
-            else if (ent.player) {
+            } else if (ent.player) {
                 ent.sound.hit3.play();
                 ent.hurt = true;
                 ent.health.current--;
                 this.removeFromWorld = true;
-            }
-            else if (ent.wall || ent.column)
+            } else if (ent.wall || ent.column)
                 this.removeFromWorld = true;
         }
     }
@@ -193,7 +186,7 @@ Bullet.prototype.update = function () {
     this.y += this.velocity.y * this.game.clockTick;
 };
 
-Bullet.prototype.draw = function (ctx) {
+Bullet.prototype.draw = function(ctx) {
     ctx.drawImage(this.image, this.x, this.y);
 };
 
@@ -269,7 +262,7 @@ function Frump(game) {
 Frump.prototype = new Entity();
 Frump.prototype.constructor = Frump;
 
-Frump.prototype.update = function () {
+Frump.prototype.update = function() {
     if (this.stunCD > 0) this.stunCD--;
     if (this.health.current <= 0 && this.alive) {
         this.die = true;
@@ -298,8 +291,7 @@ Frump.prototype.update = function () {
                     this.velocity.x = 0;
                     this.velocity.y = 0;
                 }
-            }
-            else if (!this.bling && !this.boom) {
+            } else if (!this.bling && !this.boom) {
                 if (this.game.player.up) this.velocity.y -= this.acceleration;
                 if (this.game.player.down) this.velocity.y += this.acceleration;
                 if (this.game.player.left) this.velocity.x -= this.acceleration;
@@ -319,15 +311,13 @@ Frump.prototype.update = function () {
                     this.atkCD = 105;
                     this.hitDur = 7;
                     this.range = 85;
-                }
-                else if (this.weapon.type == 'bat') {
+                } else if (this.weapon.type == 'bat') {
                     this.sound.bat.play();
                     this.attacking = true;
                     this.atkCD = 110;
                     this.hitDur = 14;
                     this.range = 110;
-                }
-                else if (this.weapon.type == 'gun' && !this.reload) {
+                } else if (this.weapon.type == 'gun' && !this.reload) {
                     this.sound.gun.play();
                     this.attacking = true;
                     this.atkCD = 30;
@@ -340,8 +330,7 @@ Frump.prototype.update = function () {
                     var difX = Math.cos(gunRot) * 85;
                     var difY = Math.sin(gunRot) * 85;
                     this.game.addEntity(new Bullet(this.game, this.x + difX, this.y + difY, this.rotation, this.weapon.damage));
-                }
-                else {
+                } else {
                     this.atkCD = 109;
                     this.hitDur = 18;
                     this.range = 60;
@@ -356,18 +345,15 @@ Frump.prototype.update = function () {
                 this.anim.knifeAtk.elapsedTime = 0;
                 this.sound.knife.pause();
                 this.sound.knife.load();
-            }
-            else if (this.weapon.type == 'bat') {
+            } else if (this.weapon.type == 'bat') {
                 this.anim.batAtk.elapsedTime = 0;
                 this.sound.bat.pause();
                 this.sound.bat.load();
-            }
-            else if (this.weapon.type == 'gun') {
+            } else if (this.weapon.type == 'gun') {
                 this.anim.gunAtk.elapsedTime = 0;
                 this.sound.gun.pause();
                 this.sound.gun.load();
-            }
-            else
+            } else
                 this.anim.atk.elapsedTime = 0;
         }
         if (this.hurt && this.anim.hit.isDone()) {
@@ -397,21 +383,18 @@ Frump.prototype.update = function () {
                 this.anim.knifeAtk.elapsedTime = 0;
                 this.attacking = false;
                 this.atkCD = 9;
-            }
-            else if (this.weapon.type == 'bat' && this.anim.batAtk.isDone()) {
+            } else if (this.weapon.type == 'bat' && this.anim.batAtk.isDone()) {
                 this.sound.bat.pause();
                 this.sound.bat.load();
                 this.anim.batAtk.elapsedTime = 0;
                 this.attacking = false;
                 this.atkCD = 18;
-            }
-            else if (this.weapon.type == 'gun' && this.anim.gunAtk.isDone()) {
+            } else if (this.weapon.type == 'gun' && this.anim.gunAtk.isDone()) {
                 this.sound.gun.pause();
                 this.sound.gun.load();
                 this.anim.gunAtk.elapsedTime = 0;
                 this.attacking = false;
-            }
-            else if (this.weapon.type == 'unarmed' && this.anim.atk.isDone()) {
+            } else if (this.weapon.type == 'unarmed' && this.anim.atk.isDone()) {
                 this.anim.atk.elapsedTime = 0;
                 this.attacking = false;
                 this.atkCD = 24;
@@ -440,8 +423,7 @@ Frump.prototype.update = function () {
             this.velocity.x = -this.velocity.x * (1 / friction);
             if (this.collideLeft()) this.x = this.radius;
             else this.x = 1280 - this.radius;
-        }
-        else if (this.collideTop() || this.collideBottom()) {
+        } else if (this.collideTop() || this.collideBottom()) {
             this.velocity.y = -this.velocity.y * (1 / friction);
             if (this.collideTop()) this.y = this.radius;
             else this.y = 720 - this.radius;
@@ -462,7 +444,7 @@ Frump.prototype.update = function () {
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 };
 
-Frump.prototype.draw = function (ctx) {
+Frump.prototype.draw = function(ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (!this.alive) this.anim.dead.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
@@ -478,16 +460,14 @@ Frump.prototype.draw = function (ctx) {
         else if (this.weapon.type == 'bat') this.anim.batAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else if (this.weapon.type == 'gun') this.anim.gunAtk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else this.anim.atk.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-    }
-    else if (this.reload) this.anim.reload.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    } else if (this.reload) this.anim.reload.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else {
         if (this.velocity.x > -10 && this.velocity.x < 10 && this.velocity.y > -10 && this.velocity.y < 10) {
             if (this.weapon.type == 'knife') this.anim.knifeIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
             else if (this.weapon.type == 'bat') this.anim.batIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
             else if (this.weapon.type == 'gun') this.anim.gunIdle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
             else this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-        }
-        else {
+        } else {
             if (this.weapon.type == 'knife') this.anim.knifeMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
             else if (this.weapon.type == 'bat') this.anim.batMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
             else if (this.weapon.type == 'gun') this.anim.gunMove.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
@@ -496,7 +476,7 @@ Frump.prototype.draw = function (ctx) {
     }
 };
 
-Frump.prototype.hit = function (other, range) {
+Frump.prototype.hit = function(other, range) {
     if (range === undefined) {
         var acc = 1;
         var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
@@ -510,23 +490,20 @@ Frump.prototype.hit = function (other, range) {
                 while (acc > Math.PI * 2) acc -= (Math.PI * 2);
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 60;
-            }
-            else if (this.anim.knifeAtk.currentFrame() == 1 || this.anim.knifeAtk.currentFrame == 3) {
+            } else if (this.anim.knifeAtk.currentFrame() == 1 || this.anim.knifeAtk.currentFrame == 3) {
                 var knifeAngle = this.rotation + Math.atan(13 / 68);
                 acc = Math.abs(knifeAngle - atan2);
                 while (acc > Math.PI * 2) acc -= (Math.PI * 2);
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 70;
-            }
-            else if (this.anim.knifeAtk.currentFrame() == 2) {
+            } else if (this.anim.knifeAtk.currentFrame() == 2) {
                 var knifeAngle = this.rotation + Math.atan(3 / 88);
                 acc = Math.abs(knifeAngle - atan2);
                 while (acc > Math.PI * 2) acc -= (Math.PI * 2);
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 90;
             }
-        }
-        else if (this.weapon.type == 'bat') {
+        } else if (this.weapon.type == 'bat') {
             var moveAmnt = (Math.PI / 2 + Math.atan(76 / 33)) / this.anim.batAtk.totalTime;
             var batAngle = (this.rotation + Math.PI / 2) - (this.anim.batAtk.elapsedTime * moveAmnt);
             acc = Math.abs(batAngle - atan2);
@@ -535,17 +512,15 @@ Frump.prototype.hit = function (other, range) {
             this.range = 110;
         }
 
-        if ((this.weapon.type == 'knife' && acc < 0.2)
-            || (this.weapon.type == 'bat' && acc < 0.25)
-            || (this.lunge && acc < 0.3)) {
+        if ((this.weapon.type == 'knife' && acc < 0.2) ||
+            (this.weapon.type == 'bat' && acc < 0.25) ||
+            (this.lunge && acc < 0.3)) {
             if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
                 return distance(this, other) < this.range + other.faces;
             else
                 return distance(this, other) < this.range + other.sides;
-        }
-        else
+        } else
             return false;
-    }
-    else
+    } else
         return distance(this, other) < range + other.radius;
 };

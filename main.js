@@ -12,7 +12,7 @@ function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDu
     this.reverse = reverse;
 }
 
-Animation.prototype.drawFrame = function (tick, ctx, x, y, angle, scaleBy) {
+Animation.prototype.drawFrame = function(tick, ctx, x, y, angle, scaleBy) {
     var scaleBy = scaleBy || 1;
     this.elapsedTime += tick;
     if (this.loop) {
@@ -40,18 +40,18 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y, angle, scaleBy) {
     ctx.setTransform(1, 0, 0, 1, locX, locY);
     ctx.rotate(angle);
     ctx.drawImage(this.spriteSheet,
-        index * this.frameWidth + offset, vindex * this.frameHeight + this.startY,  // source from sheet
+        index * this.frameWidth + offset, vindex * this.frameHeight + this.startY, // source from sheet
         this.frameWidth, this.frameHeight, -this.frameWidth / 2, -this.frameHeight / 2,
         this.frameWidth * scaleBy, this.frameHeight * scaleBy);
     ctx.rotate(angle);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 };
 
-Animation.prototype.currentFrame = function () {
+Animation.prototype.currentFrame = function() {
     return Math.floor(this.elapsedTime / this.frameDuration);
 };
 
-Animation.prototype.isDone = function () {
+Animation.prototype.isDone = function() {
     return (this.elapsedTime >= this.totalTime);
 };
 
@@ -205,10 +205,12 @@ ASSET_MANAGER.queueDownload('./img/weapons/popup.png');
 ASSET_MANAGER.queueDownload('./img/weapons/fruit.png');
 ASSET_MANAGER.queueDownload('./img/weapons/orange.png');
 ASSET_MANAGER.queueDownload('./img/weapons/melon.png');
+ASSET_MANAGER.queueDownload('./img/weapons/target.png');
+ASSET_MANAGER.queueDownload('./img/weapons/meteor.png');
 
 ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 
-ASSET_MANAGER.downloadAll(function () {
+ASSET_MANAGER.downloadAll(function() {
     console.log('loading game...');
     var canvas = document.getElementById('gameWorld');
     var ctx = canvas.getContext('2d');

@@ -61,7 +61,7 @@ function SlowDogg(game, dogs, lvl) {
 SlowDogg.prototype = new Entity();
 SlowDogg.prototype.constructor = SlowDogg;
 
-SlowDogg.prototype.update = function () {
+SlowDogg.prototype.update = function() {
     if (Number.isNaN(this.health)) {
         this.health = this.maxHealth;
     }
@@ -139,8 +139,7 @@ SlowDogg.prototype.update = function () {
                         rotdif = Math.PI * 2 - rotdif;
                         this.rotation += rotdif / 22;
                     } else this.rotation -= rotdif / 22;
-                }
-                else {
+                } else {
                     var rotdif = atan - this.rotation;
                     while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                     if (rotdif > Math.PI) {
@@ -158,14 +157,12 @@ SlowDogg.prototype.update = function () {
                     this.y -= difY * delta / 2;
                     ent.x += difX * delta / 2;
                     ent.y += difY * delta / 2;
-                }
-                else {
+                } else {
                     if (this.knockBack > 0) {
                         this.velocity.x -= difX * this.acceleration * 6;
                         this.velocity.y -= difY * this.acceleration * 6;
                         this.maxSpeed *= 1.13;
-                    }
-                    else {
+                    } else {
                         if (distance(this, ent) < this.ideal - 5) {
                             this.velocity.x -= Math.cos(this.rotation) * this.acceleration * 0.6;
                             this.velocity.y -= Math.sin(this.rotation) * this.acceleration * 0.6;
@@ -182,14 +179,12 @@ SlowDogg.prototype.update = function () {
                     var dog = this.dogs.pop();
                     dog.caged = false;
                     this.wslCD = 720;
-                }
-                else if (dist < 140 && this.atkCD <= 0 && !this.shoot && !this.whistle) {
+                } else if (dist < 140 && this.atkCD <= 0 && !this.shoot && !this.whistle) {
                     this.landedBlow = false;
                     this.sound.cane.play();
                     this.attack = true;
                     this.atkCD = 112;
-                }
-                else if (this.shtCD <= 0 && !this.attack && !this.whistle) {
+                } else if (this.shtCD <= 0 && !this.attack && !this.whistle) {
                     this.shoot = true;
                     this.shtCD = 118;
                 }
@@ -199,8 +194,7 @@ SlowDogg.prototype.update = function () {
                     ent.hurt = true;
                     ent.health.current -= 2;
                     ent.hitCD = 10;
-                }
-                else if (this.shoot && this.shtCD == 100) {
+                } else if (this.shoot && this.shtCD == 100) {
                     this.sound.shotgun.play();
                     var gunRot = this.rotation + Math.atan(29 / 86);
                     var difX = Math.cos(gunRot) * 90;
@@ -227,7 +221,7 @@ SlowDogg.prototype.update = function () {
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 };
 
-SlowDogg.prototype.draw = function (ctx) {
+SlowDogg.prototype.draw = function(ctx) {
     if (this.die)
         this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt)
@@ -246,7 +240,7 @@ SlowDogg.prototype.draw = function (ctx) {
     }
 };
 
-SlowDogg.prototype.hit = function (other) {
+SlowDogg.prototype.hit = function(other) {
     var acc = 1;
     var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
     var orien = Math.abs(this.rotation - other.rotation);
@@ -266,8 +260,7 @@ SlowDogg.prototype.hit = function (other) {
             return distance(this, other) < this.range + other.faces;
         else
             return distance(this, other) < this.range + other.sides;
-    }
-    else
+    } else
         return false;
 };
 
@@ -330,7 +323,7 @@ function BigGuy(game, lvl) {
 BigGuy.prototype = new Entity();
 BigGuy.prototype.constructor = BigGuy;
 
-BigGuy.prototype.update = function () {
+BigGuy.prototype.update = function() {
     if (Number.isNaN(this.health)) this.health = this.maxHealth;
     if (this.health <= 0) {
         this.die = true;
@@ -412,8 +405,7 @@ BigGuy.prototype.update = function () {
                         rotdif = Math.PI * 2 - rotdif;
                         this.rotation += rotdif / 18;
                     } else this.rotation -= rotdif / 18;
-                }
-                else {
+                } else {
                     var rotdif = atan - this.rotation;
                     while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                     if (rotdif > Math.PI) {
@@ -432,8 +424,7 @@ BigGuy.prototype.update = function () {
                     this.y -= difY * delta / 2;
                     ent.x += difX * delta / 2;
                     ent.y += difY * delta / 2;
-                }
-                else {
+                } else {
                     if (this.knockBack > 0) {
                         this.velocity.x -= (difX + 0.001) * this.acceleration * 5;
                         this.velocity.y -= (difY + 0.001) * this.acceleration * 5;
@@ -463,14 +454,12 @@ BigGuy.prototype.update = function () {
                     this.slam = true;
                     this.slmCD = 145;
                     this.storedRot = this.rotation;
-                }
-                else if (this.atkCD <= 0 && dist < 110 && !this.slam && !this.jab) {
+                } else if (this.atkCD <= 0 && dist < 110 && !this.slam && !this.jab) {
                     this.landedBlow = false;
                     this.sound.swipe.play();
                     this.swipe = true;
                     this.atkCD = 100;
-                }
-                else if (this.atkCD <= 0 && dist < 150 && !this.slam && !this.swipe) {
+                } else if (this.atkCD <= 0 && dist < 150 && !this.slam && !this.swipe) {
                     this.landedBlow = false;
                     this.sound.jab.play();
                     this.jab = true;
@@ -484,15 +473,13 @@ BigGuy.prototype.update = function () {
                     ent.health.current--;
                     ent.hitCD = 20;
                     ent.stunCD = 75;
-                }
-                else if (this.swipe && this.hit(ent) && ent.hitCD <= 0) {
+                } else if (this.swipe && this.hit(ent) && ent.hitCD <= 0) {
                     this.landedBlow = true;
                     ent.sound.hit2.play();
                     ent.hurt = true;
                     ent.health.current -= 3;
                     ent.hitCD = 10;
-                }
-                else if (this.jab && this.hit(ent) && ent.hitCD <= 0) {
+                } else if (this.jab && this.hit(ent) && ent.hitCD <= 0) {
                     this.landedBlow = true;
                     ent.sound.hit2.play();
                     ent.hurt = true;
@@ -518,7 +505,7 @@ BigGuy.prototype.update = function () {
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 };
 
-BigGuy.prototype.draw = function (ctx) {
+BigGuy.prototype.draw = function(ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.slam) this.anim.slm.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
@@ -531,7 +518,7 @@ BigGuy.prototype.draw = function (ctx) {
     }
 };
 
-BigGuy.prototype.hit = function (other) {
+BigGuy.prototype.hit = function(other) {
     if (this.landedBlow) return false;
     else if (this.slam) {
         var ctr_x = this.x + Math.cos(this.rotation) * 110;
@@ -542,8 +529,7 @@ BigGuy.prototype.hit = function (other) {
         else if (this.anim.slm.currentFrame() == 4)
             return distance(center, other) < 130 + other.radius;
         else return false;
-    }
-    else if (this.swipe) {
+    } else if (this.swipe) {
         var acc = 1;
         var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
         var orien = Math.abs(this.rotation - other.rotation);
@@ -555,25 +541,22 @@ BigGuy.prototype.hit = function (other) {
             while (angle > Math.PI * 2) angle -= Math.PI * 2;
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 90;
-        }
-        else if (this.anim.swp.currentFrame() == 3 || this.anim.swp.currentFrame() == 4) {
+        } else if (this.anim.swp.currentFrame() == 3 || this.anim.swp.currentFrame() == 4) {
             var angle = this.rotation - Math.atan(42 / 78);
             acc = Math.abs(angle - atan2);
             while (angle > Math.PI * 2) angle -= Math.PI * 2;
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 88;
         }
-        
+
         if (acc < 0.8) {
             if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
                 return distance(this, other) < this.range + other.faces;
             else
                 return distance(this, other) < this.range + other.sides;
-        }
-        else
+        } else
             return false;
-    }
-    else if (this.jab) {
+    } else if (this.jab) {
         var acc = 1;
         var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
         var orien = Math.abs(this.rotation - other.rotation);
@@ -585,15 +568,13 @@ BigGuy.prototype.hit = function (other) {
             while (angle > Math.PI * 2) angle -= Math.PI * 2;
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 72;
-        }
-        else if (this.anim.jab.currentFrame() == 1) {
+        } else if (this.anim.jab.currentFrame() == 1) {
             var angle = this.rotation + Math.atan(38 / 90);
             acc = Math.abs(angle - atan2);
             while (angle > Math.PI * 2) angle -= Math.PI * 2;
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 98;
-        }
-        else if (this.anim.jab.currentFrame() == 2) {
+        } else if (this.anim.jab.currentFrame() == 2) {
             var angle = this.rotation + Math.atan(40 / 128);
             acc = Math.abs(angle - atan2);
             while (angle > Math.PI * 2) angle -= Math.PI * 2;
@@ -606,11 +587,9 @@ BigGuy.prototype.hit = function (other) {
                 return distance(this, other) < this.range + other.faces;
             else
                 return distance(this, other) < this.range + other.sides;
-        }
-        else
+        } else
             return false;
-    }
-    else return false;
+    } else return false;
 };
 
 function NinjaGuy(game, lvl) {
@@ -622,7 +601,7 @@ function NinjaGuy(game, lvl) {
     this.anim.throw = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 1200, 300, 300, 300, 0.25, 2, false, false);
     this.anim.lunge = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 900, 300, 400, 0.1, 6, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 0, 1300, 300, 300, 0.15, 1, false, false);
-    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 300, 1200, 300, 500, (0.5 / 3), 1, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/ninja_guy.png'), 300, 1200, 200, 500, (0.5 / 3), 1, false, false);
 
     this.sound = {};
     this.sound.dash = new Audio('./sound/dash.wav');
@@ -675,7 +654,7 @@ function NinjaGuy(game, lvl) {
 NinjaGuy.prototype = new Entity();
 NinjaGuy.prototype.constructor = NinjaGuy;
 
-NinjaGuy.prototype.update = function () {
+NinjaGuy.prototype.update = function() {
     if (Number.isNaN(this.health)) this.health = this.maxHealth;
     if (this.health <= 0) {
         this.die = true;
@@ -687,6 +666,7 @@ NinjaGuy.prototype.update = function () {
     }
     if (this.alive && !this.die) {
         if (this.knockBack > 0) this.knockBack--;
+        else this.maxSpeed = this.mSpeed_init;
         if (this.dashCD > 0) this.dashCD--;
         if (this.lungeCD > 0) this.lungeCD--;
         if (this.lungingCD > 0) this.lungingCD--;
@@ -776,8 +756,7 @@ NinjaGuy.prototype.update = function () {
                         rotdif = Math.PI * 2 - rotdif;
                         this.rotation += rotdif / 12;
                     } else this.rotation -= rotdif / 12;
-                }
-                else {
+                } else {
                     var rotdif = atan - this.rotation;
                     while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                     if (rotdif > Math.PI) {
@@ -796,8 +775,7 @@ NinjaGuy.prototype.update = function () {
                     this.y -= difY * delta / 2;
                     ent.x += difX * delta / 2;
                     ent.y += difY * delta / 2;
-                }
-                else {
+                } else {
                     if (this.knockBack > 0) {
                         this.velocity.x -= difX * this.acceleration * 5;
                         this.velocity.y -= difY * this.acceleration * 5;
@@ -836,19 +814,16 @@ NinjaGuy.prototype.update = function () {
                     var pointy = this.y + this.velocity.y;
                     var pointx = this.x + this.velocity.x;
                     this.storedRot = Math.atan2(pointy - this.y, pointx - this.x);
-                }
-                else if (dist < 275 && this.lungingCD <= 0 && !this.lunge && !this.dash && !this.throw && !this.slash) {
+                } else if (dist < 275 && this.lungingCD <= 0 && !this.lunge && !this.dash && !this.throw && !this.slash) {
                     this.lunge = true;
                     this.lungeCD = 30;
                     this.acceleration = 225;
                     this.maxSpeed = 0;
-                }
-                else if (dist > 150 && this.throwCD <= 0 && !this.dash && !this.lunge && !this.lunging && !this.slash) {
+                } else if (dist > 150 && this.throwCD <= 0 && !this.dash && !this.lunge && !this.lunging && !this.slash) {
                     this.throw = true;
                     this.throwCD = 115;
                     this.maxSpeed = 100;
-                }
-                else if (dist < 150 && this.slashCD <= 0 && !this.dash && !this.lunge && !this.lunging && !this.throw) {
+                } else if (dist < 150 && this.slashCD <= 0 && !this.dash && !this.lunge && !this.lunging && !this.throw) {
                     this.landedBlow = false;
                     this.sound.slash.play();
                     this.slash = true;
@@ -869,8 +844,7 @@ NinjaGuy.prototype.update = function () {
                     ent.hurt = true;
                     ent.hitCD = 10;
                     ent.health.current -= 3;
-                }
-                else if (this.throw && this.throwCD == 100) {
+                } else if (this.throw && this.throwCD == 100) {
                     this.sound.throw.play();
                     var throwRot = this.rotation - Math.atan(23 / 130);
                     var difX = Math.cos(throwRot) * 132;
@@ -879,8 +853,7 @@ NinjaGuy.prototype.update = function () {
                     this.game.addEntity(new Shuriken(this.game, this.x + difX, this.y + difY, throwDir + Math.PI / 6));
                     this.game.addEntity(new Shuriken(this.game, this.x + difX, this.y + difY, throwDir));
                     this.game.addEntity(new Shuriken(this.game, this.x + difX, this.y + difY, throwDir - Math.PI / 6));
-                }
-                else if (this.slash && this.hit(ent) && ent.hitCD <= 0) {
+                } else if (this.slash && this.hit(ent) && ent.hitCD <= 0) {
                     this.landedBlow = true;
                     this.sound.hit.play();
                     ent.hurt = true;
@@ -903,7 +876,7 @@ NinjaGuy.prototype.update = function () {
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 };
 
-NinjaGuy.prototype.draw = function (ctx) {
+NinjaGuy.prototype.draw = function(ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.dash) this.anim.dash.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
@@ -917,7 +890,7 @@ NinjaGuy.prototype.draw = function (ctx) {
     }
 };
 
-NinjaGuy.prototype.hit = function (other) {
+NinjaGuy.prototype.hit = function(other) {
     if (this.landedBlow) return false;
     else if (this.lunging) {
         var acc = 1;
@@ -931,8 +904,7 @@ NinjaGuy.prototype.hit = function (other) {
             while (acc > Math.PI * 2) acc -= (Math.PI * 2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 89;
-        }
-        else if (this.anim.lunge.currentFrame() == 3 || this.anim.lunge.currentFrame() == 4) {
+        } else if (this.anim.lunge.currentFrame() == 3 || this.anim.lunge.currentFrame() == 4) {
             var angle = this.rotation + Math.atan(46 / 160);
             acc = Math.abs(angle - atan2);
             while (acc > Math.PI * 2) acc -= (Math.PI * 2);
@@ -945,10 +917,8 @@ NinjaGuy.prototype.hit = function (other) {
                 return distance(this, other) < this.range + other.faces;
             else
                 return distance(this, other) < this.range + other.sides;
-        }
-        else return false;
-    }
-    else if (this.slash) {
+        } else return false;
+    } else if (this.slash) {
         var acc = 1;
         var atan2 = Math.atan2(other.y - this.y, other.x - this.x);
         var orien = Math.abs(this.rotation - other.rotation);
@@ -960,8 +930,7 @@ NinjaGuy.prototype.hit = function (other) {
             if (dagAngle > Math.PI) dagAngle = (Math.PI * 2) - dagAngle;
             acc = Math.abs(dagAngle - atan2);
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
-        }
-        else if (this.anim.slash.currentFrame() == 1) {
+        } else if (this.anim.slash.currentFrame() == 1) {
             var dagAngle = this.rotation - Math.atan(5 / 112);
             while (dagAngle > Math.PI * 2) dagAngle -= Math.PI * 2;
             if (dagAngle > Math.PI) dagAngle = (Math.PI * 2) - dagAngle;
@@ -974,10 +943,8 @@ NinjaGuy.prototype.hit = function (other) {
                 return distance(this, other) < 116 + other.faces;
             else
                 return distance(this, other) < 116 + other.sides;
-        }
-        else return false;
-    }
-    else return false;
+        } else return false;
+    } else return false;
 };
 
 function Shuriken(game, x, y, rot) {
@@ -996,7 +963,7 @@ function Shuriken(game, x, y, rot) {
 Shuriken.prototype = new Entity();
 Shuriken.prototype.constructor = Shuriken;
 
-Shuriken.prototype.update = function () {
+Shuriken.prototype.update = function() {
     this.rotation += Math.PI / 30;
     if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
         this.removeFromWorld = true;
@@ -1008,8 +975,7 @@ Shuriken.prototype.update = function () {
                 ent.hurt = true;
                 ent.health.current--;
                 this.removeFromWorld = true;
-            }
-            else if (ent.wall || ent.column)
+            } else if (ent.wall || ent.column)
                 this.removeFromWorld = true;
         }
     }
@@ -1024,7 +990,7 @@ Shuriken.prototype.update = function () {
     this.y += this.velocity.y * this.game.clockTick;
 };
 
-Shuriken.prototype.draw = function (ctx) {
+Shuriken.prototype.draw = function(ctx) {
     this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
 };
 
@@ -1032,10 +998,12 @@ function MageGuy(game, lvl) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 0, 0, 200, 200, 0.17, 8, true, false);
-    this.anim.cast = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 400, 200, 200, 200, 0.2, 3, false, false);
-    this.anim.summon = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 0, 200, 200, 200, 1, 1, false, false);
-    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 200, 200, 200, 200, 0.15, 1, false, false);
-    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 200, 200, 200, 200, 0.5, 1, false, false);
+    this.anim.castR = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 1000, 200, 200, 200, 0.2, 3, false, false);
+    this.anim.castL = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 1000, 600, 200, 200, 0.2, 3, false, false);
+    this.anim.summon = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 600, 200, 200, 200, 1, 1, false, false);
+    this.anim.meteor = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 1000, 400, 200, 200, 0.3, 3, false, false);
+    this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 600, 400, 200, 200, 0.15, 1, false, false);
+    this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/magic_guy.png'), 0, 200, 200, 400, (0.5 / 3), 3, false, false);
 
     this.sound = {};
     this.sound.summon = new Audio('./sound/summon.mp3');
@@ -1071,10 +1039,11 @@ function MageGuy(game, lvl) {
     this.orbitals = 0;
     this.knockBack = 0;
     this.stunCD = 0;
-    this.ballCD = 135;
-    this.summonCD = 15;
-    this.orbitalCD = 225;
+    this.ballCD = 0;
+    this.summonCD = 0;
+    this.orbitalCD = 0;
     this.meteorCD = 0;
+    this.castCD = Math.floor(Math.random() * 15) + 15;
     this.hitCD = 0;
     this.strafeCD = 0;
     this.left = false;
@@ -1085,7 +1054,7 @@ function MageGuy(game, lvl) {
 MageGuy.prototype = new Entity();
 MageGuy.prototype.constructor = MageGuy;
 
-MageGuy.prototype.update = function () {
+MageGuy.prototype.update = function() {
     if (Number.isNaN(this.health)) this.health = this.maxHealth;
     if (this.health <= 0) {
         this.die = true;
@@ -1103,6 +1072,7 @@ MageGuy.prototype.update = function () {
         if (this.summonCD > 0) this.summonCD--;
         if (this.orbitalCD > 0) this.orbitalCD--;
         if (this.meteorCD > 0) this.meteorCD--;
+        if (this.castCD > 0) this.castCD--;
         if (this.hitCD > 0) this.hitCD--;
         if (this.strafeCD > 0) this.strafeCD--;
         else {
@@ -1120,13 +1090,25 @@ MageGuy.prototype.update = function () {
             this.sound.hit3.load();
             this.hurt = false;
         }
-        if (this.cast && this.anim.cast.isDone()) {
-            this.anim.cast.elapsedTime = 0;
-            this.cast = false;
+        if (this.castL && this.anim.castL.isDone()) {
+            this.anim.castL.elapsedTime = 0;
+            this.castL = false;
+            this.castCD = Math.floor(Math.random() * 30) + 60;
+        }
+        if (this.castR && this.anim.castR.isDone()) {
+            this.anim.castR.elapsedTime = 0;
+            this.castR = false;
+            this.castCD = Math.floor(Math.random() * 30) + 60;
         }
         if (this.summon && this.anim.summon.isDone()) {
             this.anim.summon.elapsedTime = 0;
             this.summon = false;
+            this.castCD = Math.floor(Math.random() * 30) + 60;
+        }
+        if (this.meteor && this.anim.meteor.isDone()) {
+            this.anim.meteor.elapsedTime = 0;
+            this.meteor = false;
+            this.castCD = Math.floor(Math.random() * 30) + 60;
         }
         if (this.collideLeft() || this.collideRight()) {
             this.velocity.x = -this.velocity.x / friction;
@@ -1149,8 +1131,7 @@ MageGuy.prototype.update = function () {
                         rotdif = Math.PI * 2 - rotdif;
                         this.rotation += rotdif / 24;
                     } else this.rotation -= rotdif / 24;
-                }
-                else {
+                } else {
                     var rotdif = atan - this.rotation;
                     while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                     if (rotdif > Math.PI) {
@@ -1169,8 +1150,7 @@ MageGuy.prototype.update = function () {
                     this.y -= difY * delta / 2;
                     ent.x += difX * delta / 2;
                     ent.y += difY * delta / 2;
-                }
-                else {
+                } else {
                     if (this.knockBack > 0) {
                         this.velocity.x -= difX * this.acceleration * 8;
                         this.velocity.y -= difY * this.acceleration * 8;
@@ -1194,17 +1174,24 @@ MageGuy.prototype.update = function () {
                         }
                     }
                 }
-                if (this.orbitals <= 0 && this.summonCD <= 0 && !this.cast) {
-                    this.summon = true;
-                    this.summonCD = 600;
-                }
-                else if (this.orbitals > 0 && this.orbitalCD <= 0 && !this.cast && !this.summon) {
-                    this.cast = true;
-                    this.orbitalCD = 420;
-                }
-                else if (this.ballCD <= 0 && !this.cast && !this.summon) {
-                    this.cast = true;
-                    this.ballCD = 240;
+                if (this.castCD <= 0) {
+                    if (this.orbitals <= 0 && this.summonCD <= 0 && !this.meteor && !this.castL && !this.castR) {
+                        this.summon = true;
+                        this.summonCD = 600;
+                        this.castCD = 100;
+                    } else if (this.meteorCD <= 0 && !this.castL && !this.castR && !this.summon) {
+                        this.meteor = true;
+                        this.meteorCD = 420;
+                        this.castCD = 100;
+                    } else if (this.orbitals > 0 && this.orbitalCD <= 0 && !this.meteor && !this.castR && !this.summon) {
+                        this.castL = true;
+                        this.orbitalCD = 240;
+                        this.castCD = 100;
+                    } else if (this.ballCD <= 0 && !this.meteor && !this.castL && !this.summon) {
+                        this.castR = true;
+                        this.ballCD = 120;
+                        this.castCD = 100;
+                    }
                 }
                 if (this.summon && this.summonCD == 560) {
                     this.sound.summon.play();
@@ -1212,8 +1199,12 @@ MageGuy.prototype.update = function () {
                     this.game.addEntity(new Orbital(this.game, this, this.rotation));
                     this.game.addEntity(new Orbital(this.game, this, this.rotation - Math.PI * 2 / 3));
                     this.orbitals = 3;
-                }
-                else if (this.cast && this.orbitalCD == 405) {
+                } else if (this.meteor && this.meteorCD == 400) {
+                    this.sound.orbital.play();
+                    var spawnX = ent.x + Math.random() * 50 - 25;
+                    var spawnY = ent.y + Math.random() * 50 - 25;
+                    this.game.addEntity(new Meteor(this.game, spawnX, spawnY));
+                } else if (this.castL && this.orbitalCD == 225) {
                     this.sound.orbital.play();
                     var fire = false;
                     for (var j = 0; j < this.game.entities.length; j++) {
@@ -1223,8 +1214,7 @@ MageGuy.prototype.update = function () {
                             fire = true;
                         }
                     }
-                }
-                else if (this.cast && this.ballCD == 225) {
+                } else if (this.castR && this.ballCD == 105) {
                     this.sound.fire.play();
                     var direction = Math.atan2(ent.y - (this.y + difY * 75), ent.x - (this.x + difY * 75));
                     if (Math.floor(Math.random() * 4) == 0)
@@ -1248,13 +1238,15 @@ MageGuy.prototype.update = function () {
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 };
 
-MageGuy.prototype.draw = function (ctx) {
+MageGuy.prototype.draw = function(ctx) {
     if (this.die) this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt) this.anim.hit.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.summon) this.anim.summon.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
-    else if (this.cast) this.anim.cast.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.meteor) this.anim.meteor.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.castL) this.anim.castL.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else if (this.castR) this.anim.castR.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else {
-        if (this.velocity.x > -5 && this.velocity.x < 5 && this.velocity.y > -5 && this.velocity.y < 5)
+        if (this.velocity.x > -10 && this.velocity.x < 10 && this.velocity.y > -10 && this.velocity.y < 10)
             this.anim.idle.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
         else this.anim.move.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     }
@@ -1269,7 +1261,7 @@ function Fruit(game, x, y, rot) {
 Fruit.prototype = new Entity();
 Fruit.prototype.constructor = Fruit;
 
-Fruit.prototype.update = function () {
+Fruit.prototype.update = function() {
     if (this.spawnCD > 0) this.spawnCD--;
     else {
         if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
@@ -1285,8 +1277,7 @@ Fruit.prototype.update = function () {
                         ent.hitCD = 4;
                         this.removeFromWorld = true;
                     } else this.removeFromWorld = true;
-                }
-                else if (ent.wall || ent.column)
+                } else if (ent.wall || ent.column)
                     this.removeFromWorld = true;
             }
         }
@@ -1301,7 +1292,7 @@ Fruit.prototype.update = function () {
     }
 };
 
-Fruit.prototype.draw = function (ctx) {
+Fruit.prototype.draw = function(ctx) {
     this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
 };
 
@@ -1343,20 +1334,22 @@ function Orbital(game, caster, rot) {
     this.damage = 2;
     this.radius = 14;
     this.orbit = true;
+    this.immune = 0;
     Fruit.call(this, game, caster.x, caster.y, 0);
 }
 
 Orbital.prototype = new Fruit();
 Orbital.prototype.constructor = Orbital;
 
-Orbital.prototype.update = function () {
+Orbital.prototype.update = function() {
+    if (this.immune > 0) this.immune--;
     if (this.orbit) {
         this.floatRot += Math.PI / 150;
         this.x = this.center.x + Math.cos(this.floatRot) * 100;
         this.y = this.center.y + Math.sin(this.floatRot) * 100;
     }
     if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom()) {
-        if (!this.orbit) {
+        if (!this.orbit && this.immune <= 0) {
             this.center.orbitals--;
             this.removeFromWorld = true;
         }
@@ -1374,8 +1367,7 @@ Orbital.prototype.update = function () {
                     this.center.orbitals--;
                     this.removeFromWorld = true;
                 } else this.removeFromWorld = true;
-            }
-            else if ((ent.wall || ent.column) && !this.orbit) {
+            } else if ((ent.wall || ent.column) && !this.orbit && this.immune <= 0) {
                 this.center.orbitals--;
                 this.removeFromWorld = true;
             }
@@ -1391,9 +1383,69 @@ Orbital.prototype.update = function () {
     this.y += this.velocity.y * this.game.clockTick;
 };
 
-Orbital.prototype.fire = function (target) {
+Orbital.prototype.fire = function(target) {
     this.orbit = false;
+    this.immune = 30;
     this.rotation = Math.atan2(target.y - this.y, target.x - this.x);
     this.velocity.x = Math.cos(this.rotation) * 99999;
     this.velocity.y = Math.sin(this.rotation) * 99999;
+};
+
+function Meteor(game, x, y) {
+    this.image = new Animation(ASSET_MANAGER.getAsset('./img/weapons/meteor.png'), 0, 0, 200, 200, 0.2, 7, false, false);
+    this.target = new Animation(ASSET_MANAGER.getAsset('./img/weapons/target.png'), 0, 0, 200, 200, (0.5 / 3), 3, false, false);
+    this.sound = new Audio('./sound/meteor.wav');
+    this.sound.volume = 0.2;
+    this.sound.pause();
+    this.rotation = 0;
+    this.radius = 44;
+    this.spawnCD = this.target.totalTime * 60;
+    this.landedBlow = false;
+    Entity.call(this, game, x, y);
+}
+
+Meteor.prototype = new Entity();
+Meteor.prototype.constructor = Meteor;
+
+Meteor.prototype.update = function() {
+    if (this.image.isDone()) {
+        this.image.elapsedTime = 0;
+        this.removeFromWorld = true;
+    }
+    if (this.target.isDone()) {
+        this.target.elapsedTime = 0;
+    }
+    if (this.spawnCD > 0) this.spawnCD--;
+    else {
+        if (this.sound.paused) this.sound.play();
+        for (var i = 0; i < this.game.entities.length; i++) {
+            var ent = this.game.entities[i];
+            if (ent.player && ent.alive) {
+                if (this.hit(ent) && ent.hitCD <= 0) {
+                    this.landedBlow = true;
+                    ent.sound.hit2.play();
+                    ent.hurt = true;
+                    ent.health.current -= 4;
+                    ent.hitCD = 10;
+                    ent.stunCD = 30;
+                }
+            }
+        }
+    }
+};
+
+Meteor.prototype.draw = function(ctx) {
+    if (this.spawnCD > 0) this.target.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    else {
+        ctx.drawImage(ASSET_MANAGER.getAsset('./img/weapons/target.png'), 400, 0, 200, 200, this.x - 100, this.y - 100, 200, 200);
+        this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
+    }
+};
+
+Meteor.prototype.hit = function(other) {
+    if (this.landedBlow) return false;
+    else if (this.image.currentFrame() == 4) return distance(this, other) < 55 + other.radius;
+    else if (this.image.currentFrame() == 5) return distance(this, other) < 75 + other.radius;
+    else if (this.image.currentFrame() == 6) return distance(this, other) < 95 + other.radius;
+    else return false;
 };
