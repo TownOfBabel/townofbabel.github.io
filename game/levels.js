@@ -707,14 +707,14 @@ SceneManager.prototype.buildLevelThree = function (game) {
     }
 
     // houses
-    var gardens = [1, 2, 3];
+    this.gardens = [1, 2, 3];
     var roll1 = Math.floor(Math.random() * 3);
-    this.levels[2].houses[0] = this.buildGarden(2, gardens[roll1]);
-    gardens.splice(roll1, 1);
+    this.levels[2].houses[0] = this.buildGarden(2, this.gardens[roll1]);
+    this.gardens.splice(roll1, 1);
     this.levels[2].houses[1] = this.buildHouse(2, 1, null);
     var roll2 = Math.floor(Math.random() * 2);
-    this.levels[2].houses[2] = this.buildGarden(2, gardens[roll2]);
-    gardens.splice(roll2, 1);
+    this.levels[2].houses[2] = this.buildGarden(2, this.gardens[roll2]);
+    this.gardens.splice(roll2, 1);
     this.levels[2].houses[3] = this.buildHouse(2, 1, parseInt(this.levels[2].houses[1].source.substring(24, 25)));
     // this.levels[2].houses[4] = this.buildBossRoom(2, 2);
     this.fillBossRoom(2);
@@ -790,6 +790,197 @@ SceneManager.prototype.buildLevelThree = function (game) {
     console.log('loading complete!');
 };
 
+SceneManager.prototype.buildLevelFour = function (game) {
+    this.levels[3] = { streets: [], houses: [] };
+    console.log('loading level 4...');
+
+    // street 0
+    if (Math.random() * 100 < 20) {
+        if (Math.random() * 100 < 50)
+            this.levels[2].streets[0] = new Background(game, './img/backgrounds/street30.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 3, Math.floor(Math.random() * 4)),
+                new Door(game, 0, 184, 30, 112), 'street', [], { x: 80, y: 240 });
+        else this.levels[2].streets[0] = new Background(game, './img/backgrounds/street30.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 3),
+            new Door(game, 0, 184, 30, 112), 'street', [], { x: 80, y: 240 });
+    } else {
+        if (Math.random() * 100 < 40)
+            this.levels[2].streets[0] = new Background(game, './img/backgrounds/street30.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 2, Math.floor(Math.random() * 4)),
+                new Door(game, 0, 184, 30, 112), 'street', [], { x: 80, y: 240 });
+        else this.levels[2].streets[0] = new Background(game, './img/backgrounds/street20.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 2),
+            new Door(game, 0, 184, 30, 112), 'street', [], { x: 80, y: 240 });
+    }
+    // street 1
+    if (Math.random() * 100 < 20) {
+        if (Math.random() * 100 < 50)
+            this.levels[2].streets[1] = new Background(game, './img/backgrounds/street31.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 3, Math.floor(Math.random() * 4)),
+                new Door(game, 1270, 130, 10, 230), 'street', [], { x: 1220, y: 245 });
+        else this.levels[2].streets[1] = new Background(game, './img/backgrounds/street31.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 3),
+            new Door(game, 1270, 130, 10, 230), 'street', [], { x: 1220, y: 245 });
+    } else {
+        if (Math.random() * 100 < 40)
+            this.levels[2].streets[1] = new Background(game, './img/backgrounds/street31.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 2, Math.floor(Math.random() * 4)),
+                new Door(game, 1270, 130, 10, 230), 'street', [], { x: 1220, y: 245 });
+        else this.levels[2].streets[1] = new Background(game, './img/backgrounds/street31.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 2),
+            new Door(game, 1270, 130, 10, 230), 'street', [], { x: 1220, y: 245 });
+    }
+    // street 2
+    if (Math.random() * 100 < 20) {
+        if (Math.random() * 100 < 50)
+            this.levels[2].streets[2] = new Background(game, './img/backgrounds/street32.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 3, Math.floor(Math.random() * 4)),
+                new Door(game, 0, 260, 20, 140), 'street', [], { x: 70, y: 330 });
+        else this.levels[2].streets[2] = new Background(game, './img/backgrounds/street32.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 3),
+            new Door(game, 0, 260, 20, 140), 'street', [], { x: 70, y: 330 });
+    } else {
+        if (Math.random() * 100 < 40)
+            this.levels[2].streets[2] = new Background(game, './img/backgrounds/street32.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 2, Math.floor(Math.random() * 4)),
+                new Door(game, 0, 260, 20, 140), 'street', [], { x: 70, y: 330 });
+        else this.levels[2].streets[2] = new Background(game, './img/backgrounds/street32.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 2),
+            new Door(game, 0, 260, 20, 140), 'street', [], { x: 70, y: 330 });
+    }
+    // street 3
+    if (Math.random() * 100 < 20) {
+        if (Math.random() * 100 < 50)
+            this.levels[2].streets[3] = new Background(game, './img/backgrounds/street33.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 3, Math.floor(Math.random() * 4)),
+                new Door(game, 1144, 148, 136, 112), 'street', [], { x: 1094, y: 204 });
+        else this.levels[2].streets[3] = new Background(game, './img/backgrounds/street33.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 3),
+            new Door(game, 1144, 148, 136, 112), 'street', [], { x: 1094, y: 204 });
+    } else {
+        if (Math.random() * 100 < 40)
+            this.levels[2].streets[3] = new Background(game, './img/backgrounds/street33.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 3), 2, Math.floor(Math.random() * 4)),
+                new (game, 1144, 148, 136, 112), 'street', [], { x: 1094, y: 204 });
+        else this.levels[2].streets[3] = new Background(game, './img/backgrounds/street33.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 3), 2),
+            new (game, 1144, 148, 136, 112), 'street', [], { x: 1094, y: 204 });
+    }
+    // street 4
+    if (Math.random() * 100 < 20) {
+        if (Math.random() * 100 < 50)
+            this.levels[2].streets[4] = new Background(game, './img/backgrounds/street34.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 3, Math.floor(Math.random() * 4)),
+                new Door(game, 0, 544, 40, 112), 'street', [], { x: 90, y: 600 });
+        else this.levels[2].streets[4] = new Background(game, './img/backgrounds/street34.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 3),
+            new Door(game, 0, 544, 40, 112), 'street', [], { x: 90, y: 600 });
+    } else {
+        if (Math.random() * 100 < 40)
+            this.levels[2].streets[4] = new Background(game, './img/backgrounds/street34.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 3, Math.floor(Math.random() * 4)),
+                new Door(game, 0, 544, 40, 112), 'street', [], { x: 90, y: 600 });
+        else this.levels[2].streets[4] = new Background(game, './img/backgrounds/street34.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 2),
+            new Door(game, 0, 544, 40, 112), 'street', [], { x: 90, y: 600 });
+    }
+    // street 5
+    if (Math.random() * 100 < 20) {
+        if (Math.random() * 100 < 50)
+            this.levels[2].streets[5] = new Background(game, './img/backgrounds/street35.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 3, Math.floor(Math.random() * 4)),
+                new Door(game, 590, 0, 290, 10), 'street', [], { x: 735, y: 60 });
+        else this.levels[2].streets[5] = new Background(game, './img/backgrounds/street35.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 3),
+            new Door(game, 590, 0, 290, 10), 'street', [], { x: 735, y: 60 });
+    } else {
+        if (Math.random() * 100 < 40)
+            this.levels[2].streets[5] = new Background(game, './img/backgrounds/street35.png',
+                new Weapon(game, this.player, Math.floor(Math.random() * 2), 2, Math.floor(Math.random() * 4)),
+                new Door(game, 590, 0, 290, 10), 'street', [], { x: 735, y: 60 });
+        else this.levels[2].streets[5] = new Background(game, './img/backgrounds/street35.png',
+            new Weapon(game, this.player, Math.floor(Math.random() * 2), 2),
+            new Door(game, 590, 0, 290, 10), 'street', [], { x: 735, y: 60 });
+    }
+
+    //houses
+    this.levels[3].houses[0] = this.buildGarden(3, this.gardens[0]);
+    var prevHouse = null;
+    for (var i = 1; i < 4; i++) {
+        if (i % 2 == 0) {
+            this.levels[3].houses[i] = this.buildHouse(3, 0, prevHouse);
+            prevHouse = parseInt(this.levels[3].houses[i].source.substring(24, 25));
+        } else {
+            this.levels[3].houses[i] = this.buildHouse(3, 1, prevHouse);
+            prevHouse = parseInt(this.levels[3].houses[i].source.substring(24, 25));
+        }
+    }
+    // final boss
+    this.levels[3].houses[4] = new Background(game, './img/backgrounds/boss05.png',
+        new Weapon(game, this.player, Math.floor(Math.random() * 3), 3, Math.floor(Math.random() * 4)),
+        new Door (game, 576, 694, 116, 22), 'house', [], { x: 634, y: 640 });
+    // street 0 house
+    this.levels[3].houses[5] = this.buildHouse(3, 0, prevHouse);
+
+    // walls + roofs
+    // street 0
+    this.levels[3].streets[0].walls.push(new Wall(game, 0, 0, 28, 184));
+    this.levels[3].streets[0].walls.push(new Wall(game, 0, 295, 28, 425));
+    this.levels[3].streets[0].walls.push(new Wall(game, 1015, 0, 200, 720));
+    this.levels[3].streets[0].walls.push(new Roof(game, 0, 0, './img/backgrounds/roof30.png'));
+    // street 1
+    this.levels[3].streets[1].walls.push(new Wall(game, 0, 0, 125, 720));
+    this.levels[3].streets[1].walls.push(new Wall(game, 695, 138, 172, 404));
+    this.levels[3].streets[1].walls.push(new Wall(game, 1015, 0, 300, 130));
+    this.levels[3].streets[1].walls.push(new Wall(game, 1015, 360, 300, 400));
+    // street 2
+    this.levels[3].streets[2].walls.push(new Wall(game, 0, 0, 133, 266));
+    this.levels[3].streets[2].walls.push(new Wall(game, 0, 394, 133, 283));
+    this.levels[3].streets[2].walls.push(new Wall(game, 1249, 0, 31, 500));
+    this.levels[3].streets[2].walls.push(new Wall(game, 1015, 585, 300, 200));
+    this.levels[3].streets[2].walls.push(new Roof(game, 0, 0, './img/backgrounds/roof32.png'));
+    // street 3
+    this.levels[3].streets[3].walls.push(new Wall(game, 0, 0, 47, 288));
+    this.levels[3].streets[3].walls.push(new Wall(game, 0, 502, 136, 218));
+    this.levels[3].streets[3].walls.push(new Wall(game, 407, 206, 166, 374));
+    this.levels[3].streets[3].walls.push(new Wall(game, 1145, 0, 135, 148));
+    this.levels[3].streets[3].walls.push(new Wall(game, 1145, 259, 135, 161));
+    this.levels[3].streets[3].walls.push(new Wall(game, 1247, 569, 135, 148));
+    this.levels[3].streets[3].walls.push(new Roof(game, 0, 0, './img/backgrounds/roof32.png'));
+    // street 4
+    this.levels[3].streets[4].walls.push(new Wall(game, 0, 259, 46, 282));
+    this.levels[3].streets[4].walls.push(new Wall(game, 0, 654, 46, 200));
+    this.levels[3].streets[4].walls.push(new Wall(game, 1145, 299, 223, 403));
+    this.levels[3].streets[4].walls.push(new Roof(game, 0, 0, './img/backgrounds/roof34.png'));
+    // street 5
+    this.levels[3].streets[5].walls.push(new Wall(game, 0, 0, 584, 104));
+    this.levels[3].streets[5].walls.push(new Wall(game, 872, 0, 408, 152));
+    this.levels[3].streets[5].walls.push(new Roof(game, 0, 0, './img/backgrounds/roof35.png'));
+    // final boss
+    this.levels[3].houses[4].walls.push(new Wall(this.game, 692, 690, 588, 30));
+    this.levels[3].houses[4].walls.push(new Wall(this.game, 1250, 0, 30, 720));
+    this.levels[3].houses[4].walls.push(new Wall(this.game, 0, 0, 1280, 30));
+    this.levels[3].houses[4].walls.push(new Wall(this.game, 0, 0, 30, 720));
+    this.levels[3].houses[4].walls.push(new Wall(this.game, 0, 690, 576, 30));
+    this.levels[3].houses[4].walls.push(new Column(this.game, 214, 518, 42));
+    this.levels[3].houses[4].walls.push(new Column(this.game, 600, 293, 42));
+    this.levels[3].houses[4].walls.push(new Column(this.game, 1030, 210, 42));
+
+    generateEnemies(game, this.levels[3].streets[0], 3, 5);
+    generateEnemies(game, this.levels[3].streets[1], 3, 5);
+    generateEnemies(game, this.levels[3].streets[2], 3, 5);
+    generateEnemies(game, this.levels[3].streets[3], 3, 5);
+    generateEnemies(game, this.levels[3].streets[4], 3, 5);
+    generateEnemies(game, this.levels[3].streets[5], 3, 5);
+    generateEnemies(game, this.levels[3].houses[0], 3, 10);
+    generateEnemies(game, this.levels[3].houses[1], 3, 10);
+    generateEnemies(game, this.levels[3].houses[2], 3, 11);
+    generateEnemies(game, this.levels[3].houses[3], 3, 11);
+    generateEnemies(game, this.levels[3].houses[5], 3, 10);
+
+    console.log('loading complete!');
+};
+
 SceneManager.prototype.reload = function (lvl) {
     if (lvl > 0) this.loadProgress(lvl - 1);
     this.player.health.current = this.player.health.max;
@@ -821,6 +1012,14 @@ SceneManager.prototype.reload = function (lvl) {
         this.player.x = 640;
         this.player.y = 360;
         this.changeBackground(this.levels[1].houses[4]);
+        this.game.addEntity(new Fade(this.game, 'fromBlack'));
+    }
+    else {
+        this.level.current = 2;
+        this.buildLevelFour(this.game);
+        this.player.x = 640;
+        this.player.y = 360;
+        this.changeBackground(this.levels[2].houses[4]);
         this.game.addEntity(new Fade(this.game, 'fromBlack'));
     }
 };
@@ -1061,11 +1260,6 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
     else if (lvl == 2) abilityPct = 70;
     else abilityPct = 80;
     if (boss == 0) {
-        if (lvl == 3) {
-            if (Math.random() * 100 < abilityPct)
-                weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2) + 1, lvl, Math.floor(Math.random() * 7));
-            else weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2) + 1, lvl);
-        }
         if (Math.random() * 100 < abilityPct)
             weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2) + 1, lvl + 1, Math.floor(Math.random() * 7));
         else weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2) + 1, lvl + 1);
@@ -1084,11 +1278,6 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
         door = new Door(this.game, 576, 694, 116, 22);
         spawn = { x: 634, y: 640 };
     } else if (boss == 1) {
-        if (lvl == 3) {
-            if (Math.random() * 100 < abilityPct)
-                weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2), lvl, Math.floor(Math.random() * 7));
-            else weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2), lvl);
-        }
         if (Math.random() * 100 < abilityPct)
             weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2), lvl + 1, Math.floor(Math.random() * 7));
         else weapon = new Weapon(this.game, this.player, Math.floor(Math.random() * 2), lvl + 1);
@@ -1106,12 +1295,7 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
         door = new Door(this.game, 576, 694, 116, 22);
         spawn = { x: 634, y: 640 };
     } else if (boss == 2) {
-        if (lvl == 3) {
-            if (Math.random() * 100 < abilityPct)
-                weapon = new Weapon(this.game, this.player, 0, lvl, Math.floor(Math.random() * 7));
-            else weapon = new Weapon(this.game, this.player, 0, lvl);
-        }
-        else if (Math.random() * 100 < abilityPct)
+        if (Math.random() * 100 < abilityPct)
             weapon = new Weapon(this.game, this.player, 0, lvl + 1, Math.floor(Math.random() * 7));
         else weapon = new Weapon(this.game, this.player, 0, lvl + 1);
 
@@ -1126,12 +1310,7 @@ SceneManager.prototype.buildBossRoom = function (lvl, boss) {
         door = new Door(this.game, 576, 694, 116, 22);
         spawn = { x: 634, y: 640 };
     } else {
-        if (lvl == 3) {
-            if (Math.random() * 100 < abilityPct)
-                weapon = new Weapon(this.game, this.player, 2, lvl, Math.floor(Math.random() * 7));
-            else weapon = new Weapon(this.game, this.player, 2, lvl);
-        }
-        else if (Math.random() * 100 < abilityPct)
+        if (Math.random() * 100 < abilityPct)
             weapon = new Weapon(this.game, this.player, 2, lvl + 1, Math.floor(Math.random() * 7));
         else weapon = new Weapon(this.game, this.player, 2, lvl + 1);
         walls[0] = new Wall(this.game, 692, 690, 588, 30);

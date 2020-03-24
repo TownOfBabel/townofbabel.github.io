@@ -55,7 +55,7 @@ Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
 };
 
-// the 'main' code begins here
+// 'main' code begins here
 var friction = 8;
 
 var ASSET_MANAGER = new AssetManager();
@@ -105,6 +105,7 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/street22.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street23.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street24.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street25.png');
+ASSET_MANAGER.queueDownload('./img/backgrounds/street30.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street31.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street32.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/street33.png');
@@ -132,6 +133,7 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/boss01.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/boss02.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/boss03.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/boss04.png');
+ASSET_MANAGER.queueDownload('./img/backgrounds/boss05.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/roof00.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/roof01.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/roof02.png');
@@ -150,10 +152,15 @@ ASSET_MANAGER.queueDownload('./img/backgrounds/roof22.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/roof23.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/roof24.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/roof25.png');
+ASSET_MANAGER.queueDownload('./img/backgrounds/roof30.png');
+ASSET_MANAGER.queueDownload('./img/backgrounds/roof32.png');
+ASSET_MANAGER.queueDownload('./img/backgrounds/roof33.png');
+ASSET_MANAGER.queueDownload('./img/backgrounds/roof34.png');
+ASSET_MANAGER.queueDownload('./img/backgrounds/roof35.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/arrow.png');
 ASSET_MANAGER.queueDownload('./img/backgrounds/arrow2.png');
 
-// entities (player + enemies)
+// entities
 ASSET_MANAGER.queueDownload('./img/entities/frump.png');
 ASSET_MANAGER.queueDownload('./img/entities/frump2.png');
 ASSET_MANAGER.queueDownload('./img/entities/UI.png');

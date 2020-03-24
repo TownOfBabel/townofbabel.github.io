@@ -12,6 +12,12 @@ March 34th of 2020, the town had just finished building the tallest tower the wo
 &nbsp;  
 
 ## News
+### March 24, 2020
+Placeholder.
+
+**NOTE:** Going forward this game has become a passion project. This means updates, while semi-frequent now, will most likely completely stop once once I reach what I consider complete for my first real game.&nbsp;  
+&nbsp;  
+
 ### March 19, 2020
 Back again this time with another boss complete! This time it's J. Swole and he only got one more ability, a generic swing. It comes out slower and has less reach than jab, but hits a much wider range and does more damage. Our thoughts behind this stem from Swole's character being a bodybuilder rapper. Seeing as we designed him as a not-too-smart bodybuilder, the idea was that he really doesn't know how to do much, but still hits pretty hard.
 

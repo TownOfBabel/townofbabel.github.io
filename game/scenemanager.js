@@ -229,6 +229,7 @@ function SceneManager(game) {
     this.menus.boss.push(new Menu(game, './img/menus/boss1.png'));
     this.menus.boss.push(new Menu(game, './img/menus/boss2.png'));
     this.menus.boss.push(new Menu(game, './img/menus/boss3.png'));
+    this.menus.boss.push(new Menu(game, './img/menus/boss4.png'));
     this.menus.story.push(new Menu(game, './img/menus/story0.png'));
     this.menus.story.push(new Menu(game, './img/menus/story1.png'));
     this.menus.story.push(new Menu(game, './img/menus/story2.png'));
@@ -339,13 +340,21 @@ SceneManager.prototype.update = function () {
                 this.timer.stop();
             }
         }
-        else if (this.activeBG === this.menus.boss[this.bossArray[this.level.current]]
-            && this.game.click && this.timer.check() >= 1) {
+        else if ((this.activeBG === this.menus.boss[this.bossArray[this.level.current]]
+            || this.activeBG === this.menus.boss[4]) && this.game.click && this.timer.check() >= 1) {
             var room = this.levels[this.level.current].houses[4];
             this.player.x = room.spawn.x;
             this.player.y = room.spawn.y;
             this.changeBackground(room);
             this.timer.stop();
+        }
+        else if (this.activeBG === this.menus.story[3] && this.game.click && this.timer.check() >= 1) {
+            this.timer.stop();
+            this.sound.menus.pause();
+            this.sound.menus.volume = 0.3;
+            this.sound.menus.load();
+            this.sound.menus.play();
+            this.changeBackground(this.menus.win);
         }
         else if (this.activeBG === this.menus.story[this.level.current]
             && this.game.click && this.timer.check() >= 1) {
@@ -404,23 +413,18 @@ SceneManager.prototype.update = function () {
             }
         }
         if (!this.activeBG.menu && this.timer.init > 0 && this.player.alive) {
-            if (this.level.current == 2 && this.activeBG.enemies.length == 0) {
-                if (this.timer.check() >= 0.5 && this.activeBG === this.levels[2].houses[4]) {
-                    this.timer.stop();
-                    this.sound.game.pause();
-                    this.sound.game.load();
-                    this.sound.menus.volume = 0.3;
-                    this.sound.menus.load();
-                    this.sound.menus.play();
-                    this.changeBackground(this.menus.win);
+            if (this.level.current == 3 && this.activeBG.enemies.length == 0) {
+                if (this.timer.check() >= 0.5 && this.activeBG === this.levels[3].houses[4]) {
+                    this.changeBackground(this.menus.story[3]);
+                    this.timer.reset();
                 }
-                else if (this.timer.check() >= 0.5 && this.activeBG === this.levels[2].streets[5]) {
+                else if (this.timer.check() >= 0.5 && this.activeBG === this.levels[3].streets[5]) {
                     this.sound.game.pause();
                     this.sound.game.load();
                     this.sound.menus.load();
                     this.sound.menus.volume = 0.15;
                     this.sound.menus.play();
-                    this.changeBackground(this.menus.boss[this.bossArray[2]]);
+                    this.changeBackground(this.menus.boss[4]);
                     this.timer.reset();
                 }
             }
@@ -593,7 +597,7 @@ SceneManager.prototype.checkBounds = function () {
     else if (this.player.collide(this.activeBG.door) && this.activeBG.enemies.length == 0) {
         if (this.activeBG.door.x == 4 || this.activeBG.door.x == 0)
             this.changeBackground(this.activeBG.neighbors[3]);
-        else if (this.activeBG.door.x == 1254 || this.activeBG.door.x == 1270)
+        else if (this.activeBG.door.x == 1254 || this.activeBG.door.x == 1270 || this.activeBG.door.x == 1144)
             this.changeBackground(this.activeBG.neighbors[1]);
         else if (this.activeBG.door.y == 0) {
             if (this.activeBG.neighbors[0].enemies.length == 0)
