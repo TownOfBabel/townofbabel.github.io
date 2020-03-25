@@ -12,7 +12,7 @@ function HealthDrop(game, x, y, heal) {
 HealthDrop.prototype = new Entity();
 HealthDrop.prototype.constructor = HealthDrop;
 
-HealthDrop.prototype.update = function () {
+HealthDrop.prototype.update = function() {
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
         if (ent.player) {
@@ -28,7 +28,7 @@ HealthDrop.prototype.update = function () {
     }
 };
 
-HealthDrop.prototype.draw = function (ctx) {
+HealthDrop.prototype.draw = function(ctx) {
     if (this.heal == 1)
         this.healOne.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 1.5);
     else if (this.heal == 2)
@@ -68,7 +68,7 @@ function Enemy(game, x, y) {
 Enemy.prototype = new Entity();
 Enemy.prototype.constructor = Enemy;
 
-Enemy.prototype.update = function () {
+Enemy.prototype.update = function() {
     if (Number.isNaN(this.health)) {
         this.health = this.initHP;
     }
@@ -148,8 +148,7 @@ Enemy.prototype.update = function () {
                 if (this.collideTop()) this.y = this.radius + 40;
                 if (this.collideBottom()) this.y = 200 - this.radius;
             }
-        }
-        else {
+        } else {
             if (this.collideLeft() || this.collideRight()) {
                 this.velocity.x = -this.velocity.x * (1 / friction);
                 if (this.collideLeft()) this.x = this.radius;
@@ -165,10 +164,10 @@ Enemy.prototype.update = function () {
         // Wall and Player/Enemy collisions
         for (var i = 0; i < this.game.entities.length; i++) {
             var ent = this.game.entities[i];
-            if (ent.enemy) {
+            if (this.dog && ent.enemy) {
                 if (ent.engage && distance(this, ent) < this.sight * 1.5)
                     this.engage = true;
-                if (!ent.boss && this.collide(ent)) {
+                if (!ent.boss && this.caged && this.collide(ent)) {
                     var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                     var difX = Math.cos(atan);
                     var difY = Math.sin(atan);
@@ -178,13 +177,25 @@ Enemy.prototype.update = function () {
                     ent.x += difX * delta / 2;
                     ent.y += difY * delta / 2;
                 }
-            }
-            else if (ent.player && ent.alive && this.stunCD <= 0) {
+            } else if (ent.enemy) {
+                if (ent.engage && distance(this, ent) < this.sight * 1.5)
+                    this.engage = true;
+                if (!ent.boss && !ent.dog && this.collide(ent)) {
+                    var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
+                    var difX = Math.cos(atan);
+                    var difY = Math.sin(atan);
+                    var delta = this.radius + ent.radius - distance(this, ent);
+                    this.x -= difX * delta / 2;
+                    this.y -= difY * delta / 2;
+                    ent.x += difX * delta / 2;
+                    ent.y += difY * delta / 2;
+                }
+            } else if (ent.player && ent.alive && this.stunCD <= 0) {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 var rotationDif = Math.abs(this.rotation - atan);
                 if (rotationDif > Math.PI) rotationDif = (Math.PI * 2) - rotationDif;
-                if ((distance(this, ent) < this.sight && rotationDif <= this.fov)
-                    || distance(this, ent) < (this.range + ent.radius + 50) || this.engage) {
+                if ((distance(this, ent) < this.sight && rotationDif <= this.fov) ||
+                    distance(this, ent) < (this.range + ent.radius + 50) || this.engage) {
                     this.engage = true;
                     // Determine rotation
                     if (this.rotation > atan) {
@@ -194,8 +205,7 @@ Enemy.prototype.update = function () {
                             rotdif = Math.PI * 2 - rotdif;
                             this.rotation += rotdif / this.rotationLag;
                         } else this.rotation -= rotdif / this.rotationLag;
-                    }
-                    else {
+                    } else {
                         var rotdif = atan - this.rotation;
                         while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                         if (rotdif > Math.PI) {
@@ -213,8 +223,7 @@ Enemy.prototype.update = function () {
                         this.y -= difY * delta / 2;
                         ent.x += difX * delta / 2;
                         ent.y += difY * delta / 2;
-                    }
-                    else {
+                    } else {
                         if (this.knockBack > 0) {
                             this.knocked = true;
                             this.velocity.x -= (Math.cos(atan) + 0.01) * this.acceleration * 5;
@@ -224,8 +233,7 @@ Enemy.prototype.update = function () {
                             if (this.weapon.type == 'bite' && this.attacking) {
                                 this.velocity.x += Math.cos(this.rotation) * this.acceleration * 5;
                                 this.velocity.y += Math.sin(this.rotation) * this.acceleration * 5;
-                            }
-                            else if (distance(this, ent) < this.ideal - 5) {
+                            } else if (distance(this, ent) < this.ideal - 5) {
                                 this.velocity.x -= Math.cos(this.rotation) * this.acceleration * 0.4;
                                 this.velocity.y -= Math.sin(this.rotation) * this.acceleration * 0.4;
                             } else if (distance(this, ent) > this.ideal + 15) {
@@ -241,33 +249,30 @@ Enemy.prototype.update = function () {
                         this.slamming = true;
                         this.slamCD = 142;
                         this.storedRot = this.rotation;
-                    }
-                    else if (this.weapon.type == 'bite' && this.atkCD <= 0
-                        && distance(this, ent) < (this.ideal + ent.radius + 10)) {
+                    } else if (this.weapon.type == 'bite' && this.atkCD <= 0 &&
+                        distance(this, ent) < (this.ideal + ent.radius + 10)) {
                         this.landedBlow = false;
                         this.sound.atk.play();
                         this.attacking = true;
                         this.atkCD = this.begLag;
                         this.acceleration = 250;
                         this.maxSpeed = 425;
-                    }
-                    else if (distance(this, ent) < (this.ideal + ent.radius) && this.atkCD <= 0 && !this.slamming) {
+                    } else if (distance(this, ent) < (this.ideal + ent.radius) && this.atkCD <= 0 && !this.slamming) {
                         this.landedBlow = false;
                         this.sound.atk.play();
                         this.attacking = true;
                         this.atkCD = this.begLag;
                     }
                     if (this.slamming && this.slamCD == 100) this.sound.hit.play();
-                    if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 150)
-                        && this.slamCD > 91 && this.slamCD <= 100) {
+                    if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 150) &&
+                        this.slamCD > 91 && this.slamCD <= 100) {
                         ent.sound.hit2.play();
                         this.landedBlow = true;
                         ent.hurt = true;
                         ent.health.current--;
                         ent.hitCD = 10;
                         ent.stunCD = 45;
-                    }
-                    else if (this.attacking && ent.hitCD <= 0 && this.hit(ent)) {
+                    } else if (this.attacking && ent.hitCD <= 0 && this.hit(ent)) {
                         if (this.weapon.type == 'knife') ent.sound.hit1.play();
                         else ent.sound.hit2.play();
                         this.landedBlow = true;
@@ -293,7 +298,7 @@ Enemy.prototype.update = function () {
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
 };
 
-Enemy.prototype.draw = function (ctx) {
+Enemy.prototype.draw = function(ctx) {
     if (this.die)
         this.anim.die.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else if (this.hurt)
@@ -312,7 +317,7 @@ Enemy.prototype.draw = function (ctx) {
     }
 };
 
-Enemy.prototype.hit = function (other, range) {
+Enemy.prototype.hit = function(other, range) {
     if (this.landedBlow) return false;
     else if (range === undefined) {
         var acc = 1;
@@ -327,31 +332,27 @@ Enemy.prototype.hit = function (other, range) {
                 while (acc > Math.PI * 2) acc -= Math.PI * 2;
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 60;
-            }
-            else if (this.anim.atk.currentFrame() == 1 || this.anim.atk.currentFrame == 3) {
+            } else if (this.anim.atk.currentFrame() == 1 || this.anim.atk.currentFrame == 3) {
                 var knifeAngle = this.rotation + Math.atan(13 / 68);
                 acc = Math.abs(knifeAngle - atan2);
                 while (acc > Math.PI * 2) acc -= Math.PI * 2;
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 70;
-            }
-            else if (this.anim.atk.currentFrame() == 2) {
+            } else if (this.anim.atk.currentFrame() == 2) {
                 var knifeAngle = this.rotation + Math.atan(3 / 88);
                 acc = Math.abs(knifeAngle - atan2);
                 while (acc > Math.PI * 2) acc -= Math.PI * 2;
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 90;
             }
-        }
-        else if (this.weapon.type == 'bat') {
+        } else if (this.weapon.type == 'bat') {
             var moveAmnt = (Math.atan(79 / 3) + Math.atan(68 / 33)) / this.anim.atk.totalTime;
             var batAngle = (this.rotation + Math.atan(79 / 3)) - (this.anim.atk.elapsedTime * moveAmnt);
             acc = Math.abs(batAngle - atan2);
             while (acc > Math.PI * 2) acc -= Math.PI * 2;
             if (acc > Math.PI) acc = (Math.PI * 2) - acc;
             this.range = 102;
-        }
-        else if (this.weapon.type == 'bite') {
+        } else if (this.weapon.type == 'bite') {
             var startTime = this.anim.atk.frameDuration * 2.75;
             var endTime = this.anim.atk.frameDuration * 4.25;
             if (this.anim.atk.elapsedTime > startTime && this.anim.atk.elapsedTime < endTime) {
@@ -360,8 +361,7 @@ Enemy.prototype.hit = function (other, range) {
                 if (acc > Math.PI) acc = (Math.PI * 2) - acc;
                 this.range = 75;
             }
-        }
-        else if (this.weapon.type == 'swing') {
+        } else if (this.weapon.type == 'swing') {
             var moveAmnt = (Math.atan(33 / 40) + Math.atan(20 / 48)) / this.anim.atk.totalTime;
             var swingAngle = (this.rotation + Math.atan(33 / 40)) - (this.anim.atk.elapsedTime * moveAmnt);
             acc = Math.abs(swingAngle - atan2);
@@ -375,11 +375,9 @@ Enemy.prototype.hit = function (other, range) {
                 return distance(this, other) < this.range + other.faces;
             else
                 return distance(this, other) < this.range + other.sides;
-        }
-        else
+        } else
             return false;
-    }
-    else
+    } else
         return distance(this, other) < range + other.radius;
 };
 
@@ -399,7 +397,8 @@ function Dog(game, x, y) {
     this.sound.bark.volume = 0.3;
 
     // Properties
-    this.radius = 20;
+    this.dog = true;
+    this.radius = 22;
     this.faces = 74;
     this.sides = 18;
     this.rotationLag = 10;
@@ -448,8 +447,7 @@ function Thug(game, weapon, x, y) {
         this.ideal = 85;
         this.maxSpeed = 150;
         this.mSpeed_init = 150;
-    }
-    else {
+    } else {
         this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 1, true, false);
         this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 8, true, false);
         this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 200, 200, 300, 0.15, 4, false, false);
@@ -575,7 +573,7 @@ function Police(game, x, y) {
 Police.prototype = new Enemy();
 Police.prototype.constructor = Police;
 
-Police.prototype.update = function () {
+Police.prototype.update = function() {
     if (Number.isNaN(this.health)) this.health = this.initHP;
     if (this.health <= 0) {
         this.die = true;
@@ -644,14 +642,13 @@ Police.prototype.update = function () {
                     ent.x += difX * delta / 2;
                     ent.y += difY * delta / 2;
                 }
-            }
-            else if (ent.player && ent.alive && this.stunCD <= 0) {
+            } else if (ent.player && ent.alive && this.stunCD <= 0) {
                 var atan = Math.atan2(ent.y - this.y, ent.x - this.x);
                 var rotationDif = Math.abs(this.rotation - atan);
                 if (rotationDif > Math.PI) rotationDif = (Math.PI * 2) - rotationDif;
                 var dist = distance(this, ent);
-                if ((dist < this.sight && rotationDif <= this.fov)
-                    || dist < this.range + ent.radius + 50 || this.engage) {
+                if ((dist < this.sight && rotationDif <= this.fov) ||
+                    dist < this.range + ent.radius + 50 || this.engage) {
                     this.engage = true;
                     if (this.rotation > atan) {
                         var rotdif = this.rotation - atan;
@@ -660,8 +657,7 @@ Police.prototype.update = function () {
                             rotdif = Math.PI * 2 - rotdif;
                             this.rotation += rotdif / this.rotationLag;
                         } else this.rotation -= rotdif / this.rotationLag;
-                    }
-                    else {
+                    } else {
                         var rotdif = atan - this.rotation;
                         while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
                         if (rotdif > Math.PI) {
@@ -681,14 +677,12 @@ Police.prototype.update = function () {
                         this.y -= difY * delta / 2;
                         ent.x += difX * delta / 2;
                         ent.y += difY * delta / 2;
-                    }
-                    else {
+                    } else {
                         if (this.knockBack > 0) {
                             this.velocity.x -= (difX + 0.001) * this.acceleration * 5;
                             this.velocity.y -= (difY + 0.001) * this.acceleration * 5;
                             this.maxSpeed *= 1.2;
-                        }
-                        else {
+                        } else {
                             if (this.left) {
                                 this.velocity.x += Math.cos(left) * this.acceleration;
                                 this.velocity.y += Math.sin(left) * this.acceleration;
@@ -750,7 +744,7 @@ function Mailbox(game, timer) {
 Mailbox.prototype = new Entity();
 Mailbox.prototype.constructor = Mailbox;
 
-Mailbox.prototype.update = function () {
+Mailbox.prototype.update = function() {
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
         if (ent.player && ent.alive) {
@@ -783,6 +777,6 @@ Mailbox.prototype.update = function () {
     this.y += this.velocity.y * this.game.clockTick;
 };
 
-Mailbox.prototype.draw = function (ctx) {
+Mailbox.prototype.draw = function(ctx) {
     ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
 };
