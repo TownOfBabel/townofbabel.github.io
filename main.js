@@ -212,8 +212,6 @@ ASSET_MANAGER.queueDownload('./img/weapons/melon.png');
 ASSET_MANAGER.queueDownload('./img/weapons/target.png');
 ASSET_MANAGER.queueDownload('./img/weapons/meteor.png');
 
-ASSET_MANAGER.queueDownload('./img/Mailbox.png');
-
 ASSET_MANAGER.downloadAll(function() {
     console.log('loading game...');
     var canvas = document.getElementById('gameWorld');

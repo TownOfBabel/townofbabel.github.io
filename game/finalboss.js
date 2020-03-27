@@ -3,8 +3,8 @@ function Smoothie(game) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/final_boss.png'), 0, 0, 300, 300, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/final_boss.png'), 0, 0, 300, 300, 0.2, 8, true, false);
-    this.anim.swp = new Animation(ASSET_MANAGER.getAsset('./img/entities/final_boss.png'), 0, 300, 300, 300, 0.15, 4, false, false);
-    this.anim.jab = new Animation(ASSET_MANAGER.getAsset('./img/entities/final_boss.png'), 1200, 300, 300, 300, 0.15, 4, false, false);
+    this.anim.swp = new Animation(ASSET_MANAGER.getAsset('./img/entities/final_boss.png'), 0, 300, 300, 300, 0.125, 4, false, false);
+    this.anim.jab = new Animation(ASSET_MANAGER.getAsset('./img/entities/final_boss.png'), 1200, 300, 300, 300, 0.125, 4, false, false);
     this.anim.puke = new Animation(ASSET_MANAGER.getAsset('./img/entities/final_boss.png'), 1500, 600, 300, 300, 0.2, 3, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/final_boss.png'), 2100, 900, 300, 300, 0.15, 1, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/final_boss.png'), 0, 900, 300, 300, (0.5 / 3), 3, false, false);
@@ -14,12 +14,20 @@ function Smoothie(game) {
 
     // sound
     this.sound = {};
+    this.sound.jab = new Audio('./sound/bat_p.wav');
+    this.sound.jab.volume = 0.375;
+    this.sound.swipe = new Audio('./sound/slash.wav');
+    this.sound.swipe.volume = 0.3;
+    this.sound.puke = new Audio('./sound/puke.wav');
+    this.sound.puke.volume = 0.35;
+    this.sound.laser = new Audio('./sound/boss_laser.wav');
+    this.sound.laser.volume = 0.3;
     this.sound.hit1 = new Audio('./sound/hit1.wav');
-    this.sound.hit1.volume = 0.15;
+    this.sound.hit1.volume = 0.18;
     this.sound.hit2 = new Audio('./sound/hit2.wav');
-    this.sound.hit2.volume = 0.15;
+    this.sound.hit2.volume = 0.18;
     this.sound.hit3 = new Audio('./sound/hit3.wav');
-    this.sound.hit3.volume = 0.15;
+    this.sound.hit3.volume = 0.18;
 
     // properties
     this.alive = true;
@@ -104,7 +112,7 @@ Smoothie.prototype.update = function() {
             this.anim.puke.elapsedTime = 0;
             this.maxSpeed = this.mSpeed_init;
             this.puke = false;
-            this.pukeCD = Math.floor(Math.random() * 150) + 150;
+            this.pukeCD = Math.floor(Math.random() * 180) + 120;
             this.atkCD = Math.floor(Math.random() * 30) + 60;
         }
         if (this.laser) {
@@ -112,7 +120,7 @@ Smoothie.prototype.update = function() {
                 this.anim.laser.start.elapsedTime = 0;
                 this.start = false;
                 this.sweep = true;
-                this.sweepCD = 180;
+                this.sweepCD = 120;
             }
             if (this.sweep && this.sweepCD <= 0) {
                 this.anim.laser.sweep.elapsedTime = 0;
@@ -161,17 +169,20 @@ Smoothie.prototype.update = function() {
                             this.velocity.x += Math.cos(atan) * this.acceleration;
                             this.velocity.y += Math.sin(atan) * this.acceleration;
                         } else {
-                            // this.velocity = { x: 0, y: 0 };
                             var rot = this.rotation;
                             while (rot > Math.PI * 2) rot -= Math.PI * 2;
                             if (rot >= Math.PI / 15) this.rotation -= Math.PI / 30;
                             else if (rot <= -Math.PI / 15) this.rotation += Math.PI / 30;
-                            else this.start = true;
+                            else {
+                                this.start = true;
+                                this.sound.laser.play();
+                            }
                         }
                     } else if (this.sweep) {
-                        this.rotation += Math.PI / 180;
+                        this.rotation += Math.PI / 120;
                         if (this.hit(ent) && ent.hitCD <= 0) {
                             this.landedBlow = true;
+                            ent.sound.hit3.play();
                             ent.hurt = true;
                             ent.health.current -= 5;
                             ent.hitCD = 30;
@@ -226,11 +237,13 @@ Smoothie.prototype.update = function() {
                     } else if (this.atkCD <= 0) {
                         if (this.swpCD <= 0 && dist < 90 && !this.laser && !this.jab && !this.puke) {
                             this.landedBlow = false;
+                            this.sound.swipe.play();
                             this.swipe = true;
                             this.swpCD = Math.floor(Math.random() * 30) + 60;
                             this.maxSpeed = 70;
                         } else if (this.jabCD <= 0 && dist < 140 && !this.laser && !this.swipe && !this.puke) {
                             this.landedBlow = false;
+                            this.sound.jab.play();
                             this.jab = true;
                             this.jabCD = Math.floor(Math.random() * 30) + 60;
                             this.maxSpeed = 150;
@@ -244,7 +257,7 @@ Smoothie.prototype.update = function() {
                         this.landedBlow = true;
                         ent.sound.hit2.play();
                         ent.hurt = true;
-                        ent.health.current -= 2;
+                        ent.health.current -= 3;
                         ent.hitCD = 10;
                         ent.stunCD = 6;
                     } else if (this.jab && this.hit(ent) && ent.hitCD <= 0) {
@@ -255,6 +268,7 @@ Smoothie.prototype.update = function() {
                         ent.hitCD = 10;
                         ent.stunCD = 6;
                     } else if (this.puke && this.pukeCD == 100) {
+                        this.sound.puke.play();
                         var pukeX = Math.cos(this.rotation) * 60;
                         var pukeY = Math.sin(this.rotation) * 60;
                         this.game.addEntity(new Puke(this.game, this.x + pukeX, this.y + pukeY, this.rotation));
@@ -398,7 +412,7 @@ Puke.prototype.update = function() {
         var ent = this.game.entities[i];
         if (this.collide(ent)) {
             if (ent.player) {
-                ent.sound.hit3.play();
+                ent.sound.hit1.play();
                 ent.hurt = true;
                 ent.health.current -= 4;
                 ent.hitCD = 8;

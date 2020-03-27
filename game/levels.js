@@ -1,4 +1,4 @@
-function generateEnemies(game, room, lvl, max) {
+function generateEnemies(game, room, lvl, max, dif) {
     for (var i = room.enemies.length - 1; i >= 0; i--)
         room.enemies.splice(i, 1);
     if (room.type == 'street') {
@@ -10,12 +10,12 @@ function generateEnemies(game, room, lvl, max) {
         for (var i = 0; i < total; i++) {
             var spawn = room.spawns[Math.floor(Math.random() * room.spawns.length)];
             if (dogs > 0) {
-                room.enemies.push(new Dog(game, spawn.x, spawn.y));
+                room.enemies.push(new Dog(game, spawn.x, spawn.y, dif));
                 dogs--;
             } else if (police > 0) {
-                room.enemies.push(new Police(game, spawn.x, spawn.y));
+                room.enemies.push(new Police(game, spawn.x, spawn.y, dif));
                 police--;
-            } else room.enemies.push(new Thug(game, Math.floor(Math.random() * 2), spawn.x, spawn.y));
+            } else room.enemies.push(new Thug(game, Math.floor(Math.random() * 2), spawn.x, spawn.y, dif));
         }
     } else {
         var guards = 0,
@@ -27,16 +27,16 @@ function generateEnemies(game, room, lvl, max) {
         for (var i = 0; i < total; i++) {
             var spawn = room.spawns[Math.floor(Math.random() * room.spawns.length)];
             if (dogs > 0) {
-                room.enemies.push(new Dog(game, spawn.x, spawn.y));
+                room.enemies.push(new Dog(game, spawn.x, spawn.y, dif));
                 dogs--;
             } else if (guards > 0) {
-                room.enemies.push(new Bodyguard(game, spawn.x, spawn.y));
+                room.enemies.push(new Bodyguard(game, spawn.x, spawn.y, dif));
                 guards--;
             } else if (police > 0) {
-                room.enemies.push(new Police(game, spawn.x, spawn.y));
+                room.enemies.push(new Police(game, spawn.x, spawn.y, dif));
                 police--;
             } else
-                room.enemies.push(new Thug(game, Math.floor(Math.random() * 2), spawn.x, spawn.y));
+                room.enemies.push(new Thug(game, Math.floor(Math.random() * 2), spawn.x, spawn.y, dif));
         }
     }
 }
@@ -293,16 +293,16 @@ SceneManager.prototype.buildLevelOne = function(game) {
     this.levels[0].houses[4].neighbors[2] = this.levels[0].streets[5];
 
     // enemy generation
-    generateEnemies(game, this.levels[0].streets[0], 0, 2);
-    generateEnemies(game, this.levels[0].streets[1], 0, 2);
-    generateEnemies(game, this.levels[0].streets[2], 0, 2);
-    generateEnemies(game, this.levels[0].streets[3], 0, 2);
-    generateEnemies(game, this.levels[0].streets[4], 0, 2);
-    generateEnemies(game, this.levels[0].streets[5], 0, 2);
-    generateEnemies(game, this.levels[0].houses[0], 0, 4);
-    generateEnemies(game, this.levels[0].houses[1], 0, 4);
-    generateEnemies(game, this.levels[0].houses[2], 0, 5);
-    generateEnemies(game, this.levels[0].houses[3], 0, 5);
+    generateEnemies(game, this.levels[0].streets[0], 0, 2, this.dif);
+    generateEnemies(game, this.levels[0].streets[1], 0, 2, this.dif);
+    generateEnemies(game, this.levels[0].streets[2], 0, 2, this.dif);
+    generateEnemies(game, this.levels[0].streets[3], 0, 2, this.dif);
+    generateEnemies(game, this.levels[0].streets[4], 0, 2, this.dif);
+    generateEnemies(game, this.levels[0].streets[5], 0, 2, this.dif);
+    generateEnemies(game, this.levels[0].houses[0], 0, 4, this.dif);
+    generateEnemies(game, this.levels[0].houses[1], 0, 4, this.dif);
+    generateEnemies(game, this.levels[0].houses[2], 0, 5, this.dif);
+    generateEnemies(game, this.levels[0].houses[3], 0, 5, this.dif);
 
     console.log('loading complete!');
 };
@@ -583,15 +583,15 @@ SceneManager.prototype.buildLevelTwo = function(game) {
     this.levels[1].houses[4].neighbors[2] = this.levels[1].streets[5];
 
     // enemy generation
-    generateEnemies(game, this.levels[1].streets[0], 1, 3);
-    generateEnemies(game, this.levels[1].streets[1], 1, 3);
-    generateEnemies(game, this.levels[1].streets[2], 1, 3);
-    generateEnemies(game, this.levels[1].streets[4], 1, 3);
-    generateEnemies(game, this.levels[1].streets[5], 1, 3);
-    generateEnemies(game, this.levels[1].houses[0], 1, 6);
-    generateEnemies(game, this.levels[1].houses[1], 1, 6);
-    generateEnemies(game, this.levels[1].houses[2], 1, 7);
-    generateEnemies(game, this.levels[1].houses[3], 1, 7);
+    generateEnemies(game, this.levels[1].streets[0], 1, 3, this.dif);
+    generateEnemies(game, this.levels[1].streets[1], 1, 3, this.dif);
+    generateEnemies(game, this.levels[1].streets[2], 1, 3, this.dif);
+    generateEnemies(game, this.levels[1].streets[4], 1, 3, this.dif);
+    generateEnemies(game, this.levels[1].streets[5], 1, 3, this.dif);
+    generateEnemies(game, this.levels[1].houses[0], 1, 6, this.dif);
+    generateEnemies(game, this.levels[1].houses[1], 1, 6, this.dif);
+    generateEnemies(game, this.levels[1].houses[2], 1, 7, this.dif);
+    generateEnemies(game, this.levels[1].houses[3], 1, 7, this.dif);
 
     console.log('loading complete!');
 };
@@ -780,16 +780,16 @@ SceneManager.prototype.buildLevelThree = function(game) {
     this.levels[2].houses[4].neighbors[2] = this.levels[2].streets[5];
 
     // enemy generation
-    generateEnemies(game, this.levels[2].streets[0], 2, 4);
-    generateEnemies(game, this.levels[2].streets[1], 2, 4);
-    generateEnemies(game, this.levels[2].streets[2], 2, 4);
-    generateEnemies(game, this.levels[2].streets[3], 2, 4);
-    generateEnemies(game, this.levels[2].streets[4], 2, 4);
-    generateEnemies(game, this.levels[2].streets[5], 2, 4);
-    generateEnemies(game, this.levels[2].houses[0], 2, 8);
-    generateEnemies(game, this.levels[2].houses[1], 2, 8);
-    generateEnemies(game, this.levels[2].houses[2], 2, 9);
-    generateEnemies(game, this.levels[2].houses[3], 2, 9);
+    generateEnemies(game, this.levels[2].streets[0], 2, 4, this.dif);
+    generateEnemies(game, this.levels[2].streets[1], 2, 4, this.dif);
+    generateEnemies(game, this.levels[2].streets[2], 2, 4, this.dif);
+    generateEnemies(game, this.levels[2].streets[3], 2, 4, this.dif);
+    generateEnemies(game, this.levels[2].streets[4], 2, 4, this.dif);
+    generateEnemies(game, this.levels[2].streets[5], 2, 4, this.dif);
+    generateEnemies(game, this.levels[2].houses[0], 2, 8, this.dif);
+    generateEnemies(game, this.levels[2].houses[1], 2, 8, this.dif);
+    generateEnemies(game, this.levels[2].houses[2], 2, 9, this.dif);
+    generateEnemies(game, this.levels[2].houses[3], 2, 9, this.dif);
 
     console.log('loading complete!');
 };
@@ -996,17 +996,17 @@ SceneManager.prototype.buildLevelFour = function(game) {
     this.levels[3].houses[4].neighbors[2] = this.levels[3].streets[5];
 
     // enemy generation
-    generateEnemies(game, this.levels[3].streets[0], 3, 5);
-    generateEnemies(game, this.levels[3].streets[1], 3, 5);
-    generateEnemies(game, this.levels[3].streets[2], 3, 5);
-    generateEnemies(game, this.levels[3].streets[3], 3, 5);
-    generateEnemies(game, this.levels[3].streets[4], 3, 5);
-    generateEnemies(game, this.levels[3].streets[5], 3, 5);
-    generateEnemies(game, this.levels[3].houses[0], 3, 10);
-    generateEnemies(game, this.levels[3].houses[1], 3, 10);
-    generateEnemies(game, this.levels[3].houses[2], 3, 11);
-    generateEnemies(game, this.levels[3].houses[3], 3, 11);
-    generateEnemies(game, this.levels[3].houses[5], 3, 10);
+    generateEnemies(game, this.levels[3].streets[0], 3, 5, this.dif);
+    generateEnemies(game, this.levels[3].streets[1], 3, 5, this.dif);
+    generateEnemies(game, this.levels[3].streets[2], 3, 5, this.dif);
+    generateEnemies(game, this.levels[3].streets[3], 3, 5, this.dif);
+    generateEnemies(game, this.levels[3].streets[4], 3, 5, this.dif);
+    generateEnemies(game, this.levels[3].streets[5], 3, 5, this.dif);
+    generateEnemies(game, this.levels[3].houses[0], 3, 10, this.dif);
+    generateEnemies(game, this.levels[3].houses[1], 3, 10, this.dif);
+    generateEnemies(game, this.levels[3].houses[2], 3, 11, this.dif);
+    generateEnemies(game, this.levels[3].houses[3], 3, 11, this.dif);
+    generateEnemies(game, this.levels[3].houses[5], 3, 10, this.dif);
     this.levels[3].houses[4].enemies.push(new Smoothie(game));
 
     console.log('loading complete!');
@@ -1249,7 +1249,7 @@ SceneManager.prototype.fillBossRoom = function(lvl) {
         this.levels[lvl].houses[4] = this.buildBossRoom(lvl, 0);
         var dogs = [];
         for (var i = 0; i < lvl + 6; i++)
-            dogs.push(new Dog(this.game, 1165, 115));
+            dogs.push(new Dog(this.game, 1165, 115, this.dif));
         for (var i = 0; i < dogs.length; i++) {
             dogs[i].caged = true;
             dogs[i].engage = true;
@@ -1259,17 +1259,17 @@ SceneManager.prototype.fillBossRoom = function(lvl) {
     } else if (select == 1) {
         this.levels[lvl].houses[4] = this.buildBossRoom(lvl, 1);
         for (var i = 0; i < lvl; i++)
-            this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 1, 1100, 300));
+            this.levels[lvl].houses[4].enemies.push(new Bodyguard(this.game, 1100, 300, this.dif));
         this.levels[lvl].houses[4].enemies.push(new BigGuy(this.game, lvl));
     } else if (select == 2) {
         this.levels[lvl].houses[4] = this.buildBossRoom(lvl, 2);
         for (var i = 0; i < lvl; i++)
-            this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 0, 1050, 500));
+            this.levels[lvl].houses[4].enemies.push(new Thug(this.game, 0, 1050, 500, this.dif));
         this.levels[lvl].houses[4].enemies.push(new NinjaGuy(this.game, lvl));
     } else {
         this.levels[lvl].houses[4] = this.buildBossRoom(lvl, 3);
         for (var i = 0; i < lvl; i++)
-            this.levels[lvl].houses[4].enemies.push(new Police(this.game, 1100, 250));
+            this.levels[lvl].houses[4].enemies.push(new Police(this.game, 1100, 250, this.dif));
         this.levels[lvl].houses[4].enemies.push(new MageGuy(this.game, lvl));
     }
 };

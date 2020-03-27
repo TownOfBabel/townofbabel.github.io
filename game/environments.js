@@ -245,12 +245,13 @@ Arrow.prototype.update = function() {
 };
 
 Arrow.prototype.draw = function(ctx) {
-    if (this.manager.activeBG.enemies.length == 0)
+    if (this.manager.activeBG.enemies.length == 0 && this.manager.dif == 0)
         this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
 };
 
 function Arrow2(game, manager) {
     this.image = new Animation(ASSET_MANAGER.getAsset('./img/backgrounds/arrow2.png'), 0, 0, 50, 50, 0.25, 4, true, false);
+    this.image2 = new Animation(ASSET_MANAGER.getAsset('./img/backgrounds/arrow.png'), 0, 0, 50, 50, 0.25, 4, true, false);
     this.manager = manager;
     this.rotation = 0;
     Entity.call(this, game, 1100, 200);
@@ -329,6 +330,9 @@ Arrow2.prototype.update = function() {
 };
 
 Arrow2.prototype.draw = function(ctx) {
-    if (this.manager.activeBG.enemies.length == 0)
-        this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+    if (this.manager.activeBG.enemies.length == 0) {
+        if (this.manager.dif == 0)
+            this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+        else this.image2.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+    }
 };

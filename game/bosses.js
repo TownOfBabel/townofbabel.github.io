@@ -483,7 +483,7 @@ BigGuy.prototype.update = function() {
                     this.landedBlow = true;
                     ent.sound.hit2.play();
                     ent.hurt = true;
-                    ent.health.current -= 2;
+                    ent.health.current -= 3;
                     ent.hitCD = 10;
                 }
             }
@@ -689,7 +689,6 @@ NinjaGuy.prototype.update = function() {
             this.sound.hit3.load();
             this.hurt = false;
         }
-        if (this.dash) console.log(this.maxSpeed);
         if (this.dash && this.anim.dash.isDone()) {
             this.anim.dash.elapsedTime = 0;
             this.sound.dash.load();
@@ -971,6 +970,7 @@ Shuriken.prototype.update = function() {
         var ent = this.game.entities[i];
         if (this.collide(ent)) {
             if (ent.player) {
+                ent.sound.hit3.play();
                 ent.hurt = true;
                 ent.health.current--;
                 this.removeFromWorld = true;

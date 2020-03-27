@@ -69,8 +69,8 @@ Dash.prototype.update = function() {
         this.player.storedRot = Math.atan2(pointy - this.player.y, pointx - this.player.x);
         this.cooldown = this.maxCD;
         this.iconCD = this.maxCD * 2;
-        this.player.acceleration = 300;
-        this.player.maxSpeed = 750;
+        this.player.acceleration = 350;
+        this.player.maxSpeed = 800;
     }
     if (this.player.dashing && this.player.anim.dash.isDone()) {
         this.player.anim.dash.elapsedTime = 0;
