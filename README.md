@@ -13,6 +13,30 @@ March 34th of 2020, the town had just finished building the tallest tower the wo
 &nbsp; 
 
 ## News
+### March 27, 2020
+Exactly two weeks since we turned the game in, and I'm happy to announce that it is now complete! There's quite a bit to talk about with this final update so let's get right into it.
+
+#### Final Level
+This update brings with it the introduction of the final level, that being level 4. This level has 5 "houses" (one is a garden) instead of the normal 4. Along with this, instead of a normal boss at the end, you will instead encounter the final boss!
+
+#### Final Boss - Yung Smoothie
+Lil' Frump's frenemy who owes him for a shipment of fruit. He's been mutated by the Tower and now has supernatural powers.
+* Normal attacks involve a swipe and a jab that do a fair bit of damage.
+* Involuntarily projectile vomits frequently, watch out for high damage projectiles.
+* His ultimate move, where he releases a giant laser from his mouth
+    - Has a predifined location that he has to walk to
+    - The boss is immune during the startup (while walking) and the actual use!
+
+#### NEW Difficulty - Classic Mode
+This update also brings the inclusion of a new difficulty, titled Classic (the old is called Casual).
+* Heal drops have a lower chance of dropping
+* Heal drops heal for half as much
+* NO AutoSave, when you die it's Game Over
+* Houses are NOT optional, you must do every single one
+
+**NOTE:** This update marks the completion of this game. This means there will be no more updates (outside of bug fixes). We hope you enjoy the game and thank you for playing!&nbsp; 
+&nbsp; 
+
 ### March 24, 2020
 It's been about a week and a half since the "release" of our game and I'm happy to say that the bosses are now complete! I'll take a moment to discuss the changes with each boss, and after there are some tweaks/fixes I'd like to talk about as well.
 

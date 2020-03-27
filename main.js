@@ -83,6 +83,7 @@ ASSET_MANAGER.queueDownload('./img/menus/boss0.png');
 ASSET_MANAGER.queueDownload('./img/menus/boss1.png');
 ASSET_MANAGER.queueDownload('./img/menus/boss2.png');
 ASSET_MANAGER.queueDownload('./img/menus/boss3.png');
+ASSET_MANAGER.queueDownload('./img/menus/boss4.png');
 ASSET_MANAGER.queueDownload('./img/menus/warning.png');
 ASSET_MANAGER.queueDownload('./img/menus/autosave.png');
 
@@ -182,6 +183,9 @@ ASSET_MANAGER.queueDownload('./img/entities/slow_dogg.png');
 ASSET_MANAGER.queueDownload('./img/entities/big_guy.png');
 ASSET_MANAGER.queueDownload('./img/entities/ninja_guy.png');
 ASSET_MANAGER.queueDownload('./img/entities/magic_guy.png');
+ASSET_MANAGER.queueDownload('./img/entities/final_boss.png');
+ASSET_MANAGER.queueDownload('./img/entities/boss_puke.png');
+ASSET_MANAGER.queueDownload('./img/entities/boss_laser.png');
 
 // weapons
 ASSET_MANAGER.queueDownload('./img/weapons/bat00.png');
@@ -207,8 +211,6 @@ ASSET_MANAGER.queueDownload('./img/weapons/orange.png');
 ASSET_MANAGER.queueDownload('./img/weapons/melon.png');
 ASSET_MANAGER.queueDownload('./img/weapons/target.png');
 ASSET_MANAGER.queueDownload('./img/weapons/meteor.png');
-
-ASSET_MANAGER.queueDownload('./img/Mailbox.png');
 
 ASSET_MANAGER.downloadAll(function() {
     console.log('loading game...');

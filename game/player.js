@@ -197,7 +197,7 @@ function Frump(game) {
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 0, 200, 200, 0.1, 8, true, false);
     this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 400, 200, 200, 200, 0.15, 4, false, false);
     this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1300, 200, 200, 0.15, 1, false, false);
-    this.anim.dash = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1600, 200, 200, 0.05, 5, false, false);
+    this.anim.dash = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 1600, 200, 200, 0.055, 5, false, false);
     this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 200, 1300, 200, 300, 0.2, 5, false, false);
     this.anim.dead = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 1000, 1300, 200, 300, 1, 1, true, false);
     this.anim.knifeIdle = new Animation(ASSET_MANAGER.getAsset('./img/entities/frump.png'), 0, 600, 200, 200, 0.4, 2, true, false);
@@ -407,7 +407,7 @@ Frump.prototype.update = function() {
             var ent = this.game.entities[i];
             if (ent.enemy && this.stunCD <= 0) {
                 if (this.attacking && this.weapon.type != 'gun') {
-                    if (ent.hitCD <= 0 && this.hit(ent)) {
+                    if (ent.hitCD <= 0 && this.hit(ent) && !ent.laser) {
                         if (this.weapon.type == 'knife') ent.sound.hit1.play();
                         else ent.sound.hit2.play();
                         ent.hurt = true;

@@ -1,10 +1,11 @@
-function HealthDrop(game, x, y, heal) {
+function HealthDrop(game, x, y, heal, dif) {
     this.healOne = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 0, 40, 40, 0.2, 4, true, false);
     this.healTwo = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 40, 40, 40, 0.2, 4, true, false);
     this.healThree = new Animation(ASSET_MANAGER.getAsset('./img/entities/health_drop.png'), 0, 80, 40, 40, 0.2, 4, true, false);
     this.sound = new Audio('./sound/eating.wav');
     this.sound.volume = 0.2;
     this.heal = heal;
+    this.dif = dif;
     this.radius = 20;
     Entity.call(this, game, x, y);
 }
@@ -18,7 +19,8 @@ HealthDrop.prototype.update = function() {
         if (ent.player) {
             if (ent.removeFromWorld) this.removeFromWorld = true;
             else if (this.collide(ent)) {
-                ent.health.current += (this.heal * 2);
+                if (this.dif == 0) ent.health.current += (this.heal * 2);
+                else ent.health.current += this.heal;
                 if (ent.health.current > ent.health.max)
                     ent.health.current = ent.health.max;
                 this.removeFromWorld = true;
@@ -37,7 +39,7 @@ HealthDrop.prototype.draw = function(ctx) {
         this.healThree.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 1.5);
 };
 
-function Enemy(game, x, y) {
+function Enemy(game, x, y, dif) {
     //Properties
     this.alive = true;
     this.enemy = true;
@@ -58,6 +60,7 @@ function Enemy(game, x, y) {
     this.stunCD = 0;
     this.knockBack = 0;
     this.knocked = false;
+    this.dif = dif;
     this.barkCD = Math.floor(Math.random() * 45) + 45;
     this.hitCD = 0;
     this.ctr = 0;
@@ -79,8 +82,13 @@ Enemy.prototype.update = function() {
     }
     if (this.die && this.anim.die.isDone()) {
         this.anim.die.elapsedTime = 0;
-        if (Math.floor(Math.random() * 3) == 0)
-            this.game.addEntity(new HealthDrop(this.game, this.x, this.y, this.hpDrop));
+        if (this.dif == 0) {
+            if (Math.floor(Math.random() * 3) == 0)
+                this.game.addEntity(new HealthDrop(this.game, this.x, this.y, this.hpDrop, 0));
+        } else {
+            if (Math.floor(Math.random() * 4) == 0)
+                this.game.addEntity(new HealthDrop(this.game, this.x, this.y, this.hpDrop, 1));
+        }
         this.die = false;
     }
     if (this.alive && !this.die) {
@@ -264,8 +272,8 @@ Enemy.prototype.update = function() {
                         this.atkCD = this.begLag;
                     }
                     if (this.slamming && this.slamCD == 100) this.sound.hit.play();
-                    if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 150) &&
-                        this.slamCD > 91 && this.slamCD <= 100) {
+                    if (this.slamming && ent.hitCD <= 0 && this.hit(ent, 135) &&
+                        this.slamCD > 90 && this.slamCD < 100) {
                         ent.sound.hit2.play();
                         this.landedBlow = true;
                         ent.hurt = true;
@@ -381,7 +389,7 @@ Enemy.prototype.hit = function(other, range) {
         return distance(this, other) < range + other.radius;
 };
 
-function Dog(game, x, y) {
+function Dog(game, x, y, dif) {
     // Animations
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/dog.png'), 0, 0, 200, 200, 1, 1, true, false);
@@ -419,13 +427,13 @@ function Dog(game, x, y) {
     this.initHP = 60;
     this.dmg = 1;
 
-    Enemy.call(this, game, (x + Math.random() * 150 - 75), (y + Math.random() * 150 - 75));
+    Enemy.call(this, game, (x + Math.random() * 150 - 75), (y + Math.random() * 150 - 75), dif);
 }
 
 Dog.prototype = new Enemy();
 Dog.prototype.constructor = Dog;
 
-function Thug(game, weapon, x, y) {
+function Thug(game, weapon, x, y, dif) {
     // Weapons & Animations
     this.anim = {};
     this.weapon = {};
@@ -479,13 +487,13 @@ function Thug(game, weapon, x, y) {
     this.initHP = 100;
     this.dmg = 1;
 
-    Enemy.call(this, game, (x + Math.random() * 150 - 75), (y + Math.random() * 150 - 75));
+    Enemy.call(this, game, (x + Math.random() * 150 - 75), (y + Math.random() * 150 - 75), dif);
 }
 
 Thug.prototype = new Enemy();
 Thug.prototype.constructor = Thug;
 
-function Bodyguard(game, x, y) {
+function Bodyguard(game, x, y, dif) {
     // Animations
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/bodyguard.png'), 0, 0, 200, 200, 1, 1, true, false);
@@ -525,13 +533,13 @@ function Bodyguard(game, x, y) {
     this.initHP = 180;
     this.dmg = 3;
 
-    Enemy.call(this, game, (x + Math.random() * 150 - 75), (y + Math.random() * 150 - 75));
+    Enemy.call(this, game, (x + Math.random() * 150 - 75), (y + Math.random() * 150 - 75), dif);
 }
 
 Bodyguard.prototype = new Enemy();
 Bodyguard.prototype.constructor = Bodyguard;
 
-function Police(game, x, y) {
+function Police(game, x, y, dif) {
     this.anim = {};
     this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 0, 0, 200, 200, 1, 1, true, false);
     this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/police.png'), 0, 200, 200, 200, 0.12, 8, true, false);
@@ -567,7 +575,7 @@ function Police(game, x, y) {
     this.lrCD = 0;
     this.left = false;
 
-    Enemy.call(this, game, (x + Math.random() * 150 - 75), (y + Math.random() * 150 - 75));
+    Enemy.call(this, game, (x + Math.random() * 150 - 75), (y + Math.random() * 150 - 75), dif);
 }
 
 Police.prototype = new Enemy();
@@ -729,54 +737,4 @@ Police.prototype.update = function() {
 
     this.velocity.x -= friction * this.game.clockTick * this.velocity.x;
     this.velocity.y -= friction * this.game.clockTick * this.velocity.y;
-};
-
-function Mailbox(game, timer) {
-    this.image = './img/Mailbox.png';
-    this.timer = timer;
-    this.radius = 15;
-    this.acceleration = 100;
-    this.velocity = { x: 0, y: 0 };
-    this.maxSpeed = 875 / (timer * 60);
-    Entity.call(this, game, 940, 430);
-}
-
-Mailbox.prototype = new Entity();
-Mailbox.prototype.constructor = Mailbox;
-
-Mailbox.prototype.update = function() {
-    for (var i = 0; i < this.game.entities.length; i++) {
-        var ent = this.game.entities[i];
-        if (ent.player && ent.alive) {
-            var rotation = Math.atan2(ent.y - this.y, ent.x - this.x);
-            var difX = Math.cos(rotation);
-            var difY = Math.sin(rotation);
-            // var delta = this.radius + ent.radius - distance(this, ent.x, ent.y);
-            // if (this.collide(ent)) {
-            //     this.velocity.x = -this.velocity.x * (1/friction);
-            //     this.velocity.y = -this.velocity.y * (1/friction);
-            //     this.x -= difX * delta/2;
-            //     this.y -= difY * delta/2;
-            //     ent.x += difX * delta/2;
-            //     ent.y += difY * delta/2;
-
-            // }
-            // else {
-            this.velocity.x += difX * this.acceleration;
-            this.velocity.y += difY * this.acceleration;
-            // }
-        }
-    }
-    var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
-    if (speed > this.maxSpeed) {
-        var ratio = this.maxSpeed / speed;
-        this.velocity.x *= ratio;
-        this.velocity.y *= ratio;
-    }
-    this.x += this.velocity.x * this.game.clockTick;
-    this.y += this.velocity.y * this.game.clockTick;
-};
-
-Mailbox.prototype.draw = function(ctx) {
-    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
 };
