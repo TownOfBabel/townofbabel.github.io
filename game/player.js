@@ -407,7 +407,7 @@ Frump.prototype.update = function() {
             var ent = this.game.entities[i];
             if (ent.enemy && this.stunCD <= 0) {
                 if (this.attacking && this.weapon.type != 'gun') {
-                    if (ent.hitCD <= 0 && this.hit(ent)) {
+                    if (ent.hitCD <= 0 && this.hit(ent) && !ent.laser) {
                         if (this.weapon.type == 'knife') ent.sound.hit1.play();
                         else ent.sound.hit2.play();
                         ent.hurt = true;

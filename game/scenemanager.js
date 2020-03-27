@@ -332,21 +332,20 @@ SceneManager.prototype.update = function() {
             this.player.y = room.spawn.y;
             this.changeBackground(room);
             this.timer.stop();
+        } else if (this.activeBG === this.menus.story[3] && this.game.click && this.timer.check() >= 1) {
+            this.timer.stop();
+            this.sound.game.pause();
+            this.sound.game.load();
+            this.changeBackground(this.menus.win);
         }
-        // for when final boss is finished
-        // else if (this.activeBG === this.menus.story[3] && this.game.click && this.timer.check() >= 1) {
+        // considering level 3 as final level
+        // else if (this.activeBG === this.menus.story[2] && this.game.click && this.timer.check() >= 1) {
         //     this.timer.stop();
         //     this.sound.game.pause();
         //     this.sound.game.load();
         //     this.changeBackground(this.menus.win);
         // }
-        // considering level 3 as final level
-        else if (this.activeBG === this.menus.story[2] && this.game.click && this.timer.check() >= 1) {
-            this.timer.stop();
-            this.sound.game.pause();
-            this.sound.game.load();
-            this.changeBackground(this.menus.win);
-        } else if (this.activeBG === this.menus.story[this.level.current] &&
+        else if (this.activeBG === this.menus.story[this.level.current] &&
             this.game.click && this.timer.check() >= 1) {
             this.timer.stop();
             this.sound.menus.pause();
@@ -404,37 +403,36 @@ SceneManager.prototype.update = function() {
             }
         }
         if (!this.activeBG.menu && this.timer.init > 0 && this.player.alive) {
-            // for when final boss is finished
-            // if (this.level.current == 3 && this.activeBG.enemies.length == 0) {
-            //     if (this.timer.check() >= 0.5 && this.activeBG === this.levels[3].houses[4]) {
-            //         this.changeBackground(this.menus.story[3]);
-            //         this.timer.reset();
-            //     }
-            //     else if (this.timer.check() >= 0.5 && this.activeBG === this.levels[3].streets[5]) {
-            //         this.sound.game.pause();
-            //         this.sound.game.load();
-            //         this.sound.menus.load();
-            //         this.sound.menus.volume = 0.15;
-            //         this.sound.menus.play();
-            //         this.changeBackground(this.menus.boss[4]);
-            //         this.timer.reset();
-            //     }
-            // }
-            // considering level 3 as final level
-            if (this.level.current == 2 && this.activeBG.enemies.length == 0) {
-                if (this.timer.check() >= 0.5 && this.activeBG === this.levels[2].houses[4]) {
-                    this.changeBackground(this.menus.story[2]);
+            if (this.level.current == 3 && this.activeBG.enemies.length == 0) {
+                if (this.timer.check() >= 0.5 && this.activeBG === this.levels[3].houses[4]) {
+                    this.changeBackground(this.menus.story[3]);
                     this.timer.reset();
-                } else if (this.timer.check() >= 0.5 && this.activeBG === this.levels[2].streets[5]) {
+                } else if (this.timer.check() >= 0.5 && this.activeBG === this.levels[3].streets[5]) {
                     this.sound.game.pause();
                     this.sound.game.load();
                     this.sound.menus.load();
                     this.sound.menus.volume = 0.15;
                     this.sound.menus.play();
-                    this.changeBackground(this.menus.boss[this.bossArray[this.level.current]]);
+                    this.changeBackground(this.menus.boss[4]);
                     this.timer.reset();
                 }
-            } else if (this.timer.check() >= 0.5 && this.activeBG.enemies.length == 0) {
+            }
+            // considering level 3 as final level
+            // if (this.level.current == 2 && this.activeBG.enemies.length == 0) {
+            //     if (this.timer.check() >= 0.5 && this.activeBG === this.levels[2].houses[4]) {
+            //         this.changeBackground(this.menus.story[2]);
+            //         this.timer.reset();
+            //     } else if (this.timer.check() >= 0.5 && this.activeBG === this.levels[2].streets[5]) {
+            //         this.sound.game.pause();
+            //         this.sound.game.load();
+            //         this.sound.menus.load();
+            //         this.sound.menus.volume = 0.15;
+            //         this.sound.menus.play();
+            //         this.changeBackground(this.menus.boss[this.bossArray[this.level.current]]);
+            //         this.timer.reset();
+            //     }
+            // }
+            else if (this.timer.check() >= 0.5 && this.activeBG.enemies.length == 0) {
                 if (this.activeBG === this.levels[this.level.current].houses[4]) {
                     this.saveProgress(this.levels[this.level.current]);
                     this.player.health.current = this.player.health.max;
@@ -574,8 +572,7 @@ SceneManager.prototype.checkBounds = function() {
         if (!this.activeBG.neighbors[1] && this.level.current < 3) {
             if (this.level.current == 0) this.buildLevelTwo(this.game);
             else if (this.level.current == 1) this.buildLevelThree(this.game);
-            // for when final boss is finished
-            // else if (this.level.current == 2) this.buildLevelFour(this.game);
+            else if (this.level.current == 2) this.buildLevelFour(this.game);
         }
         if (this.activeBG.neighbors[0].enemies.length == 0 && this.activeBG.enemies.length == 0 &&
             this.activeBG.neighbors[1]) {

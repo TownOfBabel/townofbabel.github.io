@@ -44,7 +44,7 @@ function SlowDogg(game, dogs, lvl) {
     this.mSpeed_init = 65;
     this.range = 130;
     this.ideal = 140;
-    this.health = getDamage(lvl) * 11 + lvl;
+    this.health = getDamage(lvl) * (16 + lvl);
     this.maxHealth = this.health;
 
     this.engage = true;
@@ -179,7 +179,7 @@ SlowDogg.prototype.update = function() {
                     var dog = this.dogs.pop();
                     dog.caged = false;
                     this.wslCD = 720;
-                } else if (dist < 140 && this.atkCD <= 0 && !this.shoot && !this.whistle) {
+                } else if (dist < 150 && this.atkCD <= 0 && !this.shoot && !this.whistle) {
                     this.landedBlow = false;
                     this.sound.cane.play();
                     this.attack = true;
@@ -192,7 +192,7 @@ SlowDogg.prototype.update = function() {
                     this.landedBlow = true;
                     ent.sound.hit1.play();
                     ent.hurt = true;
-                    ent.health.current -= 2;
+                    ent.health.current -= 3;
                     ent.hitCD = 10;
                 } else if (this.shoot && this.shtCD == 100) {
                     this.sound.shotgun.play();
@@ -305,7 +305,7 @@ function BigGuy(game, lvl) {
     this.ideal = 100;
     this.maxSpeed = 120;
     this.mSpeed_init = 120;
-    this.health = getDamage(lvl) * 14 + lvl;
+    this.health = getDamage(lvl) * (18 + lvl);
     this.maxHealth = this.health;
     this.storedRot = 0;
     this.engage = true;
@@ -317,7 +317,7 @@ function BigGuy(game, lvl) {
     this.lrCD = 0;
     this.left = true;
 
-    Entity.call(this, game, 640, 125);
+    Entity.call(this, game, 150, 350);
 }
 
 BigGuy.prototype = new Entity();
@@ -470,7 +470,7 @@ BigGuy.prototype.update = function() {
                     this.landedBlow = true;
                     ent.sound.hit3.play();
                     ent.hurt = true;
-                    ent.health.current--;
+                    ent.health.current -= 2;
                     ent.hitCD = 20;
                     ent.stunCD = 75;
                 } else if (this.swipe && this.hit(ent) && ent.hitCD <= 0) {
@@ -633,7 +633,7 @@ function NinjaGuy(game, lvl) {
     this.acceleration = 150;
     this.maxSpeed = 180;
     this.mSpeed_init = 180;
-    this.health = getDamage(lvl) * 10 + lvl;
+    this.health = getDamage(lvl) * (15 + lvl);
     this.maxHealth = this.health;
     this.range = 250;
     this.engage = true;
@@ -666,7 +666,6 @@ NinjaGuy.prototype.update = function() {
     }
     if (this.alive && !this.die) {
         if (this.knockBack > 0) this.knockBack--;
-        else this.maxSpeed = this.mSpeed_init;
         if (this.dashCD > 0) this.dashCD--;
         if (this.lungeCD > 0) this.lungeCD--;
         if (this.lungingCD > 0) this.lungingCD--;
@@ -690,6 +689,7 @@ NinjaGuy.prototype.update = function() {
             this.sound.hit3.load();
             this.hurt = false;
         }
+        if (this.dash) console.log(this.maxSpeed);
         if (this.dash && this.anim.dash.isDone()) {
             this.anim.dash.elapsedTime = 0;
             this.sound.dash.load();
@@ -768,7 +768,7 @@ NinjaGuy.prototype.update = function() {
                 var difX = Math.cos(Math.atan2(ent.y - this.y, ent.x - this.x));
                 var difY = Math.sin(Math.atan2(ent.y - this.y, ent.x - this.x));
                 var delta = this.radius + ent.radius - dist;
-                if (this.collide(ent) && !ent.dash && !ent.supDash && !ent.lunge) {
+                if (this.collide(ent) && !ent.dash && !ent.supDash && !ent.lunge && !this.lunging) {
                     this.velocity.x = -this.velocity.x / friction;
                     this.velocity.y = -this.velocity.y / friction;
                     this.x -= difX * delta / 2;
@@ -786,6 +786,7 @@ NinjaGuy.prototype.update = function() {
                         if (this.lunging && this.anim.lunge.elapsedTime > 0.2)
                             this.rotation = this.storedRot;
                     } else {
+                        this.maxSpeed = this.mSpeed_init;
                         var left = atan - Math.PI / 2;
                         var right = atan + Math.PI / 2;
                         if (this.left) {
@@ -796,8 +797,8 @@ NinjaGuy.prototype.update = function() {
                             this.velocity.y += Math.sin(right) * this.acceleration;
                         }
                         if (dist < this.range) {
-                            this.velocity.x -= difX * this.acceleration * 0.8;
-                            this.velocity.y -= difY * this.acceleration * 0.8;
+                            this.velocity.x -= difX * this.acceleration * 0.75;
+                            this.velocity.y -= difY * this.acceleration * 0.75;
                         } else if (dist > this.range + 20) {
                             this.velocity.x += difX * this.acceleration;
                             this.velocity.y += difY * this.acceleration;
@@ -811,12 +812,11 @@ NinjaGuy.prototype.update = function() {
                     this.acceleration = 300;
                     this.maxSpeed = 700;
                     this.hitCD = 30;
-                    var pointy = this.y + this.velocity.y;
-                    var pointx = this.x + this.velocity.x;
-                    this.storedRot = Math.atan2(pointy - this.y, pointx - this.x);
-                } else if (dist < 275 && this.lungingCD <= 0 && !this.lunge && !this.dash && !this.throw && !this.slash) {
+                    this.storedRot = Math.atan2(this.velocity.y * 99, this.velocity.x * 99);
+                } else if (dist < 275 && this.lungingCD <= 0 && !this.lunging && !this.dash && !this.throw && !this.slash) {
                     this.lunge = true;
                     this.lungeCD = 30;
+                    this.lungingCD = 100;
                     this.acceleration = 225;
                     this.maxSpeed = 0;
                 } else if (dist > 150 && this.throwCD <= 0 && !this.dash && !this.lunge && !this.lunging && !this.slash) {
@@ -834,7 +834,6 @@ NinjaGuy.prototype.update = function() {
                     this.landedBlow = false;
                     this.lunge = false;
                     this.lunging = true;
-                    this.lungingCD = 100;
                     this.hitCD = 24;
                     this.setRot = true;
                 }
@@ -1031,7 +1030,7 @@ function MageGuy(game, lvl) {
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 90;
     this.mSpeed_init = 90;
-    this.health = getDamage(lvl) * 9 + lvl;
+    this.health = getDamage(lvl) * (14 + lvl);
     this.maxHealth = this.health;
     this.storedRot = 0;
     this.engage = true;
@@ -1048,7 +1047,7 @@ function MageGuy(game, lvl) {
     this.strafeCD = 0;
     this.left = false;
 
-    Entity.call(this, game, 640, 125);
+    Entity.call(this, game, 180, 250);
 }
 
 MageGuy.prototype = new Entity();

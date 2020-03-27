@@ -13,6 +13,12 @@ March 34th of 2020, the town had just finished building the tallest tower the wo
 &nbsp; 
 
 ## News
+### March 27, 2020
+Placeholder.
+
+**NOTE:** Going forward this game has become a passion project. This means updates, while semi-frequent now, will most likely completely stop once once I reach what I consider complete for my first game.&nbsp; 
+&nbsp; 
+
 ### March 24, 2020
 It's been about a week and a half since the "release" of our game and I'm happy to say that the bosses are now complete! I'll take a moment to discuss the changes with each boss, and after there are some tweaks/fixes I'd like to talk about as well.
 
