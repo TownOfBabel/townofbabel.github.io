@@ -633,7 +633,7 @@ function NinjaGuy(game, lvl) {
     this.acceleration = 150;
     this.maxSpeed = 180;
     this.mSpeed_init = 180;
-    this.health = getDamage(lvl) * (15 + lvl);
+    this.health = getDamage(lvl) * (12 + lvl);
     this.maxHealth = this.health;
     this.range = 250;
     this.engage = true;
@@ -1030,7 +1030,7 @@ function MageGuy(game, lvl) {
     this.velocity = { x: 0, y: 0 };
     this.maxSpeed = 90;
     this.mSpeed_init = 90;
-    this.health = getDamage(lvl) * (14 + lvl);
+    this.health = getDamage(lvl) * (11 + lvl);
     this.maxHealth = this.health;
     this.storedRot = 0;
     this.engage = true;
