@@ -336,7 +336,7 @@ Smoothie.prototype.hit = function(other) {
                 while (angle > Math.PI * 2) angle -= Math.PI * 2;
                 if (angle > Math.PI) angle = (Math.PI * 2) - angle;
                 acc = Math.abs(angle - atan2);
-                if (acc < 1) {
+                if (acc < Math.PI / 5) {
                     if (orien < Math.PI / 4 || orien > Math.PI * 3 / 4)
                         return distance(this, other) < 66 + other.faces;
                     else
@@ -368,7 +368,7 @@ Smoothie.prototype.hit = function(other) {
             while (angle > Math.PI * 2) angle -= Math.PI * 2;
             if (angle > Math.PI) angle = (Math.PI * 2) - angle;
             acc = Math.abs(angle - atan2);
-            if (acc < Math.PI / 6) return true;
+            if (acc < Math.PI / 12) return true;
             else return false;
         }
     }
