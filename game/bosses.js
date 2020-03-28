@@ -715,7 +715,7 @@ NinjaGuy.prototype.update = function() {
                 this.maxSpeed = this.mSpeed_init;
                 this.acceleration = 150;
                 this.lunging = false;
-                this.lungingCD = Math.floor(Math.random() * 45) + 435;
+                this.lungingCD = Math.floor(Math.random() * 90) + 430;
             }
         }
         if (this.slash && this.anim.slash.isDone()) {
@@ -732,7 +732,7 @@ NinjaGuy.prototype.update = function() {
             this.sound.throw.load();
             this.maxSpeed = this.mSpeed_init;
             this.throw = false;
-            this.throwCD = Math.floor(Math.random() * 60) + 195;
+            this.throwCD = Math.floor(Math.random() * 90) + 240;
         }
         if (this.collideLeft() || this.collideRight()) {
             this.velocity.x = -this.velocity.x / friction;

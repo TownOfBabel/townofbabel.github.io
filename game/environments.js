@@ -51,7 +51,7 @@ Wall.prototype.constructor = Wall;
 Wall.prototype.update = function() {
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
-        if ((ent.player || ent.enemy) && !ent.manager && !ent.ability) {
+        if ((ent.player || ent.enemy) && !ent.manager && !ent.ability && !ent.laser) {
             if (this.collide(ent)) {
                 if (this.side == 'left' || this.side == 'right') {
                     ent.velocity.x = 0;
