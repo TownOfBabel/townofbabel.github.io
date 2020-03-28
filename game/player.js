@@ -161,7 +161,7 @@ Bullet.prototype.update = function() {
     for (var i = 0; i < this.game.entities.length; i++) {
         var ent = this.game.entities[i];
         if (this.collide(ent)) {
-            if (ent.enemy) {
+            if (ent.enemy && !ent.laser) {
                 ent.sound.hit3.play();
                 ent.hurt = true;
                 ent.health -= this.damage;

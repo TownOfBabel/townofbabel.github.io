@@ -44,6 +44,7 @@ function Smoothie(game) {
     this.health = 1500;
     this.maxHealth = this.health;
     this.engage = true;
+    this.wall = new Wall(game, 0, 0, 1280, 100);
 
     // cooldowns
     this.knockBack = 0;
@@ -121,13 +122,15 @@ Smoothie.prototype.update = function() {
                 this.start = false;
                 this.sweep = true;
                 this.sweepCD = 120;
+                this.game.addEntity(this.wall);
             }
             if (this.sweep && this.sweepCD <= 0) {
                 this.anim.laser.sweep.elapsedTime = 0;
                 this.sweep = false;
                 this.laser = false;
-                this.laserCD = Math.floor(Math.random() * 120) + 540;
+                this.laserCD = Math.floor(Math.random() * 300) + 600;
                 this.atkCD = Math.floor(Math.random() * 30) + 60;
+                this.wall.removeFromWorld = true;
             }
         }
 
@@ -149,8 +152,8 @@ Smoothie.prototype.update = function() {
             if (ent.player && ent.alive && this.stunCD <= 0) {
                 if (this.laser) {
                     if (!this.start && !this.sweep) {
-                        if (this.x < 635 || this.x > 645 || this.y < 125 || this.y > 135) {
-                            var atan = Math.atan2(130 - this.y, 640 - this.x);
+                        if (this.x < 635 || this.x > 645 || this.y < 95 || this.y > 105) {
+                            var atan = Math.atan2(100 - this.y, 640 - this.x);
                             if (this.rotation > atan) {
                                 var rotdif = this.rotation - atan;
                                 while (rotdif > Math.PI * 2) rotdif -= Math.PI * 2;
@@ -234,6 +237,7 @@ Smoothie.prototype.update = function() {
                     if (this.laserCD <= 0 && !this.laser && !this.swipe && !this.jab && !this.puke) {
                         this.landedBlow = false;
                         this.laser = true;
+                        this.wall.removeFromWorld = false;
                     } else if (this.atkCD <= 0) {
                         if (this.swpCD <= 0 && dist < 90 && !this.laser && !this.jab && !this.puke) {
                             this.landedBlow = false;
@@ -372,7 +376,7 @@ Smoothie.prototype.hit = function(other) {
 
 function Puke(game, x, y, rot) {
     this.anim = {};
-    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/boss_puke.png'), 0, 0, 200, 200, 0.75, 1, false, false);
+    this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/boss_puke.png'), 0, 0, 200, 200, 1, 1, false, false);
     this.anim.land = new Animation(ASSET_MANAGER.getAsset('./img/entities/boss_puke.png'), 0, 0, 200, 200, 0.15, 4, false, false);
     this.rotation = rot;
     this.velocity = {};
@@ -392,7 +396,7 @@ Puke.prototype.update = function() {
     if (this.move && this.anim.move.isDone()) {
         this.anim.move.elapsedTime = 0;
         this.move = false;
-        this.maxSpeed = 150;
+        this.maxSpeed = 100;
     }
     if (!this.move) {
         if (this.anim.land.isDone()) {
