@@ -462,6 +462,8 @@ SceneManager.prototype.update = function() {
                         this.player.faces = 34;
                     else if (this.player.weapon.type == 'bat')
                         this.player.faces = 28;
+                    else this.player.faces = 31;
+                    this.player.bullets = 6;
                 }
             }
             this.checkBounds();

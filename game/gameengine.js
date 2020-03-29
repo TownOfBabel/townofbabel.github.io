@@ -73,23 +73,23 @@ GameEngine.prototype.startInput = function() {
     this.ctx.canvas.addEventListener('keydown', function(e) {
         if (String.fromCharCode(e.which) === ' ') that.player.space = true;
         if (e.key == 'Shift') that.shift = true;
-        if (e.key == 'x') that.heal = true;
+        if (e.key == 'x' || e.key == 'X') that.heal = true;
         if (e.key == 'Enter') that.enter = true;
-        if (e.key == 'w') that.player.up = true, Date.now();
-        if (e.key == 'a') that.player.left = true, Date.now();
-        if (e.key == 's') that.player.down = true, Date.now();
-        if (e.key == 'd') that.player.right = true, Date.now();
-        if (e.key == 'e') that.player.interact = true;
-        if (e.key == 'r') that.player.reload = true;
+        if (e.key == 'w' || e.key == 'W') that.player.up = true, Date.now();
+        if (e.key == 'a' || e.key == 'A') that.player.left = true, Date.now();
+        if (e.key == 's' || e.key == 'S') that.player.down = true, Date.now();
+        if (e.key == 'd' || e.key == 'D') that.player.right = true, Date.now();
+        if (e.key == 'e' || e.key == 'E') that.player.interact = true;
+        if (e.key == 'r' || e.key == 'R') that.player.reload = true;
         e.preventDefault();
     }, false);
 
     this.ctx.canvas.addEventListener('keyup', function(e) {
-        if (e.key == 'w') that.player.up = false;
-        if (e.key == 'a') that.player.left = false;
-        if (e.key == 's') that.player.down = false;
-        if (e.key == 'd') that.player.right = false;
-        if (e.key == 'e') that.player.interact = false;
+        if (e.key == 'w' || e.key == 'W') that.player.up = false;
+        if (e.key == 'a' || e.key == 'A') that.player.left = false;
+        if (e.key == 's' || e.key == 'S') that.player.down = false;
+        if (e.key == 'd' || e.key == 'D') that.player.right = false;
+        if (e.key == 'e' || e.key == 'E') that.player.interact = false;
         e.preventDefault();
     }, false);
 
