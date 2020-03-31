@@ -1013,7 +1013,8 @@ SceneManager.prototype.buildLevelFour = function(game) {
 };
 
 SceneManager.prototype.reload = function(lvl) {
-    if (lvl > 0) this.loadProgress(lvl - 1);
+    if (lvl == 0) this.player.weapon = this.loadWeapon(this.oldWeapon);
+    else this.loadProgress(lvl - 1);
     this.player.health.current = this.player.health.max;
     this.player.alive = true;
     if (lvl == 0) {
