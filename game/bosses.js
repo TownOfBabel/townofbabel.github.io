@@ -1254,6 +1254,7 @@ MageGuy.prototype.draw = function(ctx) {
 function Fruit(game, x, y, rot) {
     this.rotation = rot;
     this.spawnCD = 15;
+    this.immune = 15;
     Entity.call(this, game, x, y);
 }
 
@@ -1263,6 +1264,7 @@ Fruit.prototype.constructor = Fruit;
 Fruit.prototype.update = function() {
     if (this.spawnCD > 0) this.spawnCD--;
     else {
+        if (this.immune > 0) this.immune--;
         if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
             this.removeFromWorld = true;
         for (var i = 0; i < this.game.entities.length; i++) {
@@ -1276,7 +1278,7 @@ Fruit.prototype.update = function() {
                         ent.hitCD = 4;
                         this.removeFromWorld = true;
                     } else this.removeFromWorld = true;
-                } else if (ent.wall || ent.column)
+                } else if ((ent.wall || ent.column) && this.immune <= 0)
                     this.removeFromWorld = true;
             }
         }
@@ -1384,7 +1386,7 @@ Orbital.prototype.update = function() {
 
 Orbital.prototype.fire = function(target) {
     this.orbit = false;
-    this.immune = 30;
+    this.immune = 15;
     this.rotation = Math.atan2(target.y - this.y, target.x - this.x);
     this.velocity.x = Math.cos(this.rotation) * 99999;
     this.velocity.y = Math.sin(this.rotation) * 99999;

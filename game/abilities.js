@@ -412,7 +412,7 @@ function FruitBall(game, x, y, rot, dmg) {
     this.damage = dmg;
     this.rotation = rot;
     this.radius = 11;
-    this.spawnCD = 30;
+    this.spawnCD = 15;
     Entity.call(this, game, x, y);
 }
 
@@ -421,7 +421,7 @@ FruitBall.prototype.constructor = FruitBall;
 
 FruitBall.prototype.update = function() {
     if (this.spawnCD > 0) this.spawnCD--;
-    if (this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom())
+    if ((this.collideTop() || this.collideRight() || this.collideLeft() || this.collideBottom()) && this.spawnCD <= 0)
         this.removeFromWorld = true;
 
     for (var i = 0; i < this.game.entities.length; i++) {

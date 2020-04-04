@@ -82,6 +82,7 @@ Enemy.prototype.update = function() {
     }
     if (this.die && this.anim.die.isDone()) {
         this.anim.die.elapsedTime = 0;
+        this.engage = true;
         if (this.dif == 0) {
             if (Math.floor(Math.random() * 3) == 0)
                 this.game.addEntity(new HealthDrop(this.game, this.x, this.y, this.hpDrop, 0));
@@ -589,6 +590,7 @@ Police.prototype.update = function() {
     }
     if (this.die && this.anim.die.isDone()) {
         this.anim.die.elapsedTime = 0;
+        this.engage = true;
         if (Math.floor(Math.random() * 3) == 0)
             this.game.addEntity(new HealthDrop(this.game, this.x, this.y, this.hpDrop));
         this.die = false;
