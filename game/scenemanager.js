@@ -437,7 +437,7 @@ SceneManager.prototype.update = function() {
         if (!this.activeBG.menu) {
             if (this.activeBG.enemies.length == 0) {
                 this.activeBG.drop.hidden = false;
-                if (this.game.player.interact) this.swapHeld++;
+                if (this.game.player.interact[0]) this.swapHeld++;
                 else this.swapHeld = 0;
                 if (this.swapHeld > 15 && distance(this.player, this.activeBG.drop) < 100) {
                     this.sound.swap.play();

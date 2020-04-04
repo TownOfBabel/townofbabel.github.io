@@ -34,6 +34,11 @@ function GameEngine() {
     this.ctx = null;
     this.click = null;
     this.player = {};
+    this.player.up = [];
+    this.player.left = [];
+    this.player.down = [];
+    this.player.right = [];
+    this.player.interact = [];
     this.player.shift = false;
     this.player.space = false;
     this.mouse = { x: 400, y: 400 };
@@ -75,21 +80,26 @@ GameEngine.prototype.startInput = function() {
         if (e.key == 'Shift') that.shift = true;
         if (e.key == 'x' || e.key == 'X') that.heal = true;
         if (e.key == 'Enter') that.enter = true;
-        if (e.key == 'w' || e.key == 'W') that.player.up = true, Date.now();
-        if (e.key == 'a' || e.key == 'A') that.player.left = true, Date.now();
-        if (e.key == 's' || e.key == 'S') that.player.down = true, Date.now();
-        if (e.key == 'd' || e.key == 'D') that.player.right = true, Date.now();
-        if (e.key == 'e' || e.key == 'E') that.player.interact = true;
+        if (e.key == 'w' || e.key == 'W') that.player.up = [true, Date.now()];
+        if (e.key == 'a' || e.key == 'A') that.player.left = [true, Date.now()];
+        if (e.key == 's' || e.key == 'S') that.player.down = [true, Date.now()];
+        if (e.key == 'd' || e.key == 'D') that.player.right = [true, Date.now()];
+        if (e.key == 'e' || e.key == 'E') that.player.interact = [true, Date.now()];
         if (e.key == 'r' || e.key == 'R') that.player.reload = true;
+        if (that.player.up[0] == true) that.player.up[1] = Date.now();
+        if (that.player.left[0] == true) that.player.left[1] = Date.now();
+        if (that.player.down[0] == true) that.player.down[1] = Date.now();
+        if (that.player.right[0] == true) that.player.right[1] = Date.now();
+        if (that.player.interact[0] == true) that.player.interact[1] = Date.now();
         e.preventDefault();
     }, false);
 
     this.ctx.canvas.addEventListener('keyup', function(e) {
-        if (e.key == 'w' || e.key == 'W') that.player.up = false;
-        if (e.key == 'a' || e.key == 'A') that.player.left = false;
-        if (e.key == 's' || e.key == 'S') that.player.down = false;
-        if (e.key == 'd' || e.key == 'D') that.player.right = false;
-        if (e.key == 'e' || e.key == 'E') that.player.interact = false;
+        if (e.key == 'w' || e.key == 'W') that.player.up[0] = false;
+        if (e.key == 'a' || e.key == 'A') that.player.left[0] = false;
+        if (e.key == 's' || e.key == 'S') that.player.down[0] = false;
+        if (e.key == 'd' || e.key == 'D') that.player.right[0] = false;
+        if (e.key == 'e' || e.key == 'E') that.player.interact[0] = false;
         e.preventDefault();
     }, false);
 
@@ -101,10 +111,19 @@ GameEngine.prototype.startInput = function() {
         that.click = true;
     }, false);
 
-    // disabling right-click (causes 'sticky' keys)
+    // disabling right-click
     document.addEventListener('contextmenu', event => event.preventDefault());
 
     console.log('input started');
+};
+
+GameEngine.prototype.checkKeys = function() {
+    var now = Date.now();
+    if (this.player.up[0] == true && (now - this.player.up[1]) >= 1000) this.player.up[0] = false;
+    if (this.player.left[0] == true && (now - this.player.left[1]) >= 1000) this.player.left[0] = false;
+    if (this.player.down[0] == true && (now - this.player.down[1]) >= 1000) this.player.down[0] = false;
+    if (this.player.right[0] == true && (now - this.player.right[1]) >= 1000) this.player.right[0] = false;
+    if (this.player.interact[0] == true && (now - this.player.interact[1]) >= 1000) this.player.interact[0] = false;
 };
 
 GameEngine.prototype.addEntity = function(entity) {
@@ -140,6 +159,7 @@ GameEngine.prototype.update = function() {
 
 GameEngine.prototype.loop = function() {
     this.clockTick = this.timer.tick();
+    this.checkKeys();
     this.update();
     this.draw();
     this.click = null;
