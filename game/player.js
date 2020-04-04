@@ -292,10 +292,10 @@ Frump.prototype.update = function() {
                     this.velocity.y = 0;
                 }
             } else if (!this.bling && !this.boom) {
-                if (this.game.player.up) this.velocity.y -= this.acceleration;
-                if (this.game.player.down) this.velocity.y += this.acceleration;
-                if (this.game.player.left) this.velocity.x -= this.acceleration;
-                if (this.game.player.right) this.velocity.x += this.acceleration;
+                if (this.game.player.up[0]) this.velocity.y -= this.acceleration;
+                if (this.game.player.down[0]) this.velocity.y += this.acceleration;
+                if (this.game.player.left[0]) this.velocity.x -= this.acceleration;
+                if (this.game.player.right[0]) this.velocity.x += this.acceleration;
             }
 
             if (this.game.player.reload && !this.reload && this.bullets < 6) {
