@@ -119,11 +119,11 @@ GameEngine.prototype.startInput = function() {
 
 GameEngine.prototype.checkKeys = function() {
     var now = Date.now();
-    if (this.player.up[0] == true && (now - this.player.up[1]) >= 1000) this.player.up[0] = false;
-    if (this.player.left[0] == true && (now - this.player.left[1]) >= 1000) this.player.left[0] = false;
-    if (this.player.down[0] == true && (now - this.player.down[1]) >= 1000) this.player.down[0] = false;
-    if (this.player.right[0] == true && (now - this.player.right[1]) >= 1000) this.player.right[0] = false;
-    if (this.player.interact[0] == true && (now - this.player.interact[1]) >= 1000) this.player.interact[0] = false;
+    if (this.player.up[0] == true && (now - this.player.up[1]) >= 1500) this.player.up[0] = false;
+    if (this.player.left[0] == true && (now - this.player.left[1]) >= 1500) this.player.left[0] = false;
+    if (this.player.down[0] == true && (now - this.player.down[1]) >= 1500) this.player.down[0] = false;
+    if (this.player.right[0] == true && (now - this.player.right[1]) >= 1500) this.player.right[0] = false;
+    if (this.player.interact[0] == true && (now - this.player.interact[1]) >= 1500) this.player.interact[0] = false;
 };
 
 GameEngine.prototype.addEntity = function(entity) {
