@@ -21,12 +21,12 @@ Background.prototype.constructor = Background;
 Background.prototype.update = function() {};
 
 Background.prototype.draw = function(ctx) {
-    ctx.drawImage(this.image, 0, 0);
+    ctx.drawImage(this.image, 0, 0, 1280, 720, 0, 0, screen.width, screen.height);
 };
 
 function Roof(game, x, y, image) {
     this.image = ASSET_MANAGER.getAsset(image);
-    Entity.call(this, game, x, y);
+    Entity.call(this, game, 0, 0);
 }
 
 Roof.prototype = new Entity();
@@ -35,7 +35,7 @@ Roof.prototype.constructor = Roof;
 Roof.prototype.update = function() {};
 
 Roof.prototype.draw = function(ctx) {
-    ctx.drawImage(this.image, this.x, this.y);
+    ctx.drawImage(this.image, 0, 0, 1280, 720, 0, 0, screen.width, screen.height);
 };
 
 function Wall(game, x, y, w, h) {
@@ -168,7 +168,7 @@ Column.prototype.update = function() {
 
 Column.prototype.draw = function(ctx) {
     if (this.image)
-        ctx.drawImage(this.image, this.x, this.y);
+        ctx.drawImage(this.image, this.x * xScale, this.y * yScale);
 };
 
 function Door(game, x, y, w, h) {

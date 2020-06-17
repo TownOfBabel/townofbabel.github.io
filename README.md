@@ -13,6 +13,13 @@ March 34th of 2020, the town had just finished building the tallest tower the wo
 &nbsp; 
 
 ## News
+### June 16, 2020
+It's been over two months since the last real update, and even I thought I wasn't going to work on this game anymore. Low and behond here we are! Details on the update are below and don't worry, I have more planned for the summer.
+
+#### NEW Feature - Automatic Fullscreen
+This update adds fullscreen to the game! Now when you load up the game it will automatically scale itself to your monitor's resolution. Don't worry about hitting F11 to fullscreen your browser as when you click in the game it will auto fullscreen for you (similar to YouTube's fullscreen). There have also been some minor changes/bug fixes like a slight bump in the key detection and knife thugs now move slightly faster. Enjoy this update and look forward to some updates coming in the summer!
+&nbsp; 
+
 ### March 27, 2020
 Exactly two weeks since we turned the game in, and I'm happy to announce that it is now complete! There's quite a bit to talk about with this final update so let's get right into it.
 

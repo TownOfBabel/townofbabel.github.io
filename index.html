@@ -15,13 +15,20 @@
     <script type="text/javascript" src="./game/scenemanager.js"></script>
     <script type="text/javascript" src="./game/levels.js"></script>
     <script type="text/javascript" src="./main.js"></script>
+    <style>
+        html,
+        body {
+            margin: 0px;
+            border: 0;
+            overflow: hidden;
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
-    <div style="text-align: center;">
-        <canvas id="gameWorld" tabindex="1" width="1280" height="720" style="border: 1px solid black; background: rgb(25, 25, 25)"></canvas>
-        <br>
-        <a href="https://github.com/TownOfBabel/townofbabel.github.io" target="_blank">Game Information</a>
+    <div id="gameHolder" style="text-align: center">
+        <canvas id="gameWorld" tabindex="1" width="1280" height="720" style="background: rgb(25, 25, 25)"></canvas>
     </div>
 </body>
 

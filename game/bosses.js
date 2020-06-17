@@ -1438,7 +1438,7 @@ Meteor.prototype.update = function() {
 Meteor.prototype.draw = function(ctx) {
     if (this.spawnCD > 0) this.target.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     else {
-        ctx.drawImage(ASSET_MANAGER.getAsset('./img/weapons/target.png'), 400, 0, 200, 200, this.x - 100, this.y - 100, 200, 200);
+        ctx.drawImage(ASSET_MANAGER.getAsset('./img/weapons/target.png'), 400, 0, 200, 200, (this.x - 100) * scaleX, (this.y - 100) * scaleY, 200 * scaleX, 200 * scaleY);
         this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation + Math.PI / 2);
     }
 };

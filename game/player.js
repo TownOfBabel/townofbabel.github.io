@@ -9,7 +9,7 @@ InfoUI.prototype.constructor = InfoUI;
 InfoUI.prototype.update = function() {};
 
 InfoUI.prototype.draw = function(ctx) {
-    ctx.drawImage(this.image, 0, 0);
+    ctx.drawImage(this.image, 0, 0, 1280, 720, 0, 0, screen.width, screen.height);
 };
 
 function Health(game, hp) {
@@ -20,7 +20,7 @@ function Health(game, hp) {
     }
     this.max = hp;
     this.current = hp;
-    Entity.call(this, game, 125, 17);
+    Entity.call(this, game, 125, 18);
 }
 
 Health.prototype = new Entity();
@@ -79,7 +79,7 @@ Popup.prototype.update = function() {
 };
 
 Popup.prototype.draw = function(ctx) {
-    ctx.drawImage(this.image, this.startX, this.startY, 150, 50, this.x, this.y, 150, 50);
+    ctx.drawImage(this.image, this.startX, this.startY, 150, 49, this.x * xScale, this.y * yScale, 150 * xScale, 49 * yScale);
 };
 
 function Weapon(game, player, type, rarity, ability, spawn) {
@@ -135,7 +135,7 @@ Weapon.prototype.draw = function(ctx) {
     if (this.hidden) {} else if (this.floating)
         this.animated.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
     else
-        ctx.drawImage(this.static, 0, 0, 100, 100, this.x, this.y, 71.4 * this.scale, 71.4 * this.scale);
+        ctx.drawImage(this.static, 0, 0, 100, 100, this.x * xScale, this.y * yScale, 71 * xScale * this.scale, 71 * yScale * this.scale);
 };
 
 function Bullet(game, x, y, rot, dmg) {
@@ -187,7 +187,7 @@ Bullet.prototype.update = function() {
 };
 
 Bullet.prototype.draw = function(ctx) {
-    ctx.drawImage(this.image, this.x, this.y);
+    ctx.drawImage(this.image, 0, 0, 8, 8, this.x * xScale, this.y * yScale, 8 * xScale, 8 * yScale);
 };
 
 function Frump(game) {
