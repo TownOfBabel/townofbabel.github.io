@@ -309,13 +309,13 @@ Frump.prototype.update = function() {
                     this.sound.knife.play();
                     this.attacking = true;
                     this.atkCD = 105;
-                    this.hitDur = 7;
+                    this.hitDur = 16;
                     this.range = 85;
                 } else if (this.weapon.type == 'bat') {
                     this.sound.bat.play();
                     this.attacking = true;
                     this.atkCD = 110;
-                    this.hitDur = 14;
+                    this.hitDur = 20;
                     this.range = 110;
                 } else if (this.weapon.type == 'gun' && !this.reload) {
                     this.sound.gun.play();
@@ -412,6 +412,7 @@ Frump.prototype.update = function() {
                         else ent.sound.hit2.play();
                         ent.hurt = true;
                         ent.health -= this.weapon.damage;
+                        console.log(ent.health);
                         ent.hitCD = this.hitDur;
                     }
                 }
