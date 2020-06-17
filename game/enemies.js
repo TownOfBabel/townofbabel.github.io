@@ -32,11 +32,11 @@ HealthDrop.prototype.update = function() {
 
 HealthDrop.prototype.draw = function(ctx) {
     if (this.heal == 1)
-        this.healOne.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 1.5);
+        this.healOne.drawFrame(this.game.clockTick, ctx, this.x, this.y, 0);
     else if (this.heal == 2)
-        this.healTwo.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 1.5);
+        this.healTwo.drawFrame(this.game.clockTick, ctx, this.x, this.y, 0);
     else if (this.heal == 3)
-        this.healThree.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation, 1.5);
+        this.healThree.drawFrame(this.game.clockTick, ctx, this.x, this.y, 0);
 };
 
 function Enemy(game, x, y, dif) {
