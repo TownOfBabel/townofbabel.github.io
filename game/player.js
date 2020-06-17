@@ -412,7 +412,6 @@ Frump.prototype.update = function() {
                         else ent.sound.hit2.play();
                         ent.hurt = true;
                         ent.health -= this.weapon.damage;
-                        console.log(ent.health);
                         ent.hitCD = this.hitDur;
                     }
                 }
