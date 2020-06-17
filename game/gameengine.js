@@ -11,7 +11,6 @@ window.requestAnimFrame = (function() {
         };
 })();
 
-
 function Timer() {
     this.gameTime = 0;
     this.maxStep = 0.05;
@@ -45,10 +44,14 @@ function GameEngine() {
     this.wheel = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
+    this.fullscreen = false;
 }
 
 GameEngine.prototype.init = function(ctx) {
     this.ctx = ctx;
+    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.canvas.width = screen.width;
+    this.ctx.canvas.height = screen.height;
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
     this.startInput();
@@ -65,6 +68,31 @@ GameEngine.prototype.start = function() {
     })();
 };
 
+GameEngine.prototype.openFullscreen = function() {
+    var elem = document.documentElement;
+    if (elem.requestFullscreen)
+        elem.requestFullscreen();
+    else if (elem.mozRequestRequestFullscreen)
+        elem.mozRequestRequestFullscreen();
+    else if (elem.webkitRequestFullscreen)
+        elem.webkitRequestFullscreen();
+    else if (elem.msRequestFullscreen)
+        elem.msRequestFullscreen();
+    this.fullscreen = true;
+};
+
+GameEngine.prototype.closeFullscreen = function() {
+    if (document.exitFullscreen)
+        document.exitFullscreen();
+    else if (document.mozCancelFullscreen)
+        document.mozCancelFullscreen();
+    else if (document.webkitExitFullscreen)
+        document.webkitExitFullscreen();
+    else if (document.msExitFullscreen)
+        document.webkitExitFullscreen();
+    this.fullscreen = false;
+};
+
 GameEngine.prototype.startInput = function() {
     console.log('starting input');
     var that = this;
@@ -72,11 +100,15 @@ GameEngine.prototype.startInput = function() {
     var getXandY = function(e) {
         var x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
         var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
-        return { x: x, y: y };
+        var mX = (1280 * x) / screen.width;
+        var mY = (720 * y) / screen.height;
+        return { x: mX, y: mY };
     }
 
     this.ctx.canvas.addEventListener('keydown', function(e) {
         if (String.fromCharCode(e.which) === ' ') that.player.space = true;
+        // if (e.key == 'F12') that.openFullscreen();
+        // else if (e.key == 'F12' && that.fullscreen) that.closeFullscreen();
         if (e.key == 'Shift') that.shift = true;
         if (e.key == 'x' || e.key == 'X') that.heal = true;
         if (e.key == 'Enter') that.enter = true;
@@ -108,6 +140,7 @@ GameEngine.prototype.startInput = function() {
     }, false);
 
     this.ctx.canvas.addEventListener('click', function(e) {
+        that.openFullscreen();
         that.click = true;
     }, false);
 

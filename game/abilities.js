@@ -13,15 +13,15 @@ Ability.prototype.update = function() {};
 
 Ability.prototype.draw = function(ctx) {
     if (this.iconCD <= 0)
-        ctx.drawImage(this.icon, 240, 0, 60, 60, this.x, this.y, 40, 40);
+        ctx.drawImage(this.icon, 240, 0, 60, 60, this.x * xScale, this.y * yScale, 40 * xScale, 40 * yScale);
     else if (this.iconCD <= this.maxCD / 4)
-        ctx.drawImage(this.icon, 180, 0, 60, 60, this.x, this.y, 40, 40);
+        ctx.drawImage(this.icon, 180, 0, 60, 60, this.x * xScale, this.y * yScale, 40 * xScale, 40 * yScale);
     else if (this.iconCD <= this.maxCD / 2)
-        ctx.drawImage(this.icon, 120, 0, 60, 60, this.x, this.y, 40, 40);
+        ctx.drawImage(this.icon, 120, 0, 60, 60, this.x * xScale, this.y * yScale, 40 * xScale, 40 * yScale);
     else if (this.iconCD <= (this.maxCD * 3 / 4))
-        ctx.drawImage(this.icon, 60, 0, 60, 60, this.x, this.y, 40, 40);
+        ctx.drawImage(this.icon, 60, 0, 60, 60, this.x * xScale, this.y * yScale, 40 * xScale, 40 * yScale);
     else
-        ctx.drawImage(this.icon, 0, 0, 60, 60, this.x, this.y, 40, 40);
+        ctx.drawImage(this.icon, 0, 0, 60, 60, this.x * xScale, this.y * yScale, 40 * xScale, 40 * yScale);
 };
 
 function Dash(game, player) {

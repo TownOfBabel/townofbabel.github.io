@@ -211,7 +211,7 @@ SceneManager.prototype.buildLevelOne = function(game) {
     this.levels[0].streets[0].walls.push(new Wall(game, 1217, 0, 63, 720));
     this.levels[0].streets[0].walls.push(new Wall(game, 0, 235, 27, 141));
     this.levels[0].streets[0].walls.push(new Wall(game, 0, 488, 27, 232));
-    this.levels[0].streets[0].walls.push(new Roof(game, 0, 182, './img/backgrounds/roof00.png'));
+    this.levels[0].streets[0].walls.push(new Roof(game, 0, 0, './img/backgrounds/roof00.png'));
     this.levels[0].streets[0].spawn = { x: 40, y: 432 };
 
     // street01
@@ -222,7 +222,7 @@ SceneManager.prototype.buildLevelOne = function(game) {
     this.levels[0].streets[1].walls.push(new Wall(game, 1033, 535, 33, 184));
     this.levels[0].streets[1].walls.push(new Wall(game, 1225, 191, 63, 248));
     this.levels[0].streets[1].walls.push(new Wall(game, 1225, 551, 63, 248));
-    this.levels[0].streets[1].walls.push(new Roof(game, 1138, 110, './img/backgrounds/roof01.png'));
+    this.levels[0].streets[1].walls.push(new Roof(game, 0, 0, './img/backgrounds/roof01.png'));
     this.levels[0].streets[1].spawn = { x: 1240, y: 495 };
 
     // street02
@@ -247,7 +247,7 @@ SceneManager.prototype.buildLevelOne = function(game) {
     this.levels[0].streets[3].walls.push(new Wall(game, 1037, 543, 29, 177));
     this.levels[0].streets[3].walls.push(new Wall(game, 1227, 0, 53, 386));
     this.levels[0].streets[3].walls.push(new Wall(game, 1227, 496, 53, 224));
-    this.levels[0].streets[3].walls.push(new Roof(game, 1164, 9, './img/backgrounds/roof03.png'));
+    this.levels[0].streets[3].walls.push(new Roof(game, 0, 0, './img/backgrounds/roof03.png'));
     this.levels[0].streets[3].spawn = { x: 1240, y: 441 };
 
     // street04
@@ -258,14 +258,14 @@ SceneManager.prototype.buildLevelOne = function(game) {
     this.levels[0].streets[4].walls.push(new Wall(game, 1147, 291, 133, 429));
     this.levels[0].streets[4].walls.push(new Wall(game, 0, 305, 42, 173));
     this.levels[0].streets[4].walls.push(new Wall(game, 0, 589, 42, 131));
-    this.levels[0].streets[4].walls.push(new Roof(game, 0, 256, './img/backgrounds/roof04.png'));
+    this.levels[0].streets[4].walls.push(new Roof(game, 0, 0, './img/backgrounds/roof04.png'));
     this.levels[0].streets[4].spawn = { x: 40, y: 533 };
 
     // street05
     this.levels[0].streets[5].walls.push(new Wall(game, 50, 274, 404, 174));
     this.levels[0].streets[5].walls.push(new Wall(game, 329, 0, 271, 29));
     this.levels[0].streets[5].walls.push(new Wall(game, 711, 0, 271, 29));
-    this.levels[0].streets[5].walls.push(new Roof(game, 275, 0, './img/backgrounds/roof05.png'));
+    this.levels[0].streets[5].walls.push(new Roof(game, 0, 0, './img/backgrounds/roof05.png'));
     this.levels[0].streets[5].spawn = { x: 655, y: 40 };
 
     // scene connections

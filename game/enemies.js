@@ -79,6 +79,7 @@ Enemy.prototype.update = function() {
     if (this.health <= 0) {
         this.die = true;
         this.alive = false;
+        this.velocity = { x: 0, y: 0 };
     }
     if (this.die && this.anim.die.isDone()) {
         this.anim.die.elapsedTime = 0;
@@ -419,7 +420,7 @@ function Dog(game, x, y, dif) {
     this.begLag = 109;
     this.endLag = 120;
     this.hitDur = 6;
-    this.range = 75;
+    this.range = 78;
     this.ideal = 140;
     this.sight = 350;
     this.fov = Math.PI;
@@ -439,8 +440,8 @@ function Thug(game, weapon, x, y, dif) {
     this.anim = {};
     this.weapon = {};
     if (weapon == 0) {
-        this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 0, 200, 200, 0.12, 1, true, false);
-        this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 0, 200, 200, 0.12, 8, true, false);
+        this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 0, 200, 200, 0.11, 1, true, false);
+        this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 0, 200, 200, 0.11, 8, true, false);
         this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 200, 200, 200, 0.1, 4, false, false);
         this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 0, 400, 200, 200, 0.15, 1, false, false);
         this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_knife.png'), 800, 200, 200, 400, (0.5 / 3), 3, false, false);
@@ -454,11 +455,11 @@ function Thug(game, weapon, x, y, dif) {
         this.hitDur = 14;
         this.range = 90;
         this.ideal = 85;
-        this.maxSpeed = 150;
-        this.mSpeed_init = 150;
+        this.maxSpeed = 175;
+        this.mSpeed_init = 175;
     } else {
-        this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 1, true, false);
-        this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.12, 8, true, false);
+        this.anim.idle = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.13, 1, true, false);
+        this.anim.move = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 0, 200, 200, 0.13, 8, true, false);
         this.anim.atk = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 200, 200, 300, 0.15, 4, false, false);
         this.anim.hit = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 0, 500, 200, 200, 0.15, 1, false, false);
         this.anim.die = new Animation(ASSET_MANAGER.getAsset('./img/entities/thug_bat.png'), 800, 200, 200, 400, (0.5 / 3), 3, false, false);
@@ -472,8 +473,8 @@ function Thug(game, weapon, x, y, dif) {
         this.hitDur = 20;
         this.range = 100;
         this.ideal = 100;
-        this.maxSpeed = 130;
-        this.mSpeed_init = 130;
+        this.maxSpeed = 125;
+        this.mSpeed_init = 125;
     }
 
     // Properties

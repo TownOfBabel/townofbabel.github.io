@@ -12,8 +12,7 @@ function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDu
     this.reverse = reverse;
 }
 
-Animation.prototype.drawFrame = function(tick, ctx, x, y, angle, scaleBy) {
-    var scaleBy = scaleBy || 1;
+Animation.prototype.drawFrame = function(tick, ctx, x, y, angle) {
     this.elapsedTime += tick;
     if (this.loop) {
         if (this.isDone()) {
@@ -33,16 +32,16 @@ Animation.prototype.drawFrame = function(tick, ctx, x, y, angle, scaleBy) {
         vindex++;
     }
 
-    var locX = x;
-    var locY = y;
+    var locX = (screen.width * x) / 1280;
+    var locY = (screen.height * y) / 720;
     var offset = vindex === 0 ? this.startX : 0;
 
-    ctx.setTransform(1, 0, 0, 1, locX, locY);
+    ctx.setTransform(xScale, 0, 0, yScale, locX, locY);
     ctx.rotate(angle);
     ctx.drawImage(this.spriteSheet,
         index * this.frameWidth + offset, vindex * this.frameHeight + this.startY, // source from sheet
         this.frameWidth, this.frameHeight, -this.frameWidth / 2, -this.frameHeight / 2,
-        this.frameWidth * scaleBy, this.frameHeight * scaleBy);
+        this.frameWidth, this.frameHeight);
     ctx.rotate(angle);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 };
@@ -57,6 +56,8 @@ Animation.prototype.isDone = function() {
 
 // 'main' code begins here
 var friction = 8;
+var xScale = screen.width / 1280;
+var yScale = screen.height / 720;
 
 var ASSET_MANAGER = new AssetManager();
 
@@ -86,6 +87,7 @@ ASSET_MANAGER.queueDownload('./img/menus/boss3.png');
 ASSET_MANAGER.queueDownload('./img/menus/boss4.png');
 ASSET_MANAGER.queueDownload('./img/menus/warning.png');
 ASSET_MANAGER.queueDownload('./img/menus/autosave.png');
+ASSET_MANAGER.queueDownload('./img/menus/abilities.png');
 
 // backgrounds
 ASSET_MANAGER.queueDownload('./img/backgrounds/street00.png');

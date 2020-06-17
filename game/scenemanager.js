@@ -10,7 +10,7 @@ Menu.prototype.constructor = Menu;
 Menu.prototype.update = function() {};
 
 Menu.prototype.draw = function(ctx) {
-    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), this.x, this.y);
+    ctx.drawImage(ASSET_MANAGER.getAsset(this.image), 0, 0, 1280, 720, 0, 0, screen.width, screen.height);
 };
 
 function TitleScreen(game) {
@@ -27,7 +27,7 @@ TitleScreen.prototype.constructor = TitleScreen;
 TitleScreen.prototype.update = function() {};
 
 TitleScreen.prototype.draw = function(ctx) {
-    this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+    this.image.drawFrame(this.game.clockTick, ctx, this.x, this.y, 0);
 };
 
 function Credits(game, manager) {
@@ -81,13 +81,13 @@ Fade.prototype.update = function() {
 
 Fade.prototype.draw = function(ctx) {
     if (this.tofrom == 'toBlack')
-        this.toBlack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+        this.toBlack.drawFrame(this.game.clockTick, ctx, this.x, this.y, 0);
     else if (this.tofrom == 'fromBlack')
-        this.fromBlack.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+        this.fromBlack.drawFrame(this.game.clockTick, ctx, this.x, this.y, 0);
     else if (this.tofrom == 'black')
-        this.black.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+        this.black.drawFrame(this.game.clockTick, ctx, this.x, this.y, 0);
     else
-        this.clear.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.rotation);
+        this.clear.drawFrame(this.game.clockTick, ctx, this.x, this.y, 0);
 };
 
 function SelectDif(game, manager) {
@@ -121,7 +121,7 @@ SelectDif.prototype.update = function() {
     }
     if (this.manager.timer.check() >= 0.5) {
         this.manager.sound.menus.pause();
-        this.manager.changeBackground(this.manager.menus.warning);
+        this.manager.changeBackground(this.manager.menus.abilites);
         this.removeFromWorld = true;
         this.manager.timer.reset();
     }
@@ -129,11 +129,11 @@ SelectDif.prototype.update = function() {
 
 SelectDif.prototype.draw = function(ctx) {
     if (this.hover == 'casual')
-        ctx.drawImage(this.casual, 0, 0);
+        ctx.drawImage(this.casual, 0, 0, 1280, 720, 0, 0, screen.width, screen.height);
     else if (this.hover == 'classic')
-        ctx.drawImage(this.classic, 0, 0);
+        ctx.drawImage(this.classic, 0, 0, 1280, 720, 0, 0, screen.width, screen.height);
     else
-        ctx.drawImage(this.none, 0, 0);
+        ctx.drawImage(this.none, 0, 0, 1280, 720, 0, 0, screen.width, screen.height);
 };
 
 function CreditsBtn(game, manager) {
@@ -160,11 +160,11 @@ CreditsBtn.prototype.update = function() {
 
 CreditsBtn.prototype.draw = function(ctx) {
     if (this.click)
-        ctx.drawImage(this.image, 2560, 0, 1280, 720, 0, 0, 1280, 720);
+        ctx.drawImage(this.image, 2560, 0, 1280, 720, 0, 0, screen.width, screen.height);
     else if (this.hover)
-        ctx.drawImage(this.image, 1280, 0, 1280, 720, 0, 0, 1280, 720);
+        ctx.drawImage(this.image, 1280, 0, 1280, 720, 0, 0, screen.width, screen.height);
     else
-        ctx.drawImage(this.image, 0, 0, 1280, 720, 0, 0, 1280, 720);
+        ctx.drawImage(this.image, 0, 0, 1280, 720, 0, 0, screen.width, screen.height);
 };
 
 function getTrans(weapon) {
@@ -223,6 +223,7 @@ function SceneManager(game) {
     this.menus.lose = new Menu(game, './img/menus/game over.png');
     this.menus.cont = new Menu(game, './img/menus/continued.png');
     this.menus.creditsBtn = new CreditsBtn(game, this);
+    this.menus.abilites = new Menu(game, './img/menus/abilities.png');
     this.menus.warning = new Menu(game, './img/menus/warning.png');
     this.menus.autosave = new Menu(game, './img/menus/autosave.png');
     this.menus.intro = [];
@@ -259,12 +260,31 @@ SceneManager.prototype.update = function() {
     if (this.activeBG.menu) {
         if (this.activeBG === this.menus.title) {
             var hover = false;
+            // if (this.game.click)
+            //     this.game.openFullscreen();
             if (this.game.mouse.x > 630 && this.game.mouse.x < 1000 &&
                 this.game.mouse.y > 480 && this.game.mouse.y < 660)
                 hover = true;
             if (this.game.click && this.timer.init == 0 && hover) {
                 this.game.addEntity(new SelectDif(this.game, this));
                 this.timer.reset();
+            }
+        } else if (this.activeBG === this.menus.abilites) {
+            if (this.game.click && this.timer.check() >= 1) {
+                this.game.addEntity(new Fade(this.game, 'toBlack'));
+                this.timer.reset();
+                this.wait = false;
+            } else if (!this.wait && this.timer.check() >= 0.5) {
+                this.changeBackground(this.menus.warning);
+                // if (this.dif == 0) this.changeBackground(this.menus.warning);
+                // else {
+                //     this.changeBackground(this.menus.autosave);
+                //     this.sound.game.volume = 0.15;
+                //     this.sound.game.loop = true;
+                //     this.sound.game.play();
+                // }
+                this.timer.reset();
+                this.wait = true;
             }
         } else if (this.activeBG === this.menus.warning) {
             if (this.game.click && this.timer.check() >= 1) {
@@ -431,15 +451,14 @@ SceneManager.prototype.update = function() {
                     this.timer.reset();
                 }
             }
-
-
         }
         if (!this.activeBG.menu) {
             if (this.activeBG.enemies.length == 0) {
                 this.activeBG.drop.hidden = false;
+                if (this.swapHeld > 90) this.swapHeld = 0;
                 if (this.game.player.interact[0]) this.swapHeld++;
                 else this.swapHeld = 0;
-                if (this.swapHeld > 15 && distance(this.player, this.activeBG.drop) < 100) {
+                if (this.swapHeld == 20 && distance(this.player, this.activeBG.drop) < 100) {
                     this.sound.swap.play();
                     var old = this.player.weapon;
                     if (old.ability) old.ability.removeFromWorld = true;
@@ -457,7 +476,7 @@ SceneManager.prototype.update = function() {
                     old.y = this.player.y;
                     old.floating = true;
                     this.activeBG.drop = old;
-                    this.swapHeld = 0;
+                    // this.swapHeld = 0;
                     if (this.player.weapon.type == 'knife')
                         this.player.faces = 34;
                     else if (this.player.weapon.type == 'bat')
